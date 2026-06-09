@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indian Nepali Kitchen — Design</title>
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  body { background: radial-gradient(120% 90% at 80% -10%, #1c130c, var(--ink-800) 55%); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 64px 32px 90px; }
+  .mark { display: flex; align-items: center; gap: 14px; }
+  .mark svg { width: 46px; height: 46px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .card { background: var(--ink-700); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; text-decoration: none; color: inherit; display: block; transition: transform .25s, box-shadow .25s, border-color .25s; }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-3); border-color: var(--ink-600); }
+  .card .prev { height: 200px; position: relative; overflow: hidden; }
+  .swatch-row { display: flex; gap: 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+  .swatch { flex: 1; height: 76px; display: flex; align-items: flex-end; padding: 8px; font-size: 10px; font-family: ui-monospace, monospace; color: rgba(255,255,255,.7); }
+  .chip { display: inline-flex; align-items: center; gap: 7px; background: var(--ink-700); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; font-size: 13px; color: var(--cream-2); }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mark">
+    <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="none" stroke="#d4a24e" stroke-width="1.4" opacity=".55"/><circle cx="24" cy="24" r="16.5" fill="none" stroke="#d4a24e" stroke-width="1"/><path d="M24 11 L33 24 L24 37 L15 24 Z" fill="none" stroke="#d4a24e" stroke-width="1.4"/><circle cx="24" cy="24" r="4.4" fill="#d4a24e"/></svg>
+    <div>
+      <div style="font-family:var(--serif);font-weight:600;font-size:24px;line-height:1;">Indian Nepali Kitchen</div>
+      <div style="font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold-600);margin-top:5px;">Design System &amp; Prototypes</div>
+    </div>
+  </div>
+
+  <div style="margin:48px 0 30px;max-width:640px;">
+    <div class="eyebrow" style="margin-bottom:16px;">Fine-dining luxury · Indian &amp; Nepali</div>
+    <h1 style="font-size:clamp(40px,6vw,68px);line-height:1.02;">A warm, elegant home for the Kitchen — and a powerful place to run it.</h1>
+    <p style="color:var(--sand);font-size:17px;line-height:1.65;margin-top:18px;">Two connected experiences: a high-converting customer website for ordering, reservations and catering, and a SaaS-style admin to run service end-to-end.</p>
+  </div>
+
+  <div class="grid2" style="margin-bottom:70px;">
+    <a class="card" href="Indian Nepali Kitchen.html">
+      <div class="prev ph"><span>customer site preview</span>
+        <div style="position:absolute;inset:0;background:linear-gradient(120deg,rgba(13,10,8,.85),transparent);"></div>
+        <div style="position:absolute;left:24px;bottom:22px;"><div style="font-family:var(--serif);font-size:30px;font-weight:600;">Where the<br><em style="color:var(--gold-400);">Himalayas</em> meet…</div></div>
+      </div>
+      <div style="padding:24px;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        <div><div style="font-family:var(--serif);font-size:24px;font-weight:600;">Customer Website</div>
+        <div style="color:var(--muted);font-size:14px;margin-top:5px;">Home · Order · Reserve · Catering · Gallery · Offers</div></div>
+        <span class="btn btn-gold btn-sm">Open</span>
+      </div>
+    </a>
+    <a class="card" href="Admin Dashboard.html">
+      <div class="prev" style="background:var(--ink-850);border-bottom:1px solid var(--line);display:flex;">
+        <div style="width:64px;background:var(--ink-900);border-right:1px solid var(--line);padding:14px 10px;display:flex;flex-direction:column;gap:8px;">
+          <div style="width:24px;height:24px;border-radius:7px;background:var(--gold-glow);border:1px solid var(--gold-700);"></div>
+          <div style="height:7px;border-radius:4px;background:var(--ink-600);"></div><div style="height:7px;border-radius:4px;background:var(--ink-600);width:70%;"></div><div style="height:7px;border-radius:4px;background:var(--gold-700);"></div>
+        </div>
+        <div style="flex:1;padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start;">
+          <div style="height:48px;border-radius:9px;background:var(--ink-700);border:1px solid var(--line);"></div>
+          <div style="height:48px;border-radius:9px;background:var(--ink-700);border:1px solid var(--line);"></div>
+          <div style="grid-column:1/-1;height:62px;border-radius:9px;background:var(--ink-700);border:1px solid var(--line);display:flex;align-items:flex-end;gap:5px;padding:10px;">
+            <div style="flex:1;height:30%;background:var(--gold-700);border-radius:3px;"></div><div style="flex:1;height:55%;background:var(--gold-600);border-radius:3px;"></div><div style="flex:1;height:80%;background:var(--gold-500);border-radius:3px;"></div><div style="flex:1;height:45%;background:var(--gold-700);border-radius:3px;"></div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:24px;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        <div><div style="font-family:var(--serif);font-size:24px;font-weight:600;">Admin Dashboard</div>
+        <div style="color:var(--muted);font-size:14px;margin-top:5px;">Analytics · Orders · Reservations · POS · Users</div></div>
+        <span class="btn btn-gold btn-sm">Open</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- Design system -->
+  <div class="eyebrow" style="margin-bottom:24px;">The system</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;">
+    <div>
+      <h3 style="font-size:22px;margin-bottom:16px;">Palette</h3>
+      <div class="swatch-row" style="margin-bottom:10px;">
+        <div class="swatch" style="background:#0d0a08;">ink-900</div>
+        <div class="swatch" style="background:#17120e;">ink-800</div>
+        <div class="swatch" style="background:#241c16;">ink-700</div>
+        <div class="swatch" style="background:#38291c;">ink-600</div>
+      </div>
+      <div class="swatch-row">
+        <div class="swatch" style="background:#e6bd78;color:#3a2510;">gold-400</div>
+        <div class="swatch" style="background:#c8852f;color:#2a1808;">gold-600</div>
+        <div class="swatch" style="background:#9c3b25;">spice-600</div>
+        <div class="swatch" style="background:#4f7d44;">leaf-600</div>
+      </div>
+    </div>
+    <div>
+      <h3 style="font-size:22px;margin-bottom:16px;">Type</h3>
+      <div style="border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--ink-700);">
+        <div style="font-family:var(--serif);font-size:40px;font-weight:600;line-height:1;">Cormorant Garamond</div>
+        <div style="color:var(--muted);font-size:12px;margin:6px 0 18px;font-family:ui-monospace,monospace;">DISPLAY · HEADLINES · SERIF</div>
+        <div style="font-family:var(--sans);font-size:18px;font-weight:600;">Hanken Grotesk</div>
+        <div style="font-family:var(--sans);color:var(--sand);font-size:14px;line-height:1.6;margin-top:6px;">Clean, legible body text for menus, tables and long-form copy across both experiences.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:40px;">
+    <h3 style="font-size:22px;margin-bottom:16px;">Components</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+      <button class="btn btn-gold">Order Online</button>
+      <button class="btn btn-ghost">Reserve Table</button>
+      <button class="btn btn-spice btn-sm">Save 20%</button>
+      <span class="chip"><span style="width:7px;height:7px;border-radius:99px;background:var(--leaf-500);"></span> Confirmed</span>
+      <span class="chip" style="color:var(--gold-400);border-color:var(--gold-700);">★ Popular</span>
+      <span class="chip">Veg</span>
+    </div>
+  </div>
+
+  <div style="margin-top:70px;padding-top:26px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+    <span>© 2026 Indian Nepali Kitchen · Prototype</span>
+    <span>Fully clickable · React prototype · placeholder imagery</span>
+  </div>
+</div>
+</body>
+</html>

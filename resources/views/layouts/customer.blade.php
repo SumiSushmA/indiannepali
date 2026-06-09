@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ $site['restaurant_name'] ?? 'Indian Nepali Kitchen' }} @isset($pageTitle) · {{ $pageTitle }} @endisset</title>
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/customer.css">
+    @stack('styles')
+</head>
+<body id="cust-root" data-page="{{ $bodyPage ?? 'page' }}" @if(session('open_cart')) data-open-cart="1" @endif>
+    @include('customer.partials.nav')
+    <main>@yield('content')</main>
+    @include('customer.partials.footer')
+    @include('customer.partials.cart-drawer')
+
+    @if(session('success'))
+        <div class="cust-flash">{{ session('success') }}</div>
+    @endif
+
+    <script src="/js/customer.js"></script>
+    @stack('scripts')
+</body>
+</html>
