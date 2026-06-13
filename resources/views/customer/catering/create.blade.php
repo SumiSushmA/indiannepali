@@ -55,7 +55,7 @@
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
                 <label class="cust-field"><span>Name</span><input class="cust-inp" name="name" placeholder="Your name" required value="{{ old('name') }}"></label>
                 <label class="cust-field"><span>Email</span><input class="cust-inp" name="email" type="email" placeholder="you@email.com" required value="{{ old('email') }}"></label>
-                <label class="cust-field"><span>Phone</span><input class="cust-inp" name="phone" type="tel" placeholder="(415) 555-0140" required value="{{ old('phone') }}"></label>
+                <label class="cust-field"><span>Phone</span><input class="cust-inp" name="phone" type="tel" placeholder="{{ $site['phone'] ?? '(206) 397-3211' }}" required value="{{ old('phone') }}"></label>
                 <label class="cust-field"><span>Event type</span>
                     <select class="cust-inp" name="event_type" required>
                         @foreach(['Wedding', 'Corporate', 'Birthday', 'Puja / religious', 'Other'] as $o)

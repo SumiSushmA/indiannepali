@@ -11,7 +11,9 @@
     <div style="display:flex;flex-direction:column;gap:20px">
         @foreach($promos as $i => $p)
             <div class="cust-promo cust-card" style="padding:0;overflow:hidden">
-                <x-ph label="Promo image" style="min-height:220px;order:{{ $i % 2 ? 2 : 1 }}" />
+                <a href="{{ route('menu') }}" class="cust-click-card" style="min-height:220px;order:{{ $i % 2 ? 2 : 1 }}">
+                    <x-ph :label="$p['title']" :h="220" style="border:none;border-radius:0" />
+                </a>
                 <div style="padding:36px;display:flex;flex-direction:column;justify-content:center;order:{{ $i % 2 ? 1 : 2 }}">
                     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
                         <span style="background:{{ $p['accent'] === 'spice' ? 'rgba(156,59,37,.18)' : 'var(--gold-glow)' }};color:{{ $p['accent'] === 'spice' ? 'var(--spice-500)' : 'var(--gold-400)' }};border:1px solid {{ $p['accent'] === 'spice' ? 'var(--spice-700)' : 'var(--gold-700)' }};font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:999px">{{ $p['badge'] }}</span>

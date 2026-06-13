@@ -53,8 +53,8 @@
                 <div style="font-size:13px;color:var(--sand);font-weight:600;margin-bottom:12px">Choose a design</div>
                 <div style="display:flex;gap:10px;margin-bottom:26px">
                     @foreach($giftDesigns as $d)
-                        <label style="flex:1;padding:12px;border-radius:12px;cursor:pointer;background:var(--ink-800);border:1px solid var(--line)">
-                            <input type="radio" name="design" value="{{ $d['id'] }}" {{ $design === $d['id'] ? 'checked' : '' }} style="position:absolute;opacity:0" data-bg="{{ $accents[$d['id']][0] }}" data-color="{{ $accents[$d['id']][1] }}">
+                        <label class="cust-gift-design">
+                            <input type="radio" name="design" value="{{ $d['id'] }}" class="cust-sr-input" {{ $design === $d['id'] ? 'checked' : '' }} data-bg="{{ $accents[$d['id']][0] }}" data-color="{{ $accents[$d['id']][1] }}">
                             <div style="height:30px;border-radius:6px;margin-bottom:9px;background:{{ $accents[$d['id']][0] }}"></div>
                             <div style="font-weight:600;font-size:13.5px">{{ $d['name'] }}</div>
                             <div style="font-size:11.5px;color:var(--muted)">{{ $d['sub'] }}</div>
@@ -65,8 +65,8 @@
                 <div style="font-size:13px;color:var(--sand);font-weight:600;margin-bottom:12px">Amount</div>
                 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">
                     @foreach($giftAmounts as $a)
-                        <label style="padding:13px 0;border-radius:10px;cursor:pointer;font-weight:600;font-size:16px;font-family:var(--serif);text-align:center;background:var(--ink-800);border:1px solid var(--line)">
-                            <input type="radio" name="amount_preset" value="{{ $a }}" {{ (int)$amount === $a && !old('custom_amount') ? 'checked' : '' }} style="position:absolute;opacity:0" class="gift-amount-radio">${{ $a }}
+                        <label class="cust-gift-amount">
+                            <input type="radio" name="amount_preset" value="{{ $a }}" class="cust-sr-input gift-amount-radio" {{ (int)$amount === $a && !old('custom_amount') ? 'checked' : '' }}>${{ $a }}
                         </label>
                     @endforeach
                 </div>
@@ -76,8 +76,8 @@
                 <div style="font-size:13px;color:var(--sand);font-weight:600;margin-bottom:12px">How to deliver</div>
                 <div style="display:flex;background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:4px;gap:4px;margin-bottom:18px">
                     @foreach([['email', 'Email'], ['print', 'Print at home'], ['mail', 'Physical card']] as [$v, $label])
-                        <label style="flex:1;border-radius:7px;padding:11px 10px;cursor:pointer;font-weight:600;font-size:14px;text-align:center;background:var(--ink-800);border:1px solid transparent">
-                            <input type="radio" name="delivery" value="{{ $v }}" {{ old('delivery', 'email') === $v ? 'checked' : '' }} style="position:absolute;opacity:0">{{ $label }}
+                        <label class="cust-gift-delivery">
+                            <input type="radio" name="delivery" value="{{ $v }}" class="cust-sr-input" {{ old('delivery', 'email') === $v ? 'checked' : '' }}>{{ $label }}
                         </label>
                     @endforeach
                 </div>
@@ -109,9 +109,10 @@
                 <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Enter the code at checkout, or check a balance below.</p>
             </div>
             <div style="display:flex;gap:10px;flex:1;min-width:260px;max-width:420px">
-                <input class="cust-inp" placeholder="Gift card code" style="flex:1">
-                <button type="button" class="btn btn-ghost">Check balance</button>
+                <input class="cust-inp" id="gift-balance-code" placeholder="Gift card code" style="flex:1">
+                <button type="button" class="btn btn-ghost" id="gift-check-balance">Check balance</button>
             </div>
+            <p id="gift-balance-msg" style="width:100%;margin-top:12px;font-size:14px;color:var(--muted);display:none"></p>
         </div>
     </form>
 @endif
@@ -140,6 +141,22 @@
             preview.style.background = r.dataset.bg;
             preview.style.color = r.dataset.color;
         });
+    });
+
+    const balanceBtn = document.getElementById('gift-check-balance');
+    const balanceCode = document.getElementById('gift-balance-code');
+    const balanceMsg = document.getElementById('gift-balance-msg');
+    balanceBtn?.addEventListener('click', () => {
+        const code = balanceCode?.value.trim();
+        if (!code) {
+            balanceMsg.style.display = 'block';
+            balanceMsg.style.color = 'var(--spice-400)';
+            balanceMsg.textContent = 'Please enter a gift card code.';
+            return;
+        }
+        balanceMsg.style.display = 'block';
+        balanceMsg.style.color = 'var(--sand)';
+        balanceMsg.textContent = 'Balance lookup is not available online yet. Please call {{ $site['phone'] ?? '(206) 397-3211' }} or visit us with your code.';
     });
 })();
 </script>

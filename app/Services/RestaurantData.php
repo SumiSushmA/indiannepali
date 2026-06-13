@@ -15,6 +15,7 @@ use App\Models\MenuItem;
 use App\Models\Promo;
 use App\Models\Review;
 use App\Models\TeamMember;
+use App\Support\StockImages;
 
 class RestaurantData
 {
@@ -89,14 +90,25 @@ class RestaurantData
             ->all();
     }
 
-    public static function gallery(): array
+    public static function galleryPreview(int $limit = 5): array
     {
         return GalleryImage::query()
+            ->with('category')
             ->where('is_published', true)
             ->orderBy('sort_order')
-            ->limit(12)
-            ->pluck('caption')
+            ->limit($limit)
+            ->get()
+            ->map(fn (GalleryImage $img) => [
+                'label' => $img->caption,
+                'cat' => $img->category?->name ?? '',
+                'url' => StockImages::resolve($img->caption, $img->image_path),
+            ])
             ->all();
+    }
+
+    public static function gallery(): array
+    {
+        return self::galleryPreview(12);
     }
 
     public static function getGalleryCategories(): array
@@ -108,7 +120,10 @@ class RestaurantData
             ->map(fn (GalleryCategory $cat) => [
                 'id' => $cat->slug,
                 'name' => $cat->name,
-                'items' => $cat->images->pluck('caption')->all(),
+                'items' => $cat->images->map(fn (GalleryImage $img) => [
+                    'label' => $img->caption,
+                    'url' => StockImages::resolve($img->caption, $img->image_path),
+                ])->all(),
             ])
             ->all();
     }

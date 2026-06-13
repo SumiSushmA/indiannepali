@@ -33,12 +33,12 @@
                     <div style="font-size:13px;color:var(--sand);font-weight:600;margin-bottom:12px">Party size</div>
                     <div style="display:flex;gap:8px;flex-wrap:wrap">
                         @foreach([1,2,3,4,5,6,7,8] as $n)
-                            <label style="min-width:48px;width:48px;height:48px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px;display:grid;place-items:center;background:var(--ink-800);color:var(--cream);border:1px solid var(--line)">
-                                <input type="radio" name="party" value="{{ $n }}" {{ old('party', 2) == $n ? 'checked' : '' }} style="position:absolute;opacity:0">{{ $n }}
+                            <label class="cust-pick" style="min-width:48px;width:48px;height:48px;border-radius:12px;font-weight:600;font-size:15px;display:grid;place-items:center;color:var(--cream)">
+                                <input type="radio" name="party" value="{{ $n }}" class="cust-sr-input" {{ old('party', 2) == $n ? 'checked' : '' }}>{{ $n }}
                             </label>
                         @endforeach
-                        <label style="padding:0 16px;height:48px;border-radius:12px;cursor:pointer;font-weight:600;display:grid;place-items:center;background:var(--ink-800);border:1px solid var(--line)">
-                            <input type="radio" name="party" value="9" style="position:absolute;opacity:0"> 9+
+                        <label class="cust-pick" style="padding:0 16px;height:48px;border-radius:12px;font-weight:600;display:grid;place-items:center">
+                            <input type="radio" name="party" value="9" class="cust-sr-input"> 9+
                         </label>
                     </div>
                 </div>
@@ -46,8 +46,8 @@
                     <div style="font-size:13px;color:var(--sand);font-weight:600;margin-bottom:12px">Date</div>
                     <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px">
                         @foreach($dates as $d)
-                            <label style="flex-shrink:0;width:64px;padding:12px 0;border-radius:12px;cursor:pointer;text-align:center;background:var(--ink-800);border:1px solid var(--line)">
-                                <input type="radio" name="date" value="{{ $d['value'] }}" {{ old('date') === $d['value'] ? 'checked' : '' }} style="position:absolute;opacity:0">
+                            <label class="cust-pick" style="flex-shrink:0;width:64px;padding:12px 0;border-radius:12px;text-align:center">
+                                <input type="radio" name="date" value="{{ $d['value'] }}" class="cust-sr-input" {{ old('date') === $d['value'] ? 'checked' : '' }}>
                                 <div style="font-size:11px;opacity:.8;text-transform:uppercase;letter-spacing:.06em">{{ $d['weekday'] }}</div>
                                 <div style="font-size:22px;font-family:var(--serif);font-weight:600;line-height:1.1">{{ $d['day'] }}</div>
                                 <div style="font-size:11px;opacity:.7">{{ $d['month'] }}</div>
@@ -59,8 +59,8 @@
                     <div style="font-size:13px;color:var(--sand);font-weight:600;margin-bottom:12px">Time</div>
                     <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px">
                         @foreach($times as $t)
-                            <label style="padding:11px 0;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px;text-align:center;background:var(--ink-800);border:1px solid var(--line)">
-                                <input type="radio" name="time" value="{{ $t }}" {{ old('time') === $t ? 'checked' : '' }} style="position:absolute;opacity:0">{{ $t }}
+                            <label class="cust-pick" style="padding:11px 0;border-radius:12px;font-weight:600;font-size:15px;text-align:center">
+                                <input type="radio" name="time" value="{{ $t }}" class="cust-sr-input" {{ old('time') === $t ? 'checked' : '' }}>{{ $t }}
                             </label>
                         @endforeach
                     </div>
@@ -71,7 +71,7 @@
                 <p style="color:var(--muted);font-size:14;margin-bottom:20px">We'll hold your table for 15 minutes.</p>
                 <div style="display:grid;gap:14px">
                     <label class="cust-field"><span>Full name</span><input class="cust-inp" name="name" placeholder="Asha Gurung" required value="{{ old('name') }}"></label>
-                    <label class="cust-field"><span>Phone</span><input class="cust-inp" name="phone" type="tel" placeholder="(415) 555-0140" required value="{{ old('phone') }}"></label>
+                    <label class="cust-field"><span>Phone</span><input class="cust-inp" name="phone" type="tel" placeholder="{{ $site['phone'] ?? '(206) 397-3211' }}" required value="{{ old('phone') }}"></label>
                     <label class="cust-field"><span>Email</span><input class="cust-inp" name="email" type="email" placeholder="you@email.com" required value="{{ old('email') }}"></label>
                     <label class="cust-field"><span>Occasion (optional)</span>
                         <select class="cust-inp" name="occasion">

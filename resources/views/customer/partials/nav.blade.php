@@ -4,6 +4,7 @@ $navLinks = [
     ['route' => 'catering', 'label' => 'Catering'],
     ['route' => 'gallery', 'label' => 'Gallery'],
     ['route' => 'about', 'label' => 'About'],
+    ['route' => 'promos', 'label' => 'Offers'],
     ['route' => 'giftcards', 'label' => 'Gift Cards'],
     ['route' => 'contact', 'label' => 'Contact'],
 ];

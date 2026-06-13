@@ -21,14 +21,22 @@ class GalleryController extends Controller
         if ($tab === 'all') {
             $shown = [];
             foreach ($cats as $cat) {
-                foreach ($cat['items'] as $label) {
-                    $shown[] = ['label' => $label, 'cat' => $cat['name']];
+                foreach ($cat['items'] as $item) {
+                    $shown[] = [
+                        'label' => $item['label'],
+                        'cat' => $cat['name'],
+                        'url' => $item['url'],
+                    ];
                 }
             }
         } else {
             $active = collect($cats)->firstWhere('id', $tab);
             $shown = array_map(
-                fn (string $label) => ['label' => $label, 'cat' => $active['name']],
+                fn (array $item) => [
+                    'label' => $item['label'],
+                    'cat' => $active['name'],
+                    'url' => $item['url'],
+                ],
                 $active['items']
             );
         }

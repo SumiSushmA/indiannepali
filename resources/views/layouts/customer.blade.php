@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $site['restaurant_name'] ?? 'Indian Nepali Kitchen' }} @isset($pageTitle) · {{ $pageTitle }} @endisset</title>
+    <link rel="icon" href="/logo.png" type="image/png">
     <link rel="stylesheet" href="/css/theme.css">
     <link rel="stylesheet" href="/css/customer.css">
     @stack('styles')

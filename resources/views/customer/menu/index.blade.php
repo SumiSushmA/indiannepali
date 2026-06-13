@@ -14,7 +14,7 @@
         <div class="cust-section" style="padding:16px 32px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
             <div style="display:flex;background:var(--ink-700);border:1px solid var(--line);border-radius:999px;padding:4px">
                 @foreach(['delivery', 'pickup'] as $m)
-                    <button type="button" data-mode="{{ $m }}" class="menu-mode-btn" style="border:none;border-radius:999px;padding:9px 20px;cursor:pointer;font-weight:600;font-size:14px;font-family:var(--sans);text-transform:capitalize;display:flex;align-items:center;gap:7px;background:{{ $mode === $m ? 'var(--gold-600)' : 'transparent' }};color:{{ $mode === $m ? '#211405' : 'var(--cream-2)' }}">
+                    <button type="button" data-mode="{{ $m }}" class="menu-mode-btn" style="border:none;border-radius:999px;padding:9px 20px;cursor:pointer;font-weight:600;font-size:14px;font-family:var(--sans);text-transform:capitalize;display:flex;align-items:center;gap:7px;background:{{ $mode === $m ? 'var(--brand-600)' : 'transparent' }};color:{{ $mode === $m ? '#fff' : 'var(--cream-2)' }}">
                         <x-icon :name="$m === 'delivery' ? 'truck' : 'bag'" :size="16" /> {{ $m }}
                     </button>
                 @endforeach
@@ -52,7 +52,7 @@
                     <div class="cust-order-grid">
                         @foreach($catItems as $it)
                             <div style="display:flex;gap:16px;background:var(--ink-700);border:1px solid var(--line);border-radius:14px;padding:14px">
-                                <x-food-image :item="$it" style="width:96px;height:96px;flex-shrink:0" :r="10" />
+                                <x-food-image :item="$it" :h="96" :w="96" :r="10" class="cust-menu-item-img" />
                                 <div style="flex:1;min-width:0;display:flex;flex-direction:column">
                                     <div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline">
                                         <h4 style="font-size:18.5px;display:flex;align-items:center;gap:7px;margin:0">

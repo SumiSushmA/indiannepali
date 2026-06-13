@@ -13,7 +13,7 @@
         </p>
         <div style="display:inline-flex;align-items:center;gap:10px;margin-top:22px;background:var(--ink-700);border:1px solid var(--line);border-radius:999px;padding:12px 22px">
             <x-icon name="clock" :size="18" color="var(--gold-400)" />
-            <span style="font-weight:600">{{ $order['mode'] === 'delivery' ? 'Est. arrival 35–45 min' : 'Ready in 20–25 min' }}</span>
+            <span style="font-weight:600">{{ $order['mode'] === 'delivery' ? 'Est. arrival 30–60 min' : 'Ready for pickup' }}</span>
             <span style="color:var(--muted)">· Order #{{ $order['number'] }}</span>
         </div>
         @if(!empty($order['payment_reference']))

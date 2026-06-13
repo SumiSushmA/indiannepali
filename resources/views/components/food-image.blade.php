@@ -1,16 +1,33 @@
-@props(['item', 'h' => null, 'r' => 0])
+@props(['item', 'h' => null, 'w' => null, 'r' => 0])
 
-@if(!empty($item['image_path']))
+@php
+$url = \App\Support\StockImages::resolve($item['img'] ?? $item['name'] ?? '', $item['image_path'] ?? null);
+$useFrame = is_numeric($h) || is_numeric($w);
+$frameStyle = collect([
+    is_numeric($h) ? "height:{$h}px" : null,
+    is_numeric($w) ? "width:{$w}px" : null,
+    $r ? "border-radius:{$r}px" : null,
+])->filter()->join('; ');
+$passedStyle = trim((string) $attributes->get('style', ''));
+$mergedStyle = collect([$frameStyle, $passedStyle])->filter()->join('; ');
+$attributes = $attributes->except('style');
+@endphp
+
+@if($useFrame)
+<div {{ $attributes->merge(['class' => 'cust-img-frame']) }} @if($mergedStyle) style="{{ $mergedStyle }}" @endif>
     <img
-        src="{{ Storage::url($item['image_path']) }}"
+        src="{{ $url }}"
         alt="{{ $item['img'] ?? $item['name'] ?? '' }}"
-        {{ $attributes->merge(['class' => 'food-img']) }}
-        @if(is_numeric($h))
-            style="height:{{ $h }}px;border-radius:{{ $r }}px;object-fit:cover;width:100%"
-        @elseif($r)
-            style="border-radius:{{ $r }}px;object-fit:cover;width:100%"
-        @endif
+        class="cust-img"
+        loading="lazy"
     >
+</div>
 @else
-    <x-ph :label="$item['img'] ?? ''" :h="$h" :r="$r" {{ $attributes }} />
+<img
+    src="{{ $url }}"
+    alt="{{ $item['img'] ?? $item['name'] ?? '' }}"
+    {{ $attributes->merge(['class' => 'cust-img food-img']) }}
+    @if($mergedStyle) style="{{ $mergedStyle }}" @elseif($r) style="border-radius:{{ $r }}px" @endif
+    loading="lazy"
+>
 @endif

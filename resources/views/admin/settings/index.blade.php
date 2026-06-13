@@ -19,19 +19,19 @@
             <div style="display:grid;gap:14px;">
                 <label style="display:flex;flex-direction:column;gap:6px;">
                     <span style="font-size:13px;color:var(--sand);font-weight:600;">Name</span>
-                    <input name="restaurant_name" value="{{ $settings['restaurant_name'] ?? 'Indian Nepali Kitchen' }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
+                    <input name="restaurant_name" value="{{ $settings['restaurant_name'] ?? 'Indian-Nepali Kitchen' }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
                 </label>
                 <label style="display:flex;flex-direction:column;gap:6px;">
                     <span style="font-size:13px;color:var(--sand);font-weight:600;">Address</span>
-                    <input name="address" value="{{ $settings['address'] ?? '418 Saffron Lane' }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
+                    <input name="address" value="{{ $settings['address'] ?? '13754 Aurora Ave N, Suite D' }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
                 </label>
                 <label style="display:flex;flex-direction:column;gap:6px;">
                     <span style="font-size:13px;color:var(--sand);font-weight:600;">City & postal</span>
-                    <input name="city" value="{{ $settings['city'] ?? 'Riverside District, CA 94100' }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
+                    <input name="city" value="{{ $settings['city'] ?? 'Seattle, WA 98133' }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
                 </label>
                 <label style="display:flex;flex-direction:column;gap:6px;">
                     <span style="font-size:13px;color:var(--sand);font-weight:600;">Phone</span>
-                    <input name="phone" value="{{ $settings['phone'] ?? '(415) 555-0192' }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
+                    <input name="phone" value="{{ $settings['phone'] ?? '(206) 397-3211' }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
                 </label>
                 <label style="display:flex;flex-direction:column;gap:6px;">
                     <span style="font-size:13px;color:var(--sand);font-weight:600;">Email</span>

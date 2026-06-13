@@ -25,6 +25,7 @@ use App\Models\Setting;
 use App\Models\TeamMember;
 use App\Models\ToastSyncLog;
 use App\Models\User;
+use App\Data\LiveSiteContent;
 use App\Data\SeedData;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -55,7 +56,7 @@ class RestaurantSeeder extends Seeder
 
     private function seedMenu(): void
     {
-        $menu = SeedData::menu();
+        $menu = LiveSiteContent::menu();
         $categoryIds = [];
 
         foreach ($menu['categories'] as $index => $category) {
@@ -89,7 +90,7 @@ class RestaurantSeeder extends Seeder
 
     private function seedPromos(): void
     {
-        foreach (SeedData::promos() as $index => $promo) {
+        foreach (LiveSiteContent::promos() as $index => $promo) {
             Promo::create([
                 'slug' => $promo['id'],
                 'badge' => $promo['badge'],
@@ -105,7 +106,7 @@ class RestaurantSeeder extends Seeder
 
     private function seedReviews(): void
     {
-        foreach (SeedData::reviews() as $index => $review) {
+        foreach (LiveSiteContent::reviews() as $index => $review) {
             Review::create([
                 'author_name' => $review['name'],
                 'stars' => $review['stars'],
@@ -121,7 +122,7 @@ class RestaurantSeeder extends Seeder
     {
         $spans = [1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1];
 
-        foreach (SeedData::galleryCategories() as $catIndex => $category) {
+        foreach (LiveSiteContent::galleryCategories() as $catIndex => $category) {
             $galleryCategory = GalleryCategory::create([
                 'slug' => $category['id'],
                 'name' => $category['name'],
@@ -142,7 +143,7 @@ class RestaurantSeeder extends Seeder
 
     private function seedAbout(): void
     {
-        $about = SeedData::about();
+        $about = LiveSiteContent::about();
 
         foreach ($about['story'] as $index => $paragraph) {
             AboutStory::create([
@@ -225,42 +226,18 @@ class RestaurantSeeder extends Seeder
 
     private function seedContentBlocks(): void
     {
-        foreach (SeedData::contentBlocks() as $block) {
+        foreach (LiveSiteContent::contentBlocks() as $section => $value) {
             ContentBlock::create([
-                'section' => $block['section'],
-                'value' => $block['value'],
-                'type' => $block['type'],
+                'section' => $section,
+                'value' => $value,
+                'type' => 'Text',
             ]);
         }
     }
 
     private function seedSettings(): void
     {
-        $settings = [
-            'tax_rate' => '0.0875',
-            'delivery_fee' => '3.99',
-            'free_delivery_min' => '40',
-            'restaurant_name' => 'Indian Nepali Kitchen',
-            'address' => '418 Saffron Lane',
-            'city' => 'Riverside District, CA 94100',
-            'phone' => '(415) 555-0142',
-            'hours' => 'Tue–Sun · 11:30–22:00',
-            'closed_days' => 'Closed Mondays',
-            'footer_tagline' => 'Hand-pleated momo, charcoal tandoor, and the slow-simmered curries of the Indian subcontinent and the Himalayan hills.',
-            'email' => 'hello@indiannepali.kitchen',
-            'online_ordering_enabled' => 'true',
-            'delivery_enabled' => 'true',
-            'tips_enabled' => 'true',
-            'sms_alerts_enabled' => 'true',
-            'toast_location' => 'Riverside District · Loc #RD-4471',
-            'toast_connected' => 'true',
-            'instagram_url' => 'https://instagram.com/indiannepalikitchen',
-            'facebook_url' => 'https://facebook.com/indiannepalikitchen',
-            'whatsapp_url' => 'https://wa.me/14155550142',
-            'privacy_url' => 'https://indiannepali.kitchen/privacy',
-            'terms_url' => 'https://indiannepali.kitchen/terms',
-            'accessibility_url' => 'https://indiannepali.kitchen/accessibility',
-        ];
+        $settings = LiveSiteContent::settings();
 
         foreach ($settings as $key => $value) {
             Setting::set($key, $value);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Services\RestaurantData;
+use App\Support\StockImages;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -14,7 +15,8 @@ class HomeController extends Controller
             'bodyPage' => 'home',
             'popularItems' => RestaurantData::popularItems(6),
             'reviews' => RestaurantData::reviews(),
-            'galleryPreview' => array_slice(RestaurantData::gallery(), 0, 5),
+            'galleryPreview' => RestaurantData::galleryPreview(5),
+            'heroImage' => StockImages::hero(),
         ]);
     }
 }

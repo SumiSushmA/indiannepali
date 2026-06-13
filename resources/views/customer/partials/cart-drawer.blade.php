@@ -25,7 +25,7 @@ $estTotal = round($cartSubtotal + $tax, 2);
             <div style="flex:1;overflow-y:auto;padding:8px 24px">
                 @foreach($cartItems as $item)
                     <div style="display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--line-soft)">
-                        <x-ph :label="$item['img']" style="width:62px;height:62px;flex-shrink:0" :r="10" />
+                        <x-ph :label="$item['img']" :h="62" :w="62" :r="10" class="cust-cart-item-img" />
                         <div style="flex:1;min-width:0">
                             <div style="display:flex;justify-content:space-between;gap:8px">
                                 <div style="font-weight:600;font-size:15px">{{ $item['name'] }}</div>

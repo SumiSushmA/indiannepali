@@ -6,32 +6,39 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* base surfaces */
-  --ink-900: #0d0a08;   /* deepest bg */
-  --ink-850: #120e0b;
-  --ink-800: #17120e;   /* page bg */
-  --ink-750: #1d1712;
-  --ink-700: #241c16;   /* card */
-  --ink-650: #2c2219;
-  --ink-600: #38291c;   /* hover / border-warm */
-  --line:    #332a22;   /* hairline */
-  --line-soft: #271f19;
+  /* base surfaces — charcoal from logo */
+  --ink-900: #0a0a0a;
+  --ink-850: #111111;
+  --ink-800: #161616;
+  --ink-750: #1c1c1c;
+  --ink-700: #242424;
+  --ink-650: #2c2c2c;
+  --ink-600: #363636;
+  --line:    #333333;
+  --line-soft: #2a2a2a;
 
-  /* gold accent scale */
-  --gold-400: #e6bd78;
-  --gold-500: #d4a24e;
-  --gold-600: #c8852f;  /* primary */
-  --gold-700: #a66a22;
-  --gold-glow: rgba(200,133,47,0.16);
+  /* brand maroon — from logo */
+  --brand-400: #c95668;
+  --brand-500: #b8394f;
+  --brand-600: #963042;
+  --brand-700: #7a2836;
+  --brand-glow: rgba(150, 48, 66, 0.18);
 
-  /* spice red */
+  /* aliases used across templates */
+  --gold-400: var(--brand-400);
+  --gold-500: var(--brand-500);
+  --gold-600: var(--brand-600);
+  --gold-700: var(--brand-700);
+  --gold-glow: var(--brand-glow);
+
+  /* spice red — logo flower accent */
   --spice-500: #c4533a;
-  --spice-600: #9c3b25;
-  --spice-700: #7a2c1b;
+  --spice-600: #963042;
+  --spice-700: #7a2836;
 
-  /* greens for "veg"/success */
-  --leaf-500: #6f9b5c;
-  --leaf-600: #4f7d44;
+  /* greens — logo leaf accent */
+  --leaf-500: #5a8f52;
+  --leaf-600: #4a7c44;
 
   /* text */
   --cream:   #f4ecdd;
@@ -48,7 +55,7 @@
   --shadow-1: 0 1px 2px rgba(0,0,0,.4);
   --shadow-2: 0 8px 30px rgba(0,0,0,.45);
   --shadow-3: 0 24px 60px rgba(0,0,0,.55);
-  --gold-ring: 0 0 0 1px rgba(212,162,78,.35);
+  --gold-ring: 0 0 0 1px rgba(150, 48, 66, .35);
 
   --serif: 'Cormorant Garamond', Georgia, serif;
   --sans: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
@@ -68,7 +75,7 @@ html, body {
 
 h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; margin: 0; letter-spacing: .005em; }
 
-::selection { background: var(--gold-600); color: #1a120a; }
+::selection { background: var(--brand-600); color: #fff; }
 
 /* scrollbar */
 *::-webkit-scrollbar { width: 11px; height: 11px; }
@@ -83,7 +90,7 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; margin: 0; letter-
   font-weight: 600;
   letter-spacing: .22em;
   text-transform: uppercase;
-  color: var(--gold-600);
+  color: var(--brand-500);
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -92,9 +99,9 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; margin: 0; letter-
   content: "";
   width: 26px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold-600));
+  background: linear-gradient(90deg, transparent, var(--brand-600));
 }
-.eyebrow.center::before { background: var(--gold-600); }
+.eyebrow.center::before { background: var(--brand-600); }
 
 /* buttons */
 .btn {
@@ -114,11 +121,11 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; margin: 0; letter-
 }
 .btn:active { transform: translateY(1px) scale(.99); }
 .btn-gold {
-  background: linear-gradient(180deg, var(--gold-500), var(--gold-600));
-  color: #211405;
-  box-shadow: 0 6px 20px rgba(200,133,47,.28), inset 0 1px 0 rgba(255,255,255,.35);
+  background: linear-gradient(180deg, var(--brand-500), var(--brand-600));
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(150, 48, 66, .32), inset 0 1px 0 rgba(255,255,255,.2);
 }
-.btn-gold:hover { box-shadow: 0 10px 30px rgba(200,133,47,.42), inset 0 1px 0 rgba(255,255,255,.35); transform: translateY(-1px); }
+.btn-gold:hover { box-shadow: 0 10px 30px rgba(150, 48, 66, .45), inset 0 1px 0 rgba(255,255,255,.2); transform: translateY(-1px); }
 .btn-ghost {
   background: transparent;
   color: var(--cream);
@@ -134,7 +141,38 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; margin: 0; letter-
 .btn-sm { padding: 9px 16px; font-size: 13.5px; }
 .btn-lg { padding: 17px 34px; font-size: 16px; }
 
-/* image placeholder */
+/* images */
+.cust-img {
+  display: block;
+  object-fit: cover;
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--ink-700);
+}
+
+.cust-img-frame {
+  position: relative;
+  overflow: hidden;
+  background: var(--ink-800);
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.cust-img-frame .cust-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: none;
+  margin: 0;
+  max-width: none;
+  max-height: none;
+}
+
+.ph-img { border: none; }
+
+/* image placeholder fallback */
 .ph {
   position: relative;
   overflow: hidden;

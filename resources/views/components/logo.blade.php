@@ -1,20 +1,23 @@
-@props(['size' => 38, 'href' => null])
+@props(['size' => 38, 'href' => null, 'showText' => false])
 
 @php
-$gold = '#d4a24e';
 $tag = $href ? 'a' : 'div';
+$imgH = (int) round($size * 1.15);
 @endphp
 
 <{{ $tag }} @if($href) href="{{ $href }}" @endif
-    {{ $attributes->merge(['class' => 'cust-logo', 'style' => 'display:flex;align-items:center;gap:'.($size * 0.3).'px;text-decoration:none;color:inherit;cursor:'.($href ? 'pointer' : 'default').';']) }}>
-    <svg width="{{ $size }}" height="{{ $size }}" viewBox="0 0 48 48" style="flex-shrink:0">
-        <circle cx="24" cy="24" r="22" fill="none" stroke="{{ $gold }}" stroke-width="1.4" opacity=".55"/>
-        <circle cx="24" cy="24" r="16.5" fill="none" stroke="{{ $gold }}" stroke-width="1"/>
-        <path d="M24 11 L33 24 L24 37 L15 24 Z" fill="none" stroke="{{ $gold }}" stroke-width="1.4"/>
-        <circle cx="24" cy="24" r="4.4" fill="{{ $gold }}"/>
-    </svg>
-    <div style="line-height:1">
-        <div style="font-family:var(--serif);font-weight:600;font-size:{{ $size * 0.5 }}px;letter-spacing:.02em;color:var(--cream)">Indian Nepali</div>
-        <div style="font-family:var(--sans);font-weight:600;font-size:{{ $size * 0.235 }}px;letter-spacing:.42em;text-transform:uppercase;color:{{ $gold }};margin-top:3px;padding-left:2px">Kitchen</div>
-    </div>
+    {{ $attributes->merge(['class' => 'cust-logo', 'style' => 'display:flex;align-items:center;gap:'.($showText ? ($size * 0.28) : 0).'px;text-decoration:none;color:inherit;cursor:'.($href ? 'pointer' : 'default').';']) }}>
+    <img
+        src="/logo.png"
+        alt="Indian-Nepali Kitchen"
+        width="{{ $imgH }}"
+        height="{{ $imgH }}"
+        style="height:{{ $imgH }}px;width:auto;object-fit:contain;flex-shrink:0;display:block"
+    >
+    @if($showText)
+        <div style="line-height:1">
+            <div style="font-family:var(--sans);font-weight:700;font-size:{{ $size * 0.42 }}px;letter-spacing:.04em;text-transform:uppercase;color:var(--brand-500)">Indian-Nepali</div>
+            <div style="font-family:var(--serif);font-style:italic;font-weight:500;font-size:{{ $size * 0.32 }}px;color:var(--cream);margin-top:2px">Kitchen</div>
+        </div>
+    @endif
 </{{ $tag }}>
