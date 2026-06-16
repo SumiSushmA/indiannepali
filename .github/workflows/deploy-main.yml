@@ -65,12 +65,27 @@ jobs:
   deploy:
     name: Deploy to Production Server
     needs: ci
-    if: ${{ secrets.PROD_SSH_KEY != '' && secrets.PROD_HOST != '' && secrets.PROD_USERNAME != '' && secrets.PROD_APP_PATH != '' }}
     runs-on: ubuntu-latest
     environment: production
 
     steps:
+      - name: Check required production secrets
+        id: secrets_check
+        env:
+          PROD_SSH_KEY: ${{ secrets.PROD_SSH_KEY }}
+          PROD_HOST: ${{ secrets.PROD_HOST }}
+          PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
+          PROD_APP_PATH: ${{ secrets.PROD_APP_PATH }}
+        run: |
+          if [ -z "$PROD_SSH_KEY" ] || [ -z "$PROD_HOST" ] || [ -z "$PROD_USERNAME" ] || [ -z "$PROD_APP_PATH" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Production deploy secrets are missing. Skipping deploy job steps."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup SSH
+        if: steps.secrets_check.outputs.ready == 'true'
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.PROD_SSH_KEY }}" > ~/.ssh/deploy_key.pem
@@ -78,6 +93,7 @@ jobs:
           ssh-keyscan -H "${{ secrets.PROD_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Deploy on Hostinger production
+        if: steps.secrets_check.outputs.ready == 'true'
         run: |
           ssh -i ~/.ssh/deploy_key.pem "${{ secrets.PROD_USERNAME }}@${{ secrets.PROD_HOST }}" << 'EOF'
           set -e
@@ -101,7 +117,7 @@ jobs:
           EOF
 
       - name: Cleanup SSH key
-        if: always()
+        if: always() && steps.secrets_check.outputs.ready == 'true'
         run: rm -f ~/.ssh/deploy_key.pem
 
   health-check:

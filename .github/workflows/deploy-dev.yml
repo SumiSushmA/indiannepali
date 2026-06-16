@@ -65,11 +65,26 @@ jobs:
   deploy:
     name: Deploy to Dev Server
     needs: ci
-    if: ${{ secrets.DEV_SSH_KEY != '' && secrets.DEV_HOST != '' && secrets.DEV_USERNAME != '' && secrets.DEV_APP_PATH != '' }}
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check required dev secrets
+        id: secrets_check
+        env:
+          DEV_SSH_KEY: ${{ secrets.DEV_SSH_KEY }}
+          DEV_HOST: ${{ secrets.DEV_HOST }}
+          DEV_USERNAME: ${{ secrets.DEV_USERNAME }}
+          DEV_APP_PATH: ${{ secrets.DEV_APP_PATH }}
+        run: |
+          if [ -z "$DEV_SSH_KEY" ] || [ -z "$DEV_HOST" ] || [ -z "$DEV_USERNAME" ] || [ -z "$DEV_APP_PATH" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Dev deploy secrets are missing. Skipping deploy job steps."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup SSH
+        if: steps.secrets_check.outputs.ready == 'true'
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.DEV_SSH_KEY }}" > ~/.ssh/deploy_key.pem
@@ -77,6 +92,7 @@ jobs:
           ssh-keyscan -H "${{ secrets.DEV_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Deploy on Hostinger dev
+        if: steps.secrets_check.outputs.ready == 'true'
         run: |
           ssh -i ~/.ssh/deploy_key.pem "${{ secrets.DEV_USERNAME }}@${{ secrets.DEV_HOST }}" << 'EOF'
           set -e
@@ -98,7 +114,7 @@ jobs:
           EOF
 
       - name: Cleanup SSH key
-        if: always()
+        if: always() && steps.secrets_check.outputs.ready == 'true'
         run: rm -f ~/.ssh/deploy_key.pem
 
   health-check:
