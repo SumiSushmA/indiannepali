@@ -1,0 +1,118 @@
+name: CI/CD Deploy Production
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: indiannepali-main-deploy
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    name: CI Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring, pdo, sqlite, bcmath
+          coverage: none
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Verify build output exists
+        run: |
+          if [ ! -d "public/build" ] || [ -z "$(ls -A public/build)" ]; then
+            echo "public/build missing or empty"
+            exit 1
+          fi
+
+      - name: Run tests
+        run: php artisan test
+
+  deploy:
+    name: Deploy to Production Server
+    needs: ci
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.PROD_SSH_KEY }}" > ~/.ssh/deploy_key.pem
+          chmod 600 ~/.ssh/deploy_key.pem
+          ssh-keyscan -H "${{ secrets.PROD_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy on Hostinger production
+        run: |
+          ssh -i ~/.ssh/deploy_key.pem "${{ secrets.PROD_USERNAME }}@${{ secrets.PROD_HOST }}" << 'EOF'
+          set -e
+          cd "${{ secrets.PROD_APP_PATH }}"
+
+          php artisan down --retry=60 || true
+          git config --global --add safe.directory '*' 2>/dev/null || true
+          git rev-parse HEAD > "${{ secrets.PROD_ROLLBACK_FILE }}"
+          git fetch origin main
+          git reset --hard origin/main
+
+          composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+          npm ci
+          npm run build
+          php artisan migrate --force
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          php artisan queue:restart 2>/dev/null || true
+          php artisan up || true
+          EOF
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key.pem
+
+  health-check:
+    name: Health Check Production
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Verify production URL
+        run: |
+          for i in {1..5}; do
+            STATUS=$(curl -s -L --max-time 10 -o /dev/null -w "%{http_code}" "${{ secrets.PROD_URL }}")
+            echo "Attempt ${i}: ${STATUS}"
+            if [ "$STATUS" = "200" ] || [ "$STATUS" = "302" ]; then
+              exit 0
+            fi
+            sleep 10
+          done
+          exit 1
