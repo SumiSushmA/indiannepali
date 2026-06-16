@@ -52,6 +52,11 @@
       el.delivery.style.color = fee === 0 ? 'var(--leaf-500)' : 'var(--cream-2)';
     }
 
+    const deliveryNote = document.getElementById('checkout-delivery-note');
+    if (deliveryNote) {
+      deliveryNote.style.display = mode === 'delivery' && fee === 0 ? '' : 'none';
+    }
+
     if (el.tipRow) {
       el.tipRow.style.display = tipAmount > 0 ? '' : 'none';
     }

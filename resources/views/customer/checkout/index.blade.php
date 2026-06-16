@@ -40,9 +40,9 @@
                 <div class="cust-card">
                     <h3 class="cust-card-heading">Contact details</h3>
                     <div class="cust-form-grid">
-                        <label class="cust-field"><span>Full name</span><input class="cust-inp" name="name" placeholder="Asha Gurung" required value="{{ old('name') }}"></label>
-                        <label class="cust-field"><span>Phone</span><input class="cust-inp" name="phone" type="tel" placeholder="{{ $site['phone'] ?? '(206) 397-3211' }}" required value="{{ old('phone') }}"></label>
-                        <label class="cust-field full"><span>Email</span><input class="cust-inp" name="email" type="email" placeholder="you@email.com" required value="{{ old('email') }}"></label>
+                        <label class="cust-field"><span>Full name</span><input class="cust-inp" name="name" placeholder="Asha Gurung" required value="{{ $prefill['name'] ?? old('name') }}"></label>
+                        <label class="cust-field"><span>Phone</span><input class="cust-inp" name="phone" type="tel" placeholder="{{ $site['phone'] ?? '(206) 397-3211' }}" required value="{{ $prefill['phone'] ?? old('phone') }}"></label>
+                        <label class="cust-field full"><span>Email</span><input class="cust-inp" name="email" type="email" placeholder="you@email.com" required value="{{ $prefill['email'] ?? old('email') }}"></label>
                         <label class="cust-field full cust-delivery-field"><span>Delivery address</span><input class="cust-inp" name="address" placeholder="Your Seattle delivery address" value="{{ old('address') }}"></label>
                         <label class="cust-field full cust-delivery-field"><span>Delivery notes</span><input class="cust-inp" name="notes" placeholder="Gate code, floor…" value="{{ old('notes') }}"></label>
                     </div>
@@ -62,9 +62,39 @@
                 <h3 class="cust-card-heading">Order summary</h3>
                 <div class="cust-summary-items">
                     @foreach($cartItems as $item)
-                        <div class="cust-summary-line">
-                            <span><span class="cust-summary-qty">{{ $item['qty'] }}× </span>{{ $item['name'] }}</span>
-                            <span>${{ number_format($item['price'] * $item['qty'], 2) }}</span>
+                        <div class="cust-summary-item">
+                            <div class="cust-summary-item-top">
+                                <span class="cust-summary-item-name">{{ $item['name'] }}</span>
+                                <span class="cust-summary-item-price">${{ number_format($item['price'] * $item['qty'], 2) }}</span>
+                            </div>
+                            @if(!empty($item['desc']))
+                                <p class="cust-summary-item-desc">{{ $item['desc'] }}</p>
+                            @endif
+                            <div class="cust-summary-item-actions">
+                                <div class="cust-summary-qty-wrap">
+                                    <form action="{{ route('cart.update', $item['id']) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="qty" value="{{ max(0, $item['qty'] - 1) }}">
+                                        <input type="hidden" name="redirect" value="checkout">
+                                        <button type="submit" class="cust-qty-btn" aria-label="Decrease quantity"><x-icon name="minus" :size="14" /></button>
+                                    </form>
+                                    <span class="cust-summary-qty-val">{{ $item['qty'] }}</span>
+                                    <form action="{{ route('cart.update', $item['id']) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="qty" value="{{ $item['qty'] + 1 }}">
+                                        <input type="hidden" name="redirect" value="checkout">
+                                        <button type="submit" class="cust-qty-btn" aria-label="Increase quantity"><x-icon name="plus" :size="14" /></button>
+                                    </form>
+                                </div>
+                                <form action="{{ route('cart.remove', $item['id']) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="hidden" name="redirect" value="checkout">
+                                    <button type="submit" class="cust-summary-remove" aria-label="Remove item"><x-icon name="trash" :size="15" /></button>
+                                </form>
+                            </div>
                         </div>
                     @endforeach
                 </div>
@@ -88,6 +118,15 @@
                         <span>Delivery</span>
                         <span id="checkout-delivery">{{ ($deliveryFee ?? 0) == 0 ? 'Free' : '$'.number_format($deliveryFee, 2) }}</span>
                     </div>
+                    @if(($freeDelivery['offer'] ?? null) && ($mode ?? 'delivery') === 'delivery')
+                        <div id="checkout-delivery-note" class="cust-summary-note" style="{{ ($deliveryFee ?? 0) == 0 ? '' : 'display:none' }}">
+                            @if($freeDelivery['qualifies'])
+                                Offer applied: {{ $freeDelivery['offer']->title }}
+                            @else
+                                Add ${{ number_format(max(0, $freeDelivery['min'] - $cartSubtotal), 2) }} more for free delivery ({{ $freeDelivery['offer']->title }})
+                            @endif
+                        </div>
+                    @endif
                     <div class="cust-summary-row" id="checkout-tip-row" style="{{ ($tipAmount ?? 0) <= 0 ? 'display:none' : '' }}">
                         <span>Tip</span><span id="checkout-tip">${{ number_format($tipAmount ?? 0, 2) }}</span>
                     </div>

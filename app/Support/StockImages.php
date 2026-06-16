@@ -30,6 +30,8 @@ class StockImages
         'seekh' => 'https://images.unsplash.com/photo-1529042410759-befb1204b568?auto=format&fit=crop&w=800&q=80',
         'dessert' => 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=800&q=80',
         'gulab jamun' => 'https://images.unsplash.com/photo-1582878826629-29ae7adfe9c2?auto=format&fit=crop&w=800&q=80',
+        'combo momo' => 'https://images.unsplash.com/photo-1496116218417-78811b11711f?auto=format&fit=crop&w=800&q=80',
+        'pickup' => 'https://images.unsplash.com/photo-1526367790999-015a68a20945?auto=format&fit=crop&w=800&q=80',
         'delivery' => 'https://images.unsplash.com/photo-1526367790999-015a68a20945?auto=format&fit=crop&w=800&q=80',
         'packed delivery' => 'https://images.unsplash.com/photo-1526367790999-015a68a20945?auto=format&fit=crop&w=800&q=80',
         'dining room' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80',

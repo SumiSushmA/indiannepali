@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\MenuItem;
+use App\Models\Promo;
 use App\Models\Setting;
+use App\Support\CateringCart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -23,7 +25,19 @@ class CartController extends Controller
 
     public static function freeDeliveryMin(): float
     {
-        return (float) Setting::get('free_delivery_min', 40);
+        $settingMin = (float) Setting::get('free_delivery_min', 40);
+        $promoMin = Promo::activeFreeDeliveryMinimum();
+
+        if ($promoMin !== null) {
+            return min($settingMin, $promoMin);
+        }
+
+        return $settingMin;
+    }
+
+    public static function qualifiesForFreeDelivery(float $subtotal, string $mode = 'delivery'): bool
+    {
+        return $mode === 'delivery' && $subtotal >= self::freeDeliveryMin();
     }
 
     public static function resolveCart(): array
@@ -52,6 +66,12 @@ class CartController extends Controller
             $subtotal += (float) $item->price * $qty;
         }
 
+        foreach (CateringCart::lines() as $line) {
+            $items[] = $line;
+            $count += (int) $line['qty'];
+            $subtotal += (float) $line['price'] * $line['qty'];
+        }
+
         return [
             'cartItems' => $items,
             'cartCount' => $count,
@@ -66,6 +86,19 @@ class CartController extends Controller
         }
 
         return $subtotal >= self::freeDeliveryMin() ? 0 : self::deliveryFeeAmount();
+    }
+
+    /** @return array{min: float, offer: ?\App\Models\Promo, qualifies: bool} */
+    public static function freeDeliveryStatus(float $subtotal, string $mode = 'delivery'): array
+    {
+        $min = self::freeDeliveryMin();
+        $offer = Promo::activeFreeDeliveryOffer();
+
+        return [
+            'min' => $min,
+            'offer' => $offer,
+            'qualifies' => self::qualifiesForFreeDelivery($subtotal, $mode),
+        ];
     }
 
     public function add(Request $request): RedirectResponse
@@ -92,8 +125,30 @@ class CartController extends Controller
     {
         $request->validate(['qty' => 'required|integer|min:0']);
 
-        $cart = session('cart', []);
         $qty = (int) $request->input('qty');
+
+        if (CateringCart::isCateringLine($itemId)) {
+            if ($itemId === CateringCart::PER_PERSON_ID) {
+                if ($qty === 0 || $qty < \App\Data\CateringMenu::MIN_GUESTS) {
+                    CateringCart::removePerPerson();
+                } else {
+                    $cart = CateringCart::all();
+                    if ($cart['per_person']) {
+                        $cart['per_person']['guest_count'] = $qty;
+                        CateringCart::save($cart);
+                    }
+                }
+            } elseif (str_starts_with($itemId, 'catering-tray:')) {
+                $slug = substr($itemId, strlen('catering-tray:'));
+                CateringCart::updateTray($slug, $qty);
+            }
+
+            session(['cart' => session('cart', [])]);
+
+            return $this->cartRedirect($request);
+        }
+
+        $cart = session('cart', []);
 
         if ($qty === 0) {
             unset($cart[$itemId]);
@@ -103,14 +158,38 @@ class CartController extends Controller
 
         session(['cart' => $cart]);
 
-        return back();
+        return $this->cartRedirect($request);
     }
 
-    public function remove(string $itemId): RedirectResponse
+    public function remove(Request $request, string $itemId): RedirectResponse
     {
+        if (CateringCart::isCateringLine($itemId)) {
+            if ($itemId === CateringCart::PER_PERSON_ID) {
+                CateringCart::removePerPerson();
+            } elseif (str_starts_with($itemId, 'catering-tray:')) {
+                $slug = substr($itemId, strlen('catering-tray:'));
+                CateringCart::updateTray($slug, 0);
+            }
+
+            return $this->cartRedirect($request);
+        }
+
         $cart = session('cart', []);
         unset($cart[$itemId]);
         session(['cart' => $cart]);
+
+        return $this->cartRedirect($request);
+    }
+
+    private function cartRedirect(Request $request): RedirectResponse
+    {
+        if (self::resolveCart()['cartCount'] === 0) {
+            return redirect()->route('menu')->with('info', 'Your bag is empty.');
+        }
+
+        if ($request->input('redirect') === 'checkout') {
+            return redirect()->route('checkout');
+        }
 
         return back();
     }

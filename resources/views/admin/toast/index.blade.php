@@ -12,13 +12,6 @@
     </form>
 </div>
 
-@if(session('success'))
-    <div class="adm-card" style="padding:14px 18px;margin-bottom:16px;border-color:var(--gold-700);color:var(--gold-400)">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="adm-card" style="padding:14px 18px;margin-bottom:16px;border-color:var(--spice-600);color:var(--spice-400)">{{ session('error') }}</div>
-@endif
-
 <div class="adm-card" style="display:flex;align-items:center;gap:18px;margin-bottom:18px;padding:22px;border-color:{{ ($isLive ?? false) ? 'var(--leaf-600)' : 'var(--line)' }};background:linear-gradient(90deg,{{ ($isLive ?? false) ? 'rgba(79,125,68,.1)' : 'rgba(200,133,47,.08)' }},var(--ink-700));">
     <div style="width:52px;height:52px;border-radius:13px;background:{{ ($isLive ?? false) ? 'rgba(79,125,68,.18)' : 'rgba(200,133,47,.16)' }};border:1px solid {{ ($isLive ?? false) ? 'var(--leaf-600)' : 'var(--gold-700)' }};display:grid;place-items:center;color:{{ ($isLive ?? false) ? '#86b074' : 'var(--gold-400)' }};flex-shrink:0;">
         <x-icon name="link" :size="24"/>

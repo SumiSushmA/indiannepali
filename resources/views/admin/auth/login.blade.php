@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Indian Nepali Kitchen — Admin Sign In</title>
+    <link rel="icon" href="/logo.png" type="image/png">
     <link rel="stylesheet" href="/css/theme.css">
     <style>
         body {
@@ -26,16 +27,9 @@
             margin-bottom: 32px;
         }
 
-        .adm-login-brand svg {
+        .adm-login-brand .cust-logo {
+            justify-content: center;
             margin-bottom: 14px;
-        }
-
-        .adm-login-brand h1 {
-            font-family: var(--serif);
-            font-weight: 600;
-            font-size: 26px;
-            color: var(--cream);
-            margin: 0 0 6px;
         }
 
         .adm-login-brand p {
@@ -94,6 +88,37 @@
             font-family: var(--sans);
             font-size: 15px;
             transition: border-color .15s, box-shadow .15s;
+        }
+
+        .adm-login-pass-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .adm-login-pass-wrap input {
+            width: 100%;
+            padding-right: 48px !important;
+        }
+
+        .adm-login-pass-toggle {
+            position: absolute;
+            top: 50%;
+            right: 8px;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+        }
+
+        .adm-login-pass-toggle:hover {
+            color: var(--cream);
+            background: rgba(255, 255, 255, .04);
         }
 
         .adm-login-field input:focus {
@@ -158,13 +183,7 @@
 <body>
     <div class="adm-login-wrap">
         <div class="adm-login-brand">
-            <svg width="48" height="48" viewBox="0 0 48 48">
-                <circle cx="24" cy="24" r="22" fill="none" stroke="#d4a24e" stroke-width="1.4" opacity=".55"/>
-                <circle cx="24" cy="24" r="16.5" fill="none" stroke="#d4a24e" stroke-width="1"/>
-                <path d="M24 11 L33 24 L24 37 L15 24 Z" fill="none" stroke="#d4a24e" stroke-width="1.4"/>
-                <circle cx="24" cy="24" r="4.4" fill="#d4a24e"/>
-            </svg>
-            <h1>Indian Nepali</h1>
+            <x-logo :size="52" />
             <p>Kitchen Admin</p>
         </div>
 
@@ -188,7 +207,14 @@
 
                 <div class="adm-login-field">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                    <div class="adm-login-pass-wrap">
+                        <input type="password" id="password" name="password" required autocomplete="current-password">
+                        <button type="button" class="adm-login-pass-toggle" aria-label="Show password" id="adm-login-pass-toggle">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                <path id="adm-login-pass-icon" d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7-10-7Z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <label class="adm-login-remember">
@@ -202,5 +228,23 @@
 
         <p class="adm-login-footer">&copy; {{ date('Y') }} Indian Nepali Kitchen</p>
     </div>
+<script>
+(() => {
+    const input = document.getElementById('password');
+    const btn = document.getElementById('adm-login-pass-toggle');
+    const icon = document.getElementById('adm-login-pass-icon');
+    if (!input || !btn || !icon) return;
+
+    const eye = 'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z';
+    const eyeOff = 'M17.9 17.9A10 10 0 0 1 12 20C5 20 1 12 1 12a18.8 18.8 0 0 1 5.1-7.1M9.9 9.9a3 3 0 1 0 4.2 4.2M22 12s-3.5-7-10-7a10 10 0 0 0-5.3 1.5M3 3l18 18';
+
+    btn.addEventListener('click', () => {
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        icon.setAttribute('d', show ? eyeOff : eye);
+    });
+})();
+</script>
 </body>
 </html>

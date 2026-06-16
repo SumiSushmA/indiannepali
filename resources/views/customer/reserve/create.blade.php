@@ -34,7 +34,7 @@
                     <div style="display:flex;gap:8px;flex-wrap:wrap">
                         @foreach([1,2,3,4,5,6,7,8] as $n)
                             <label class="cust-pick" style="min-width:48px;width:48px;height:48px;border-radius:12px;font-weight:600;font-size:15px;display:grid;place-items:center;color:var(--cream)">
-                                <input type="radio" name="party" value="{{ $n }}" class="cust-sr-input" {{ old('party', 2) == $n ? 'checked' : '' }}>{{ $n }}
+                                <input type="radio" name="party" value="{{ $n }}" class="cust-sr-input" {{ (int) old('party', request('party', 2)) === $n ? 'checked' : '' }}>{{ $n }}
                             </label>
                         @endforeach
                         <label class="cust-pick" style="padding:0 16px;height:48px;border-radius:12px;font-weight:600;display:grid;place-items:center">
@@ -70,9 +70,9 @@
                 <h3 style="font-size:24px;margin-bottom:6px">Your details</h3>
                 <p style="color:var(--muted);font-size:14;margin-bottom:20px">We'll hold your table for 15 minutes.</p>
                 <div style="display:grid;gap:14px">
-                    <label class="cust-field"><span>Full name</span><input class="cust-inp" name="name" placeholder="Asha Gurung" required value="{{ old('name') }}"></label>
-                    <label class="cust-field"><span>Phone</span><input class="cust-inp" name="phone" type="tel" placeholder="{{ $site['phone'] ?? '(206) 397-3211' }}" required value="{{ old('phone') }}"></label>
-                    <label class="cust-field"><span>Email</span><input class="cust-inp" name="email" type="email" placeholder="you@email.com" required value="{{ old('email') }}"></label>
+                    <label class="cust-field"><span>Full name</span><input class="cust-inp" name="name" placeholder="Asha Gurung" required value="{{ $prefill['name'] ?? old('name') }}"></label>
+                    <label class="cust-field"><span>Phone</span><input class="cust-inp" name="phone" type="tel" placeholder="{{ $site['phone'] ?? '(206) 397-3211' }}" required value="{{ $prefill['phone'] ?? old('phone') }}"></label>
+                    <label class="cust-field"><span>Email</span><input class="cust-inp" name="email" type="email" placeholder="you@email.com" required value="{{ $prefill['email'] ?? old('email') }}"></label>
                     <label class="cust-field"><span>Occasion (optional)</span>
                         <select class="cust-inp" name="occasion">
                             @foreach(['—', 'Birthday', 'Anniversary', 'Date night', 'Business', 'Celebration'] as $o)

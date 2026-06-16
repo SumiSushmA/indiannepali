@@ -10,7 +10,7 @@ $typeTone = ['Text' => 'neutral', 'Promotion' => 'gold', 'Media' => 'purple'];
         <h1 style="font-size:30px;font-weight:600;">Website content</h1>
         <p style="color:var(--muted);font-size:14.5px;margin-top:6px;">Edit the live customer site copy, promotions and media.</p>
     </div>
-    <button class="btn btn-gold btn-sm"><x-icon name="plus" :size="16"/> New block</button>
+    <a href="{{ route('home') }}" target="_blank" class="btn btn-ghost btn-sm" style="text-decoration:none;">Preview site ↗</a>
 </div>
 
 <div class="adm-card" style="padding:8px;">
@@ -18,7 +18,7 @@ $typeTone = ['Text' => 'neutral', 'Promotion' => 'gold', 'Media' => 'purple'];
         <table class="adm-table">
             <thead>
                 <tr>
-                    <th>Section</th><th>Current value</th><th>Type</th><th>Updated</th><th class="right"></th>
+                    <th>Section</th><th>Current value</th><th>Type</th><th>Updated</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,12 +34,6 @@ $typeTone = ['Text' => 'neutral', 'Promotion' => 'gold', 'Media' => 'purple'];
                     </td>
                     <td>@include('admin.partials.badge', ['tone' => $typeTone[$c['type']] ?? 'neutral', 'label' => $c['type']])</td>
                     <td><span style="font-size:13px;color:var(--muted);">{{ $c['updated'] }}</span></td>
-                    <td class="right">
-                        <div style="display:flex;gap:6px;justify-content:flex-end;">
-                            <button style="width:34px;height:34px;border-radius:9px;background:transparent;border:1px solid var(--line);color:var(--sand);cursor:pointer;display:grid;place-items:center;"><x-icon name="edit" :size="16"/></button>
-                            <button style="width:34px;height:34px;border-radius:9px;background:transparent;border:1px solid var(--line);color:var(--sand);cursor:pointer;display:grid;place-items:center;"><x-icon name="eye" :size="16"/></button>
-                        </div>
-                    </td>
                 </tr>
                 @endforeach
             </tbody>

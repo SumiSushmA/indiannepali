@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ReservationConfirmationMail;
 use App\Models\Reservation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class ReservationController extends Controller
@@ -29,6 +31,7 @@ class ReservationController extends Controller
             'dates' => $dates,
             'times' => $times,
             'reservation' => session('reservation'),
+            'prefill' => CustomerSession::prefill(),
         ]);
     }
 
@@ -48,6 +51,7 @@ class ReservationController extends Controller
         $reference = 'R-'.(2100 + Reservation::count());
 
         $reservation = Reservation::create([
+            'customer_id' => CustomerSession::customerId(),
             'reference' => $reference,
             'party_size' => $request->input('party'),
             'reserved_date' => $request->input('date'),
@@ -68,6 +72,8 @@ class ReservationController extends Controller
             'time' => $reservation->reserved_time,
             'name' => $reservation->customer_name,
         ]]);
+
+        Mail::to($reservation->customer_email)->send(new ReservationConfirmationMail($reservation));
 
         return redirect()->route('reserve')->with('success', 'Your table is reserved!');
     }

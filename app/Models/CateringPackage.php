@@ -40,4 +40,14 @@ class CateringPackage extends Model
             'popular' => $this->is_popular,
         ];
     }
+
+    /** Estimate total from price label (e.g. "from $22/guest") × guest count. */
+    public function estimateForGuests(int $guestCount): ?float
+    {
+        if (preg_match('/\$(\d+(?:\.\d+)?)/', $this->price_label, $matches)) {
+            return round((float) $matches[1] * $guestCount, 2);
+        }
+
+        return null;
+    }
 }

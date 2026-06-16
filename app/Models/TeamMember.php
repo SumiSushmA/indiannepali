@@ -10,6 +10,7 @@ class TeamMember extends Model
         'name',
         'role',
         'tag',
+        'image_path',
         'sort_order',
         'is_published',
     ];
@@ -28,6 +29,7 @@ class TeamMember extends Model
             'name' => $this->name,
             'role' => $this->role,
             'tag' => $this->tag,
+            'image_path' => $this->image_path,
         ];
     }
 }

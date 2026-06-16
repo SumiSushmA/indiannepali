@@ -141,6 +141,99 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; margin: 0; letter-
 .btn-sm { padding: 9px 16px; font-size: 13.5px; }
 .btn-lg { padding: 17px 34px; font-size: 16px; }
 
+/* ---- unified form fields (customer + admin) ---- */
+:root {
+  --field-height: 48px;
+  --field-radius: 10px;
+  --field-pad-x: 14px;
+  --field-pad-y: 12px;
+  --field-font: 16px;
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a7c69' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.cust-inp,
+.adm-inp {
+  display: block;
+  width: 100%;
+  min-height: var(--field-height);
+  box-sizing: border-box;
+  background-color: var(--ink-800);
+  border: 1px solid var(--line);
+  border-radius: var(--field-radius);
+  padding: var(--field-pad-y) var(--field-pad-x);
+  color: var(--cream);
+  font-size: var(--field-font);
+  font-family: var(--sans);
+  line-height: 1.35;
+  outline: none;
+  transition: border-color .2s;
+}
+
+.cust-inp:focus,
+.adm-inp:focus {
+  border-color: var(--brand-600);
+}
+
+select.cust-inp,
+select.adm-inp,
+#cust-root select.cust-inp,
+#adm-main select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 40px;
+  cursor: pointer;
+  background-image: var(--select-chevron);
+  background-repeat: no-repeat;
+  background-position: right var(--field-pad-x) center;
+  background-size: 16px;
+}
+
+#adm-main textarea,
+textarea.cust-inp,
+textarea.adm-inp {
+  min-height: 96px;
+  resize: vertical;
+}
+
+#adm-main input[type="file"],
+.cust-inp[type="file"] {
+  min-height: auto;
+  padding: 10px 0;
+  border: none;
+  background: transparent;
+}
+
+#adm-main input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
+#adm-main textarea {
+  box-sizing: border-box;
+  font-family: var(--sans);
+  font-size: var(--field-font);
+  line-height: 1.35;
+}
+
+/* Keep input text size consistent across inline-styled forms too */
+#cust-root input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
+#cust-root textarea,
+#cust-root select,
+#adm-main input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
+#adm-main textarea,
+#adm-main select {
+  font-size: var(--field-font) !important;
+}
+
+#adm-main input[type="text"],
+#adm-main input[type="email"],
+#adm-main input[type="tel"],
+#adm-main input[type="number"],
+#adm-main input[type="password"],
+#adm-main input[type="search"],
+#adm-main input[type="url"],
+#adm-main input[type="date"],
+#adm-main input[type="time"] {
+  min-height: var(--field-height);
+}
+
 /* images */
 .cust-img {
   display: block;
@@ -202,4 +295,54 @@ h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; margin: 0; letter-
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+/* Shared confirmation modal */
+.app-confirm-open {
+  overflow: hidden;
+}
+
+.app-confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+}
+
+.app-confirm__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .65);
+  backdrop-filter: blur(3px);
+}
+
+.app-confirm__panel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(460px, calc(100vw - 28px));
+  background: var(--ink-700);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-3);
+  padding: 20px;
+}
+
+.app-confirm__title {
+  font-size: 26px;
+  margin: 0 0 10px;
+}
+
+.app-confirm__message {
+  margin: 0;
+  color: var(--sand);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.app-confirm__actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }

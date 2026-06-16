@@ -14,6 +14,7 @@ use App\Models\MenuCategory;
 use App\Models\MenuItem;
 use App\Models\Promo;
 use App\Models\Review;
+use App\Models\Setting;
 use App\Models\TeamMember;
 use App\Support\StockImages;
 
@@ -76,17 +77,10 @@ class RestaurantData
     public static function promos(): array
     {
         return Promo::query()
-            ->where('is_active', true)
+            ->visible()
             ->orderBy('sort_order')
             ->get()
-            ->map(fn (Promo $p) => [
-                'id' => $p->slug,
-                'badge' => $p->badge,
-                'title' => $p->title,
-                'detail' => $p->detail,
-                'price' => $p->price_label,
-                'accent' => $p->accent,
-            ])
+            ->map(fn (Promo $p) => $p->toCustomerArray())
             ->all();
     }
 
@@ -151,6 +145,7 @@ class RestaurantData
     public static function about(): array
     {
         return [
+            'hero_image' => StockImages::resolve('Founders at the pass', Setting::get('about_hero_image_path')),
             'story' => AboutStory::query()->orderBy('sort_order')->pluck('paragraph')->all(),
             'values' => AboutValue::query()->orderBy('sort_order')->get()->map(fn ($v) => [
                 'icon' => $v->icon,
@@ -162,6 +157,7 @@ class RestaurantData
                 'name' => $t->name,
                 'role' => $t->role,
                 'tag' => $t->tag,
+                'image' => StockImages::resolve($t->name, $t->image_path),
             ])->all(),
         ];
     }
@@ -171,12 +167,7 @@ class RestaurantData
         return GiftCardDesign::query()
             ->where('is_active', true)
             ->get()
-            ->map(fn (GiftCardDesign $d) => [
-                'id' => $d->slug,
-                'name' => $d->name,
-                'sub' => $d->subtitle,
-                'accent' => $d->accent,
-            ])
+            ->map(fn (GiftCardDesign $d) => $d->toLegacy())
             ->all();
     }
 
@@ -196,6 +187,7 @@ class RestaurantData
             ->orderBy('sort_order')
             ->get()
             ->map(fn (CateringPackage $p) => [
+                'id' => $p->id,
                 'name' => $p->name,
                 'range' => $p->guest_range,
                 'price' => $p->price_label,

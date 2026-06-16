@@ -17,14 +17,17 @@ class ContactMessage extends Model
         'customer_email',
         'subject',
         'message',
+        'admin_reply',
         'status',
         'read_at',
+        'replied_at',
     ];
 
     protected function casts(): array
     {
         return [
             'read_at' => 'datetime',
+            'replied_at' => 'datetime',
         ];
     }
 
@@ -38,6 +41,8 @@ class ContactMessage extends Model
             'status' => $this->status,
             'days' => (int) $this->created_at->diffInDays(now()),
             'preview' => mb_substr($this->message, 0, 80),
+            'has_reply' => filled($this->admin_reply),
+            'replied_at' => $this->replied_at?->format('M j, Y g:i A'),
         ];
     }
 }

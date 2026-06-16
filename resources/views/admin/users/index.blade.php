@@ -13,10 +13,6 @@ $activeCount = count(array_filter($users, fn($u) => $u['status'] === 'Active'));
     </div>
 </div>
 
-@if(session('success'))
-    <div class="adm-card" style="padding:14px 18px;margin-bottom:16px;border-color:var(--gold-700);color:var(--gold-400)">{{ session('success') }}</div>
-@endif
-
 <div class="adm-card" style="padding:22px;margin-bottom:18px;">
     <h3 style="font-size:17px;font-weight:600;margin-bottom:14px;">Invite user</h3>
     <form action="{{ route('admin.users.store') }}" method="POST" style="display:grid;gap:12px;">
@@ -29,11 +25,18 @@ $activeCount = count(array_filter($users, fn($u) => $u['status'] === 'Active'));
             <select name="role" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
                 <option value="Owner">Owner</option>
                 <option value="Manager">Manager</option>
-                <option value="Chef">Chef</option>
-                <option value="Front of house">Front of house</option>
-                <option value="Marketing">Marketing</option>
+                <option value="Sub-admin">Sub-admin</option>
+                <option value="Staff">Staff</option>
             </select>
             <input name="password" type="password" placeholder="Temporary password" required minlength="8" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:8px;">
+            @foreach($areas as $area)
+                <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sand);">
+                    <input type="checkbox" name="permissions[]" value="{{ $area }}" @checked(in_array($area, ['dashboard', 'orders', 'reservations', 'profile'], true)) style="accent-color:var(--gold-600);">
+                    {{ ucfirst($area) }}
+                </label>
+            @endforeach
         </div>
         <button type="submit" class="btn btn-gold btn-sm" style="justify-self:start;"><x-icon name="plus" :size="16"/> Invite user</button>
     </form>
@@ -67,23 +70,16 @@ $activeCount = count(array_filter($users, fn($u) => $u['status'] === 'Active'));
                     </td>
                     <td>@include('admin.partials.badge', ['tone' => $roleTone[$u['role']] ?? 'neutral', 'label' => $u['role']])</td>
                     <td><span style="font-size:13.5px;color:var(--sand);">{{ $u['email'] }}</span></td>
-                    <td>
-                        <form action="{{ route('admin.users.update', $u['id']) }}" method="POST" style="display:flex;gap:8px;align-items:center;">
-                            @csrf @method('PATCH')
-                            <select name="status" style="background:var(--ink-800);border:1px solid var(--line);border-radius:8px;padding:6px 10px;color:var(--cream);font-size:13px;font-family:var(--sans);">
-                                <option value="active" @selected($statusValue === 'active')>Active</option>
-                                <option value="invited" @selected($statusValue === 'invited')>Invited</option>
-                                <option value="inactive" @selected($statusValue === 'inactive')>Inactive</option>
-                            </select>
-                            <button type="submit" class="btn btn-ghost btn-sm">Save</button>
-                        </form>
-                    </td>
+                    <td>@include('admin.partials.badge', ['tone' => $statusTone, 'label' => $u['status']])</td>
                     <td><span style="font-size:13.5px;color:var(--muted);">{{ $u['last'] }}</span></td>
                     <td class="right">
-                        <form action="{{ route('admin.users.destroy', $u['id']) }}" method="POST" onsubmit="return confirm('Remove this user?')">
-                            @csrf @method('DELETE')
-                            <button type="submit" style="width:34px;height:34px;border-radius:9px;background:transparent;border:1px solid var(--line);color:var(--sand);cursor:pointer;display:grid;place-items:center;"><x-icon name="trash" :size="16"/></button>
-                        </form>
+                        <div style="display:flex;justify-content:flex-end;gap:8px;">
+                            <a href="{{ route('admin.users.edit', $u['id']) }}" class="btn btn-ghost btn-sm" style="text-decoration:none;">Manage</a>
+                            <form action="{{ route('admin.users.destroy', $u['id']) }}" method="POST" data-confirm="Remove this user?">
+                                @csrf @method('DELETE')
+                                <button type="submit" style="width:34px;height:34px;border-radius:9px;background:transparent;border:1px solid var(--line);color:var(--sand);cursor:pointer;display:grid;place-items:center;"><x-icon name="trash" :size="16"/></button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @endforeach

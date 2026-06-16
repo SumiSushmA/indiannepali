@@ -69,4 +69,18 @@
       setTimeout(() => flash.remove(), 400);
     }, 3200);
   }
+
+  const reviewTrack = document.querySelector('[data-rev-track]');
+  const prevBtn = document.querySelector('[data-rev-nav="prev"]');
+  const nextBtn = document.querySelector('[data-rev-nav="next"]');
+  if (reviewTrack && prevBtn && nextBtn) {
+    const slide = () => {
+      const card = reviewTrack.querySelector('.cust-review-card');
+      if (!card) return Math.max(320, reviewTrack.clientWidth * 0.85);
+      const gap = 24;
+      return card.getBoundingClientRect().width + gap;
+    };
+    prevBtn.addEventListener('click', () => reviewTrack.scrollBy({ left: -slide(), behavior: 'smooth' }));
+    nextBtn.addEventListener('click', () => reviewTrack.scrollBy({ left: slide(), behavior: 'smooth' }));
+  }
 })();

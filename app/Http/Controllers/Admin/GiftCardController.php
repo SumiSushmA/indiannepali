@@ -15,12 +15,15 @@ class GiftCardController extends Controller
 {
     public function index(): View
     {
+        $designs = GiftCardDesign::query()->orderBy('name')->get();
+
         return view('admin.gift-cards.index', [
             'active' => 'giftcards',
             'giftCards' => AdminData::getGiftCards(),
             'giftStats' => AdminData::getGiftStats(),
             'giftSales' => AdminData::getGiftSales(),
-            'designs' => GiftCardDesign::where('is_active', true)->get(),
+            'designs' => $designs,
+            'activeDesigns' => $designs->where('is_active', true)->values(),
             'badges' => AdminData::getNavBadges(),
         ]);
     }
@@ -64,5 +67,76 @@ class GiftCardController extends Controller
         $giftCard->update($data);
 
         return back()->with('success', 'Gift card updated.');
+    }
+
+    public function storeDesign(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:80',
+            'subtitle' => 'nullable|string|max:120',
+            'bg_start' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'bg_mid' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'bg_end' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'text_color' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'is_active' => 'nullable|boolean',
+        ]);
+
+        $slugBase = Str::slug($data['name']);
+        $slug = $slugBase;
+        $count = 2;
+        while (GiftCardDesign::query()->where('slug', $slug)->exists()) {
+            $slug = $slugBase.'-'.$count;
+            $count++;
+        }
+
+        GiftCardDesign::create([
+            'slug' => $slug,
+            'name' => $data['name'],
+            'subtitle' => $data['subtitle'] ?? null,
+            'accent' => 'custom',
+            'bg_start' => strtoupper($data['bg_start']),
+            'bg_mid' => strtoupper($data['bg_mid']),
+            'bg_end' => strtoupper($data['bg_end']),
+            'text_color' => strtoupper($data['text_color']),
+            'is_active' => (bool) ($data['is_active'] ?? true),
+        ]);
+
+        return back()->with('success', 'Gift card design added.');
+    }
+
+    public function updateDesign(Request $request, GiftCardDesign $design): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:80',
+            'subtitle' => 'nullable|string|max:120',
+            'bg_start' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'bg_mid' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'bg_end' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'text_color' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'is_active' => 'nullable|boolean',
+        ]);
+
+        $design->update([
+            'name' => $data['name'],
+            'subtitle' => $data['subtitle'] ?? null,
+            'bg_start' => strtoupper($data['bg_start']),
+            'bg_mid' => strtoupper($data['bg_mid']),
+            'bg_end' => strtoupper($data['bg_end']),
+            'text_color' => strtoupper($data['text_color']),
+            'is_active' => (bool) ($data['is_active'] ?? false),
+        ]);
+
+        return back()->with('success', 'Gift card design updated.');
+    }
+
+    public function destroyDesign(GiftCardDesign $design): RedirectResponse
+    {
+        if ($design->giftCards()->exists()) {
+            return back()->with('error', 'Cannot delete this design because it is already used by gift cards.');
+        }
+
+        $design->delete();
+
+        return back()->with('success', 'Gift card design deleted.');
     }
 }

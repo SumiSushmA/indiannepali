@@ -8,7 +8,7 @@ $navLinks = [
     ['route' => 'giftcards', 'label' => 'Gift Cards'],
     ['route' => 'contact', 'label' => 'Contact'],
 ];
-$mobileLinks = array_merge([['route' => 'home', 'label' => 'Home'], ['route' => 'menu', 'label' => 'Menu']], $navLinks, [['route' => 'promos', 'label' => 'Offers'], ['route' => 'reserve', 'label' => 'Reserve']]);
+$mobileLinks = array_merge([['route' => 'home', 'label' => 'Home'], ['route' => 'menu', 'label' => 'Menu']], $navLinks, [['route' => 'promos', 'label' => 'Offers'], ['route' => 'reserve', 'label' => 'Reserve'], ['route' => 'account.index', 'label' => 'My Account']]);
 @endphp
 
 <header id="cust-header" class="{{ request()->routeIs('home') ? '' : 'solid' }}">
@@ -22,6 +22,17 @@ $mobileLinks = array_merge([['route' => 'home', 'label' => 'Home'], ['route' => 
         </nav>
 
         <div class="cust-header-actions">
+            @auth('customer')
+                <a href="{{ route('account.index') }}" class="btn btn-ghost btn-sm cust-account-btn" aria-label="My account">
+                    <x-icon name="user" :size="17" />
+                    <span class="cust-account-label">Account</span>
+                </a>
+            @else
+                <a href="{{ route('account.login') }}" class="btn btn-ghost btn-sm cust-account-btn" aria-label="Sign in">
+                    <x-icon name="user" :size="17" />
+                    <span class="cust-account-label">Sign in</span>
+                </a>
+            @endauth
             <button type="button" id="cust-cart-btn" aria-label="Cart">
                 <x-icon name="bag" :size="19" />
                 @if($cartCount > 0)

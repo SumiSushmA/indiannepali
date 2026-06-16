@@ -4,19 +4,21 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Services\AdminData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function index(): View
+    public function index(): RedirectResponse
     {
-        return view('admin.users.index', [
-            'active' => 'users',
-            'users' => AdminData::getUsers(),
-            'badges' => AdminData::getNavBadges(),
+        return redirect()->route('admin.settings.index', ['tab' => 'users']);
+    }
+
+    public function edit(User $user): RedirectResponse
+    {
+        return redirect()->route('admin.settings.index', [
+            'tab' => 'users',
+            'edit_user' => $user->id,
         ]);
     }
 
@@ -25,33 +27,83 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:120',
             'email' => 'required|email|max:120|unique:users,email',
-            'role' => 'required|string|max:40',
+            'role' => 'required|in:Owner,Manager,Sub-admin,Staff',
             'password' => 'required|string|min:8|max:120',
+            'permissions' => 'array',
+            'permissions.*' => 'string|in:'.implode(',', User::adminAreas()),
         ]);
 
+        $permissions = $this->resolvePermissions($data);
+
         User::create([
-            ...$data,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'role' => $data['role'],
+            'password' => $data['password'],
+            'admin_permissions' => $permissions,
             'status' => 'invited',
         ]);
 
-        return back()->with('success', 'User invited.');
+        return redirect()->route('admin.settings.index', ['tab' => 'users'])->with('success', 'User invited.');
     }
 
     public function update(Request $request, User $user): RedirectResponse
     {
-        $request->validate([
+        $data = $request->validate([
+            'name' => 'required|string|max:120',
+            'email' => 'required|email|max:120|unique:users,email,'.$user->id,
+            'role' => 'required|in:Owner,Manager,Sub-admin,Staff',
             'status' => 'required|in:active,invited,inactive',
+            'permissions' => 'array',
+            'permissions.*' => 'string|in:'.implode(',', User::adminAreas()),
+            'password' => 'nullable|string|min:8|max:120',
         ]);
 
-        $user->update(['status' => $request->input('status')]);
+        $permissions = $this->resolvePermissions($data);
 
-        return back()->with('success', 'User status updated.');
+        $payload = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'role' => $data['role'],
+            'status' => $data['status'],
+            'admin_permissions' => $permissions,
+        ];
+
+        if (! empty($data['password'])) {
+            $payload['password'] = $data['password'];
+        }
+
+        $user->update($payload);
+
+        return redirect()->route('admin.settings.index', [
+            'tab' => 'users',
+            'edit_user' => $user->id,
+        ])->with('success', 'User updated.');
+    }
+
+    private function resolvePermissions(array $data): array
+    {
+        if ($data['role'] === 'Owner') {
+            return User::adminAreas();
+        }
+
+        $permissions = array_values(array_unique($data['permissions'] ?? []));
+
+        if ($permissions === []) {
+            $permissions = ['dashboard', 'profile'];
+        }
+
+        if (! in_array('profile', $permissions, true)) {
+            $permissions[] = 'profile';
+        }
+
+        return $permissions;
     }
 
     public function destroy(User $user): RedirectResponse
     {
         $user->delete();
 
-        return back()->with('success', 'User removed.');
+        return redirect()->route('admin.settings.index', ['tab' => 'users'])->with('success', 'User removed.');
     }
 }

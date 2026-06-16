@@ -98,6 +98,13 @@ class RestaurantSeeder extends Seeder
                 'detail' => $promo['detail'],
                 'price_label' => $promo['price'],
                 'accent' => $promo['accent'],
+                'offer_type' => $promo['offer_type'] ?? 'limited_time',
+                'cta_type' => $promo['cta_type'] ?? 'menu',
+                'cta_label' => $promo['cta_label'] ?? null,
+                'menu_item_slug' => $promo['menu_item_slug'] ?? null,
+                'terms' => $promo['terms'] ?? null,
+                'min_order_amount' => $promo['min_order_amount'] ?? null,
+                'min_party_size' => $promo['min_party_size'] ?? null,
                 'is_active' => true,
                 'sort_order' => $index,
             ]);

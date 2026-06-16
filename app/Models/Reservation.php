@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Reservation extends Model
 {
@@ -12,6 +13,7 @@ class Reservation extends Model
     }
 
     protected $fillable = [
+        'customer_id',
         'reference',
         'party_size',
         'reserved_date',
@@ -31,6 +33,11 @@ class Reservation extends Model
             'party_size' => 'integer',
             'reserved_date' => 'date',
         ];
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     public function toLegacy(): array

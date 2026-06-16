@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Models\User;
 use App\Services\AdminData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,10 +14,26 @@ class SettingController extends Controller
 {
     public function index(): View
     {
+        $tab = $requestTab = request()->query('tab', 'restaurant');
+        if (! in_array($requestTab, ['restaurant', 'users', 'profile'], true)) {
+            $tab = 'restaurant';
+        }
+
+        $editUserId = request()->query('edit_user');
+        $editUser = null;
+        if ($tab === 'users' && $editUserId) {
+            $editUser = User::query()->find($editUserId);
+        }
+
         return view('admin.settings.index', [
             'active' => 'settings',
             'badges' => AdminData::getNavBadges(),
             'settings' => Setting::allCached(),
+            'tab' => $tab,
+            'adminUsers' => User::query()->orderBy('name')->get(),
+            'areas' => User::adminAreas(),
+            'editUser' => $editUser,
+            'profileUser' => auth()->user(),
         ]);
     }
 
@@ -34,9 +51,7 @@ class SettingController extends Controller
             'instagram_url' => 'nullable|url|max:255',
             'facebook_url' => 'nullable|url|max:255',
             'whatsapp_url' => 'nullable|url|max:255',
-            'privacy_url' => 'nullable|url|max:255',
-            'terms_url' => 'nullable|url|max:255',
-            'accessibility_url' => 'nullable|url|max:255',
+            'map_embed_url' => 'nullable|url|max:500',
             'tax_rate' => 'required|numeric|min:0|max:1',
             'delivery_fee' => 'required|numeric|min:0',
             'free_delivery_min' => 'required|numeric|min:0',
@@ -48,7 +63,7 @@ class SettingController extends Controller
 
         foreach ([
             'restaurant_name', 'address', 'city', 'phone', 'email', 'hours', 'closed_days', 'footer_tagline',
-            'instagram_url', 'facebook_url', 'whatsapp_url', 'privacy_url', 'terms_url', 'accessibility_url',
+            'instagram_url', 'facebook_url', 'whatsapp_url', 'map_embed_url',
             'tax_rate', 'delivery_fee', 'free_delivery_min',
         ] as $key) {
             Setting::set($key, $request->input($key, ''));

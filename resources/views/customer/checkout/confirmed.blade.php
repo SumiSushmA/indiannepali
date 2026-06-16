@@ -24,8 +24,13 @@
             @endif
         </div>
         @endif
-        <div style="margin-top:32px">
-            <a href="{{ route('home') }}" class="btn btn-gold">Back to home</a>
+        <div style="margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+            @auth('customer')
+                <a href="{{ route('account.index', ['tab' => 'orders']) }}" class="btn btn-gold">View in my account</a>
+            @else
+                <a href="{{ route('account.register') }}" class="btn btn-gold">Create account to track orders</a>
+            @endauth
+            <a href="{{ route('home') }}" class="btn btn-ghost">Back to home</a>
         </div>
     </div>
 </div>

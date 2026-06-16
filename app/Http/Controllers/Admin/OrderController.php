@@ -14,11 +14,22 @@ class OrderController extends Controller
     public function index(Request $request): View
     {
         $activeTab = $request->query('status', 'All');
+        $search = trim((string) $request->query('q', ''));
+        $allOrders = AdminData::getOrders();
+        $orders = $allOrders;
+
+        if ($search !== '') {
+            $needle = strtolower($search);
+            $orders = array_values(array_filter($orders, fn ($o) => str_contains(strtolower($o['id']), $needle)
+                || str_contains(strtolower($o['customer']), $needle)));
+        }
 
         return view('admin.orders.index', [
             'active' => 'orders',
             'activeTab' => $activeTab,
-            'orders' => AdminData::getOrders(),
+            'search' => $search,
+            'orders' => $orders,
+            'allOrders' => $allOrders,
             'orderStatuses' => AdminData::getOrderStatuses(),
             'badges' => AdminData::getNavBadges(),
         ]);

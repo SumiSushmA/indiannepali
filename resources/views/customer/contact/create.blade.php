@@ -12,6 +12,7 @@
         <div class="cust-card" style="text-align:center;margin-bottom:28px;border-color:var(--gold-700)">
             <x-icon name="check" :size="32" color="var(--gold-400)" />
             <p style="margin-top:12px;color:var(--cream-2)">Message sent — we'll get back to you soon.</p>
+            <p style="margin-top:8px;color:var(--muted);font-size:14px"><a href="{{ route('account.login') }}" style="color:var(--gold-400)">Sign in to your account</a> with the same email to see our reply when it's ready.</p>
         </div>
     @endif
 
@@ -23,7 +24,7 @@
             $links = [
                 ['pin', 'Visit', [$site['address'] ?? '13754 Aurora Ave N, Suite D', $site['city'] ?? 'Seattle, WA 98133'], 'https://maps.google.com/?q=13754+Aurora+Ave+N+Seattle+WA+98133'],
                 ['phone', 'Call', [$phone, 'Reservations & takeout'], 'tel:'.preg_replace('/[^\d+]/', '', $phone)],
-                ['clock', 'Hours', [$site['hours'] ?? 'Daily · 10:00 AM – 9:30 PM', $site['closed_days'] ?: 'Walk-ins welcome'], route('reserve')],
+                ['clock', 'Hours', [$site['hours'] ?? 'Daily · 10:00 AM – 9:30 PM', $site['closed_days'] ?? 'Walk-ins welcome'], route('reserve')],
                 ['mail', 'Email', [$email, 'Catering inquiries welcome'], 'mailto:'.$email],
             ];
             @endphp
@@ -50,6 +51,6 @@
             <button type="submit" class="btn btn-gold" style="margin-top:18px">Send message</button>
         </form>
     </div>
-    <x-ph label="Map — {{ $site['address'] ?? '13754 Aurora Ave N, Suite D' }}" :h="320" :r="18" style="margin-top:24px" />
+    <x-map-embed :h="480" :r="18" style="margin-top:24px" />
 </div>
 @endsection

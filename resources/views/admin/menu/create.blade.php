@@ -21,7 +21,7 @@
         <div class="adm-card" style="padding:22px;display:grid;gap:16px;">
             <label style="display:flex;flex-direction:column;gap:6px;">
                 <span style="font-size:13px;color:var(--sand);font-weight:600;">Category</span>
-                <select name="menu_category_id" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
+                <select name="menu_category_id" required class="adm-inp">
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}" @selected(old('menu_category_id') == $cat->id)>{{ $cat->name }}</option>
                     @endforeach
@@ -29,19 +29,19 @@
             </label>
             <label style="display:flex;flex-direction:column;gap:6px;">
                 <span style="font-size:13px;color:var(--sand);font-weight:600;">Name</span>
-                <input name="name" value="{{ old('name') }}" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
+                <input name="name" value="{{ old('name') }}" required class="adm-inp">
             </label>
             <label style="display:flex;flex-direction:column;gap:6px;">
                 <span style="font-size:13px;color:var(--sand);font-weight:600;">Price ($)</span>
-                <input name="price" type="number" step="0.01" min="0" value="{{ old('price') }}" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
+                <input name="price" type="number" step="0.01" min="0" value="{{ old('price') }}" required class="adm-inp">
             </label>
             <label style="display:flex;flex-direction:column;gap:6px;">
                 <span style="font-size:13px;color:var(--sand);font-weight:600;">Description</span>
-                <textarea name="description" rows="3" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);resize:vertical;">{{ old('description') }}</textarea>
+                <textarea name="description" rows="3" class="adm-inp">{{ old('description') }}</textarea>
             </label>
             <label style="display:flex;flex-direction:column;gap:6px;">
                 <span style="font-size:13px;color:var(--sand);font-weight:600;">Spice level (0–5)</span>
-                <input name="spice_level" type="number" min="0" max="5" value="{{ old('spice_level', 0) }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
+                <input name="spice_level" type="number" min="0" max="5" value="{{ old('spice_level', 0) }}" class="adm-inp">
             </label>
             <label style="display:flex;flex-direction:column;gap:6px;">
                 <span style="font-size:13px;color:var(--sand);font-weight:600;">Image</span>

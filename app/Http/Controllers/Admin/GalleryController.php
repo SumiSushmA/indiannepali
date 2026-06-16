@@ -57,11 +57,16 @@ class GalleryController extends Controller
     {
         $data = $request->validate([
             'caption' => 'required|string|max:120',
+            'image' => 'nullable|image|max:4096',
         ]);
+
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('gallery', 'public');
+        }
 
         $galleryImage->update($data);
 
-        return back()->with('success', 'Caption updated.');
+        return back()->with('success', $request->hasFile('image') ? 'Image replaced.' : 'Caption updated.');
     }
 
     public function destroy(GalleryImage $galleryImage): RedirectResponse

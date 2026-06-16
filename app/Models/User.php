@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'admin_permissions',
         'status',
         'last_active_at',
     ];
@@ -48,6 +49,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'last_active_at' => 'datetime',
+            'admin_permissions' => 'array',
         ];
     }
 
@@ -62,6 +64,45 @@ class User extends Authenticatable
             'last' => $this->last_active_at
                 ? $this->last_active_at->diffForHumans(short: true)
                 : '—',
+            'permissions' => $this->admin_permissions ?? [],
         ];
+    }
+
+    public static function adminAreas(): array
+    {
+        return [
+            'dashboard',
+            'orders',
+            'reservations',
+            'catering',
+            'inquiries',
+            'menu',
+            'promos',
+            'reviews',
+            'content',
+            'about',
+            'gallery',
+            'giftcards',
+            'toast',
+            'users',
+            'settings',
+            'profile',
+        ];
+    }
+
+    public function isSubAdmin(): bool
+    {
+        return strtolower((string) $this->role) === 'sub-admin';
+    }
+
+    public function hasAdminAccess(string $area): bool
+    {
+        if (strtolower((string) $this->role) === 'owner') {
+            return true;
+        }
+
+        $allowed = $this->admin_permissions ?? [];
+
+        return in_array($area, $allowed, true);
     }
 }

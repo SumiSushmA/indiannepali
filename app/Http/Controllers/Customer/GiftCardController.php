@@ -6,12 +6,15 @@ use App\Contracts\ToastPaymentGateway;
 use App\Data\Toast\GiftCardChargeRequest;
 use App\Exceptions\ToastPaymentException;
 use App\Http\Controllers\Controller;
+use App\Mail\GiftCardPurchaseMail;
 use App\Models\GiftAmount;
 use App\Models\GiftCard;
 use App\Models\GiftCardDesign;
 use App\Services\RestaurantData;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -99,10 +102,40 @@ class GiftCardController extends Controller
             'amount' => (float) $card->face_value,
             'design' => $design->name,
             'delivery' => $card->delivery_method,
+            'recipient' => $card->recipient_name,
+            'sender' => $card->sender_name,
             'payment_provider' => $payment->provider,
             'payment_reference' => $payment->paymentReference,
         ]]);
 
+        if ($recipientEmail && $request->input('delivery') === 'email') {
+            Mail::to($recipientEmail)->send(new GiftCardPurchaseMail($card, $design, $recipientEmail));
+        }
+
         return redirect()->route('giftcards')->with('gift_sent', true);
+    }
+
+    public function balance(Request $request): JsonResponse
+    {
+        $request->validate(['code' => 'required|string|max:30']);
+
+        $code = strtoupper(trim($request->input('code')));
+        $card = GiftCard::query()
+            ->where('code', $code)
+            ->where('status', 'Active')
+            ->first();
+
+        if (! $card) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Gift card not found. Check the code and try again.',
+            ]);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'code' => $card->code,
+            'balance' => (float) $card->balance,
+        ]);
     }
 }

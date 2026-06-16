@@ -2,51 +2,80 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Data\CateringMenu;
 use App\Http\Controllers\Controller;
-use App\Models\CateringInquiry;
-use App\Services\RestaurantData;
+use App\Support\CateringCart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class CateringController extends Controller
 {
-    public const MIN_GUEST_COUNT = 20;
-
-    public function create(): View
+    public function create(Request $request): View
     {
+        $tab = $request->query('tab', 'per-person');
+        if (! in_array($tab, ['per-person', 'trays'], true)) {
+            $tab = 'per-person';
+        }
+
         return view('customer.catering.create', [
-            'packages' => RestaurantData::cateringPackages(),
-            'submitted' => session('catering_submitted', false),
+            'tab' => $tab,
+            'perPerson' => CateringMenu::perPerson(),
+            'trays' => CateringMenu::trays(),
+            'minGuests' => CateringMenu::MIN_GUESTS,
+            'perPersonPrice' => CateringMenu::PER_PERSON_PRICE,
+            'cart' => CateringCart::all(),
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function orderPerPerson(Request $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:120',
-            'email' => 'required|email|max:120',
-            'phone' => 'required|string|max:30',
-            'event_type' => 'required|string|max:60',
-            'event_date' => 'required|date|after:today',
-            'guest_count' => 'required|integer|min:'.self::MIN_GUEST_COUNT,
-            'message' => 'nullable|string|max:1000',
+        $groups = collect(CateringMenu::perPerson()['groups'])->pluck('id')->all();
+
+        $validated = $request->validate([
+            'guest_count' => 'required|integer|min:'.CateringMenu::MIN_GUESTS,
+            'selections' => 'required|array',
+            'selections.*' => 'array',
+            'selections.*.*' => 'string|max:120',
         ], [
-            'guest_count.min' => 'Catering is available for groups of '.self::MIN_GUEST_COUNT.' people or more.',
+            'guest_count.min' => 'Catering requires a minimum of '.CateringMenu::MIN_GUESTS.' people.',
         ]);
 
-        CateringInquiry::create([
-            'reference' => 'C-'.(510 + CateringInquiry::count()),
-            'customer_name' => $request->input('name'),
-            'customer_email' => $request->input('email'),
-            'customer_phone' => $request->input('phone'),
-            'event_type' => $request->input('event_type'),
-            'event_date' => $request->input('event_date'),
-            'guest_count' => $request->input('guest_count'),
-            'message' => $request->input('message'),
-            'status' => 'New',
-        ]);
+        $selections = [];
+        $hasSelection = false;
 
-        return redirect()->route('catering')->with('catering_submitted', true);
+        foreach ($groups as $groupId) {
+            $picked = array_values(array_filter($validated['selections'][$groupId] ?? []));
+            if ($picked) {
+                $hasSelection = true;
+            }
+            $selections[$groupId] = $picked;
+        }
+
+        if (! $hasSelection) {
+            return back()
+                ->withInput()
+                ->withErrors(['selections' => 'Choose at least one dish for your catering menu.']);
+        }
+
+        CateringCart::setPerPerson((int) $validated['guest_count'], $selections);
+
+        return redirect()
+            ->route('checkout')
+            ->with('success', 'Catering menu added — proceed to checkout.');
+    }
+
+    public function addTray(Request $request, string $slug): RedirectResponse
+    {
+        $tray = CateringMenu::tray($slug);
+
+        if (! $tray) {
+            return back()->with('error', 'Tray item not found.');
+        }
+
+        $qty = max(1, (int) $request->input('qty', 1));
+        CateringCart::addTray($slug, $qty);
+
+        return back()->with('success', $tray['name'].' added to your order.');
     }
 }

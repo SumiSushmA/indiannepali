@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
@@ -13,6 +14,7 @@ class Order extends Model
     }
 
     protected $fillable = [
+        'customer_id',
         'order_number',
         'customer_name',
         'customer_email',
@@ -49,6 +51,11 @@ class Order extends Model
             'total' => 'decimal:2',
             'placed_at' => 'datetime',
         ];
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     public function items(): HasMany

@@ -13,6 +13,7 @@ class CateringInquiry extends Model
     }
 
     protected $fillable = [
+        'customer_id',
         'reference',
         'customer_name',
         'customer_email',
@@ -35,6 +36,11 @@ class CateringInquiry extends Model
         ];
     }
 
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
     public function package(): BelongsTo
     {
         return $this->belongsTo(CateringPackage::class, 'catering_package_id');
@@ -49,7 +55,8 @@ class CateringInquiry extends Model
             'guests' => $this->guest_count,
             'date' => $this->event_date->format('Y-m-d'),
             'status' => $this->status,
-            'value' => (int) ($this->quoted_value ?? 0),
+            'value' => (int) round($this->quoted_value ?? 0),
+            'quoted_value' => $this->quoted_value,
             'days' => (int) $this->created_at->diffInDays(now()),
         ];
     }

@@ -31,9 +31,6 @@ class LiveSiteContent
             'instagram_url' => 'https://www.instagram.com/indiannepalikitchen',
             'facebook_url' => 'https://www.facebook.com/indiannepalikitchen',
             'whatsapp_url' => 'https://wa.me/12063973211',
-            'privacy_url' => 'https://www.indiannepalikitchen.com/',
-            'terms_url' => 'https://www.indiannepalikitchen.com/',
-            'accessibility_url' => 'https://www.indiannepalikitchen.com/',
         ];
     }
 
@@ -90,9 +87,45 @@ class LiveSiteContent
     public static function promos(): array
     {
         return [
-            ['id' => 'order-online', 'badge' => 'Order online', 'title' => 'Pickup & delivery', 'detail' => 'Browse the full menu — appetizers, momo, entrees, Nepali specials, tandoori, biryani, breads, and desserts — and order for pickup or delivery.', 'price' => 'Menu', 'accent' => 'gold'],
-            ['id' => 'momo-combo', 'badge' => 'Fan favorite', 'title' => 'Combo Momo (12 pcs)', 'detail' => 'Steamed, fried, sandheko, and chili momo in one order — the easiest way to try the full momo lineup.', 'price' => '$14.99+', 'accent' => 'spice'],
-            ['id' => 'catering', 'badge' => 'Catering', 'title' => 'Events & groups (20+ guests)', 'detail' => 'Family trays, live momo stations, and full spreads for weddings, office lunches, pujas, and celebrations.', 'price' => 'Quote', 'accent' => 'gold'],
+            [
+                'id' => 'free-delivery-40',
+                'badge' => 'Spend & save',
+                'title' => 'Free delivery on orders $40+',
+                'detail' => 'Order $40 or more for delivery and the delivery fee is on us — perfect for family dinners.',
+                'price' => '$40 min',
+                'accent' => 'gold',
+                'offer_type' => 'spend_save',
+                'cta_type' => 'menu',
+                'cta_label' => 'Start your order',
+                'terms' => 'Applies to delivery orders only. Before tax and tip.',
+                'min_order_amount' => 40,
+            ],
+            [
+                'id' => 'momo-combo',
+                'badge' => 'Combo deal',
+                'title' => 'Combo Momo Feast',
+                'detail' => 'Steamed, fried, sandheko, and chili momo in one order — four styles, one great price.',
+                'price' => '$14.99',
+                'accent' => 'spice',
+                'offer_type' => 'combo_meal',
+                'cta_type' => 'order_item',
+                'cta_label' => 'Order this combo',
+                'menu_item_slug' => 'combo-momo',
+                'terms' => 'Valid for pickup and delivery. Cannot be combined with other offers.',
+            ],
+            [
+                'id' => 'party-welcome-drink',
+                'badge' => 'Dine-in perk',
+                'title' => 'Party of 6 — welcome drink on us',
+                'detail' => 'Reserve a table for six or more and each guest receives a complimentary welcome drink.',
+                'price' => '6+ guests',
+                'accent' => 'leaf',
+                'offer_type' => 'reservation_perk',
+                'cta_type' => 'reserve',
+                'cta_label' => 'Reserve for 6+',
+                'terms' => 'Dine-in only. Mention this offer when seated. Non-alcoholic welcome drink per guest.',
+                'min_party_size' => 6,
+            ],
         ];
     }
 

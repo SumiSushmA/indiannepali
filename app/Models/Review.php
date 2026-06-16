@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Review extends Model
 {
     protected $fillable = [
+        'customer_id',
         'author_name',
         'stars',
         'body',
@@ -18,10 +20,16 @@ class Review extends Model
     protected function casts(): array
     {
         return [
+            'customer_id' => 'integer',
             'stars' => 'integer',
             'is_featured' => 'boolean',
             'sort_order' => 'integer',
         ];
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     public function toLegacy(): array

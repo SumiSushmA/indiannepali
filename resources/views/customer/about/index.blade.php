@@ -14,7 +14,7 @@
                 <p style="font-size:{{ $i === 0 ? '22px' : '16.5px' }};font-family:{{ $i === 0 ? 'var(--serif)' : 'var(--sans)' }};font-style:{{ $i === 0 ? 'italic' : 'normal' }};color:{{ $i === 0 ? 'var(--cream)' : 'var(--sand)' }};line-height:1.6;margin-bottom:20px">{{ $p }}</p>
             @endforeach
         </div>
-        <x-ph label="Founders at the pass" :h="420" :r="18" style="border:none" />
+        <x-ph label="Founders at the pass" :src="$about['hero_image']" :h="420" :r="18" style="border:none" />
     </div>
 
     <div class="cust-stat-band" style="padding:40px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:90px">
@@ -49,7 +49,7 @@
     <div class="cust-team-grid" style="margin-bottom:80px">
         @foreach($about['team'] as $t)
             <a href="{{ route('contact') }}" class="cust-click-card" style="text-decoration:none;color:inherit">
-                <x-ph :label="$t['name']" :h="240" :r="16" style="margin-bottom:16px;border:none" />
+                <x-ph :label="$t['name']" :src="$t['image']" :h="240" :r="16" style="margin-bottom:16px;border:none" />
                 <div class="eyebrow" style="margin-bottom:8px;font-size:10.5px">{{ $t['tag'] }}</div>
                 <h4 style="font-size:21px">{{ $t['name'] }}</h4>
                 <p style="color:var(--muted);font-size:14px;margin-top:4px;line-height:1.5">{{ $t['role'] }}</p>

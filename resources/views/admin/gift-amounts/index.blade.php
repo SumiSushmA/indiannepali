@@ -8,10 +8,6 @@
     </div>
 </div>
 
-@if(session('success'))
-    <div class="adm-card" style="padding:14px 18px;margin-bottom:16px;border-color:var(--gold-700);color:var(--gold-400)">{{ session('success') }}</div>
-@endif
-
 <div class="adm-card" style="padding:22px;margin-bottom:18px;">
     <h3 style="font-size:17px;font-weight:600;margin-bottom:14px;">Add amount</h3>
     <form action="{{ route('admin.gift-amounts.store') }}" method="POST" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
@@ -48,7 +44,7 @@
                     </td>
                     <td>@include('admin.partials.badge', ['tone' => $amount->is_active ? 'green' : 'neutral', 'dot' => true, 'label' => $amount->is_active ? 'Active' : 'Inactive'])</td>
                     <td class="right">
-                        <form action="{{ route('admin.gift-amounts.destroy', $amount) }}" method="POST" onsubmit="return confirm('Delete this amount?')">
+                        <form action="{{ route('admin.gift-amounts.destroy', $amount) }}" method="POST" data-confirm="Delete this amount?">
                             @csrf @method('DELETE')
                             <button type="submit" style="width:34px;height:34px;border-radius:9px;background:transparent;border:1px solid var(--line);color:var(--sand);cursor:pointer;display:grid;place-items:center;"><x-icon name="trash" :size="16"/></button>
                         </form>

@@ -1,59 +1,64 @@
 @extends('layouts.customer')
 
+@push('styles')
+    <link rel="stylesheet" href="/css/home-hero.css">
+@endpush
+
 @section('content')
 
-{{-- Hero --}}
-<div class="cust-hero">
-    <img src="{{ $heroImage }}" alt="Indian-Nepali Kitchen" class="cust-hero-bg cust-img" style="border:none;border-radius:0">
-    <div class="cust-hero-overlay"></div>
-    <div class="cust-hero-glow"></div>
-    <div class="cust-hero-inner fade-up">
-        <div class="eyebrow cust-hero-eyebrow">Indian & Nepali · {{ $site['city'] ?? 'Seattle' }}</div>
-        <h1 class="cust-hero-title">
-            {{ $content['Hero headline'] ?? 'Where the Himalayas meet the tandoor.' }}
-        </h1>
-        <p class="cust-hero-sub">
-            {{ $content['Hero subtext'] ?? 'Hand-pleated momo, charcoal-fired kebabs, and curries ground fresh each morning — served in a warm, candle-lit room.' }}
-        </p>
-        <div class="cust-hero-actions">
-            <a href="{{ route('menu') }}" class="btn btn-gold btn-lg"><x-icon name="bag" :size="19" /> Order Online</a>
-            <a href="{{ route('reserve') }}" class="btn btn-ghost btn-lg"><x-icon name="cal" :size="19" /> Reserve a Table</a>
-        </div>
-        <div class="cust-hero-stats">
-            <a href="{{ route('about') }}" class="cust-hero-stat">
-                <x-stars :value="5" :size="16" />
-                <span>4.87 · Seattle favorites</span>
-            </a>
-            <div class="cust-hero-stat-divider"></div>
-            <a href="{{ route('contact') }}" class="cust-hero-stat">
-                <x-icon name="clock" :size="16" color="var(--brand-500)" />
-                <span>{{ $site['hours'] ?? 'Open today till 10pm' }}</span>
-            </a>
-            <div class="cust-hero-stat-divider"></div>
-            <a href="{{ route('menu') }}" class="cust-hero-stat">
-                <x-icon name="truck" :size="16" color="var(--brand-500)" />
-                <span>Delivery · 30–60 min</span>
-            </a>
-        </div>
+{{-- Hero — glassmorphism full-bleed --}}
+<section class="ink-hero">
+    <div class="ink-hero__bg" aria-hidden="true">
+        <img src="{{ $heroImage }}" alt="">
     </div>
-    <a href="#story" class="cust-hero-scroll">
-        Scroll <x-icon name="down" :size="16" />
-    </a>
-</div>
+    <div class="ink-hero__glow" aria-hidden="true"></div>
 
-{{-- Marquee --}}
-@php $words = ['Momo', 'Tandoor', 'Thali', 'Biryani', 'Jhol', 'Sekuwa', 'Naan', 'Masala', 'Sukuti', 'Dal']; @endphp
-<div class="cust-marquee">
-    <div class="cust-marquee-track">
-        @for($r = 0; $r < 2; $r++)
-            <div class="cust-marquee-row">
-                @foreach($words as $w)
-                    <a href="{{ route('menu', ['q' => $w]) }}" class="cust-marquee-word">{{ $w }} <span style="color:var(--brand-700)">◆</span></a>
-                @endforeach
+    <div class="ink-hero__body">
+        <div class="ink-hero__center fade-up">
+            <a href="{{ route('menu') }}" class="ink-hero__pill">
+                <span class="ink-hero__pill-dot"></span>
+                Open for delivery · {{ $site['city'] ?? 'Seattle' }}
+                <x-icon name="arrow" :size="14" color="rgba(255,255,255,0.5)" />
+            </a>
+
+            <h1 class="ink-hero__headline">
+                <span class="ink-hero__line">Flavors that</span>
+                <span class="ink-hero__line"><em>grow</em> with every visit.</span>
+            </h1>
+
+            <p class="ink-hero__sub">
+                {{ $content['Hero subtext'] ?? 'Hand-pleated momo, charcoal-fired kebabs, and curries ground fresh each morning — served in a warm, candle-lit room.' }}
+            </p>
+
+            <div class="ink-hero__actions">
+                <a href="{{ route('menu') }}" class="ink-hero__cta">
+                    Order Online <x-icon name="arrow" :size="18" />
+                </a>
+                <a href="{{ route('reserve') }}" class="ink-hero__cta ink-hero__cta--ghost">
+                    Reserve a table
+                </a>
             </div>
-        @endfor
+        </div>
+
+        <a href="#story" class="ink-hero__scroll" aria-label="Scroll to explore">
+            <span>Explore</span>
+            <x-icon name="down" :size="16" color="rgba(255,255,255,0.45)" />
+        </a>
     </div>
-</div>
+
+    @php $words = ['Momo', 'Tandoor', 'Thali', 'Biryani', 'Jhol', 'Sekuwa', 'Naan', 'Masala', 'Sukuti', 'Dal']; @endphp
+    <div class="ink-hero__marquee cust-marquee">
+        <div class="cust-marquee-track">
+            @for($r = 0; $r < 2; $r++)
+                <div class="cust-marquee-row">
+                    @foreach($words as $w)
+                        <a href="{{ route('menu', ['q' => $w]) }}" class="cust-marquee-word">{{ $w }} <span style="color:var(--brand-400)">◆</span></a>
+                    @endforeach
+                </div>
+            @endfor
+        </div>
+    </div>
+</section>
 
 {{-- Story --}}
 <section id="story" class="cust-section" style="padding:110px 32px;scroll-margin-top:90px">
@@ -142,7 +147,7 @@
                 </a>
             @endforeach
         </div>
-        <a href="{{ route('catering') }}" class="btn btn-gold btn-lg">Request a catering quote <x-icon name="arrow" :size="18" /></a>
+        <a href="{{ route('catering') }}" class="btn btn-gold btn-lg">Order catering <x-icon name="arrow" :size="18" /></a>
     </section>
 </div>
 
@@ -172,47 +177,39 @@
             <div class="eyebrow center" style="justify-content:center;margin-bottom:16px">Guest love</div>
             <h2 style="font-size:clamp(32px,4vw,48px)">What the neighborhood says</h2>
         </div>
-        <div class="cust-rev-grid">
+        <div class="cust-rev-wrap {{ count($reviews) > 3 ? '' : 'cust-rev-wrap--no-nav' }}">
+            @if(count($reviews) > 3)
+            <button type="button" class="cust-rev-nav" data-rev-nav="prev" aria-label="Previous reviews">
+                <x-icon name="arrowL" :size="18" />
+            </button>
+            @endif
+            <div class="cust-rev-grid" data-rev-track>
             @foreach($reviews as $review)
-                <a href="{{ route('contact') }}" class="cust-click-card cust-review-card">
-                    <x-stars :value="$review['stars']" :size="16" />
-                    <p style="font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.45;color:var(--cream);margin:18px 0 22px">"{{ $review['text'] }}"</p>
-                    <div style="display:flex;justify-content:space-between;align-items:center">
-                        <span style="font-weight:600">{{ $review['name'] }}</span>
-                        <span style="font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase">{{ $review['tag'] }}</span>
+                <div class="cust-review-card">
+                    <div class="cust-review-card__quote" aria-hidden="true">"</div>
+                    <div class="cust-review-card__head">
+                        <div class="cust-review-card__avatar">{{ strtoupper(substr($review['name'], 0, 1)) }}</div>
+                        <div>
+                            <div class="cust-review-card__name">{{ $review['name'] }}</div>
+                            <x-stars :value="$review['stars']" :size="13" />
+                        </div>
                     </div>
-                </a>
+                    <p class="cust-review-card__body">"{{ $review['text'] }}"</p>
+                    <div class="cust-review-card__foot">
+                        <span class="cust-review-card__meta">{{ $review['tag'] }}</span>
+                        <div class="cust-review-card__actions" aria-hidden="true">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                </div>
             @endforeach
+            </div>
+            @if(count($reviews) > 3)
+            <button type="button" class="cust-rev-nav" data-rev-nav="next" aria-label="Next reviews">
+                <x-icon name="arrow" :size="18" />
+            </button>
+            @endif
         </div>
     </section>
 </div>
-
-{{-- Quick links --}}
-<section class="cust-section" style="padding:80px 32px">
-    <div class="cust-quick-links">
-        @foreach([
-            ['Menu & Order', 'menu', 'bag'],
-            ['Reserve Table', 'reserve', 'cal'],
-            ['Catering', 'catering', 'box'],
-            ['Gift Cards', 'giftcards', 'tag'],
-            ['Offers', 'promos', 'tag'],
-            ['Contact', 'contact', 'mail'],
-        ] as [$label, $route, $icon])
-            <a href="{{ route($route) }}" class="cust-quick-link">
-                <x-icon :name="$icon" :size="20" color="var(--brand-400)" />
-                <span>{{ $label }}</span>
-            </a>
-        @endforeach
-    </div>
-</section>
-
-{{-- Closing CTA --}}
-<section class="cust-section" style="padding:80px 32px 120px;text-align:center">
-    <img src="/logo.png" alt="" style="height:72px;width:auto;margin:0 auto 20px;display:block;opacity:.95">
-    <h2 style="font-size:clamp(36px,5vw,64px);line-height:1.04;max-width:760px;margin:0 auto">Order your weight in momos — we won't question it.</h2>
-    <div style="display:flex;gap:14px;justify-content:center;margin-top:36px;flex-wrap:wrap">
-        <a href="{{ route('menu') }}" class="btn btn-gold btn-lg"><x-icon name="bag" :size="19" /> Order Online</a>
-        <a href="{{ route('reserve') }}" class="btn btn-ghost btn-lg"><x-icon name="cal" :size="19" /> Reserve a Table</a>
-    </div>
-</section>
 @endsection

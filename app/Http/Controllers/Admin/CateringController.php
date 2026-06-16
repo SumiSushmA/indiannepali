@@ -30,4 +30,13 @@ class CateringController extends Controller
 
         return back()->with('success', 'Catering inquiry updated.');
     }
+
+    public function updateQuote(Request $request, CateringInquiry $catering): RedirectResponse
+    {
+        $request->validate(['quoted_value' => 'required|numeric|min:0']);
+
+        $catering->update(['quoted_value' => $request->input('quoted_value')]);
+
+        return back()->with('success', 'Quote updated for '.$catering->customer_name.'.');
+    }
 }

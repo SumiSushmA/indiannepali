@@ -1,74 +1,138 @@
 @extends('layouts.customer')
 
+@push('styles')
+<link rel="stylesheet" href="/css/catering.css">
+@endpush
+
 @section('content')
-@if($submitted)
-    <div style="min-height:80vh;display:grid;place-items:center;padding:120px 24px;text-align:center">
-        <div class="fade-up" style="max-width:500px">
-            <div style="width:88px;height:88px;border-radius:999px;margin:0 auto 26px;background:var(--gold-glow);border:1px solid var(--gold-600);display:grid;place-items:center;color:var(--gold-400)">
-                <x-icon name="check" :size="42" />
-            </div>
-            <h1 style="font-size:46px">Inquiry received</h1>
-            <p style="color:var(--sand);font-size:17px;line-height:1.65;margin-top:16px">Our events team will reach out within one business day with a tailored proposal and tasting invite.</p>
-            <a href="{{ route('home') }}" class="btn btn-gold" style="margin-top:28px">Back to home</a>
-        </div>
-    </div>
-@else
-    <div class="cust-page-head cust-pad">
-        <div class="eyebrow center" style="justify-content:center;margin-bottom:16px">Catering & private events</div>
-        <h1 style="font-size:clamp(38px,5vw,62px);line-height:1.03">Catering, done generously</h1>
-        <p style="color:var(--sand);font-size:17px;line-height:1.65;margin-top:18px">Weddings, office lunches, pujas and celebrations — we plan, cook and serve a spread to remember. Catering is available for groups of <strong style="color:var(--cream)">20 people or more</strong>.</p>
+<div class="cust-page-head cust-pad">
+    <div class="eyebrow center" style="justify-content:center;margin-bottom:16px">Catering</div>
+    <h1 style="font-size:clamp(38px,5vw,62px);line-height:1.03">Order catering online</h1>
+    <p style="color:var(--sand);font-size:17px;line-height:1.65;margin-top:18px;max-width:760px;margin-left:auto;margin-right:auto">
+        Build your menu, choose tray sizes, and checkout — just like our live ordering site. Minimum {{ $minGuests }} guests for per-person catering.
+    </p>
+</div>
+
+<div class="cust-catering-wrap">
+    @if(session('success'))
+        <div class="cust-card cust-catering-flash">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div class="cust-card cust-catering-flash cust-catering-flash--error">{{ session('error') }}</div>
+    @endif
+
+    <div class="cust-catering-tabs">
+        <a href="{{ route('catering', ['tab' => 'per-person']) }}" class="cust-catering-tab {{ $tab === 'per-person' ? 'is-active' : '' }}">Per person · $5/guest</a>
+        <a href="{{ route('catering', ['tab' => 'trays']) }}" class="cust-catering-tab {{ $tab === 'trays' ? 'is-active' : '' }}">By tray</a>
     </div>
 
-    <div style="max-width:1200px;margin:0 auto;padding:48px 32px 110px">
-        <div class="cust-pkg-grid" style="margin-bottom:64px">
-            @foreach($packages as $p)
-                <div class="cust-card" style="border-color:{{ $p['popular'] ? 'var(--gold-700)' : 'var(--line)' }};position:relative;display:flex;flex-direction:column">
-                    @if($p['popular'])
-                        <div style="position:absolute;top:-12px;left:28px;background:var(--gold-600);color:#211405;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:999px">Most popular</div>
+    @if($tab === 'per-person')
+        <form action="{{ route('catering.order') }}" method="POST" class="cust-form-shell cust-catering-form" id="catering-order-form">
+            @csrf
+            <div class="cust-gift-grid">
+                <div class="cust-split-sticky cust-catering-media">
+                    <x-ph label="catering spread" :src="\App\Support\StockImages::forLabel('catering spread')" :h="420" style="border:none;border-radius:18px" />
+                </div>
+
+                <div class="cust-card">
+                    <h2>{{ $perPerson['title'] }}</h2>
+                    <p class="cust-catering-price">${{ number_format($perPersonPrice, 2) }} <span>/ person</span></p>
+                    <p class="cust-catering-desc">{{ $perPerson['description'] }}</p>
+
+                    @if($errors->any())
+                        <div class="cust-catering-flash cust-catering-flash--error" style="margin-bottom:18px">
+                            @foreach($errors->all() as $error)
+                                <div>{{ $error }}</div>
+                            @endforeach
+                        </div>
                     @endif
-                    <h3 style="font-size:28px">{{ $p['name'] }}</h3>
-                    <div style="color:var(--muted);font-size:14px;margin:4px 0 14px">{{ $p['range'] }}</div>
-                    <div style="font-family:var(--serif);font-size:26px;color:var(--gold-400);font-weight:600;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:18px">{{ $p['price'] }}</div>
-                    <div style="display:flex;flex-direction:column;gap:11px;flex:1">
-                        @foreach($p['items'] as $it)
-                            <div style="display:flex;gap:10px;font-size:14.5px;color:var(--cream-2)">
-                                <x-icon name="check" :size="16" color="var(--gold-500)" style="margin-top:2px;flex-shrink:0" /> {{ $it }}
-                            </div>
+
+                    <label class="cust-field">
+                        <span>Number of guests <em style="color:var(--muted);font-style:normal;font-weight:400">(minimum {{ $minGuests }})</em></span>
+                        <input class="cust-inp" type="number" name="guest_count" min="{{ $minGuests }}" step="1" value="{{ old('guest_count', $cart['per_person']['guest_count'] ?? $minGuests) }}" required id="catering-guest-count">
+                    </label>
+
+                    <div class="cust-catering-total" id="catering-total">
+                        Estimated total: <strong>${{ number_format($perPersonPrice * max($minGuests, (int) old('guest_count', $cart['per_person']['guest_count'] ?? $minGuests)), 2) }}</strong>
+                    </div>
+
+                    <div class="cust-catering-groups">
+                        @foreach($perPerson['groups'] as $group)
+                            <details class="cust-catering-group" open>
+                                <summary>{{ $group['label'] }}</summary>
+                                <div class="cust-catering-options">
+                                    @foreach($group['options'] as $option)
+                                        @php
+                                            $checked = in_array($option, old('selections.'.$group['id'], $cart['per_person']['selections'][$group['id']] ?? []), true);
+                                        @endphp
+                                        <label class="cust-catering-option">
+                                            <input type="checkbox" name="selections[{{ $group['id'] }}][]" value="{{ $option }}" {{ $checked ? 'checked' : '' }}>
+                                            <span>{{ $option }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </details>
                         @endforeach
                     </div>
-                    <a href="#cater-form" class="btn {{ $p['popular'] ? 'btn-gold' : 'btn-ghost' }}" style="margin-top:22px;width:100%;justify-content:center">Choose {{ explode(' ', $p['name'])[1] }}</a>
+
+                    <button type="submit" class="btn btn-gold" style="width:100%;margin-top:8px">
+                        Add catering to order · Checkout <x-icon name="arrow" :size="18" />
+                    </button>
+
+                    <p class="cust-catering-note">Orders under {{ $minGuests }} guests will not be fulfilled. Need help? <a href="{{ route('contact') }}">Contact us</a>.</p>
+                </div>
+            </div>
+        </form>
+    @else
+        <div class="cust-catering-tray-intro cust-card">
+            <h2>Catering menu (by tray)</h2>
+            <p>Pre-packed trays for office lunches, pujas, and celebrations. Add trays to your cart and checkout with regular menu items if you like.</p>
+        </div>
+
+        <div class="cust-catering-tray-grid">
+            @foreach($trays as $tray)
+                <div class="cust-card cust-catering-tray-card">
+                    <x-ph :label="$tray['name']" :src="\App\Support\StockImages::forLabel($tray['name'])" :h="180" style="border:none;border-radius:12px;margin-bottom:14px" />
+                    <div class="cust-catering-tray-head">
+                        <h3>{{ $tray['name'] }}</h3>
+                        <span class="cust-catering-tray-price">${{ number_format($tray['price'], 2) }}</span>
+                    </div>
+                    <p class="cust-catering-tray-serves">{{ $tray['serves'] }}</p>
+                    <p class="cust-catering-tray-desc">{{ $tray['description'] }}</p>
+                    <form action="{{ route('catering.trays.add', $tray['slug']) }}" method="POST" class="cust-catering-tray-form">
+                        @csrf
+                        <button type="submit" class="btn btn-gold btn-sm" style="width:100%;justify-content:center">
+                            <x-icon name="plus" :size="15" /> Add to order
+                        </button>
+                    </form>
                 </div>
             @endforeach
         </div>
 
-        <form id="cater-form" action="{{ route('catering.store') }}" method="POST" class="cust-card" style="scroll-margin-top:110px">
-            @csrf
-            <h2 style="font-size:32px;margin-bottom:6px">Request a quote</h2>
-            <p style="color:var(--muted);font-size:15px;margin-bottom:24px">Tell us about your event and we'll build a menu and proposal for you. A minimum of 20 guests is required for catering orders.</p>
-            @if($errors->any())
-                <div class="cust-card" style="padding:14px 18px;margin-bottom:18px;border-color:var(--spice-600);color:var(--spice-400);font-size:14.5px">
-                    @foreach($errors->all() as $error)
-                        <div>{{ $error }}</div>
-                    @endforeach
-                </div>
-            @endif
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-                <label class="cust-field"><span>Name</span><input class="cust-inp" name="name" placeholder="Your name" required value="{{ old('name') }}"></label>
-                <label class="cust-field"><span>Email</span><input class="cust-inp" name="email" type="email" placeholder="you@email.com" required value="{{ old('email') }}"></label>
-                <label class="cust-field"><span>Phone</span><input class="cust-inp" name="phone" type="tel" placeholder="{{ $site['phone'] ?? '(206) 397-3211' }}" required value="{{ old('phone') }}"></label>
-                <label class="cust-field"><span>Event type</span>
-                    <select class="cust-inp" name="event_type" required>
-                        @foreach(['Wedding', 'Corporate', 'Birthday', 'Puja / religious', 'Other'] as $o)
-                            <option value="{{ $o }}" {{ old('event_type') === $o ? 'selected' : '' }}>{{ $o }}</option>
-                        @endforeach
-                    </select>
-                </label>
-                <label class="cust-field"><span>Event date</span><input class="cust-inp" name="event_date" type="date" required value="{{ old('event_date') }}"></label>
-                <label class="cust-field"><span>Guest count <span style="color:var(--muted);font-weight:400">(minimum 20)</span></span><input class="cust-inp" name="guest_count" type="number" min="20" step="1" placeholder="20" required value="{{ old('guest_count') }}"></label>
-                <label class="cust-field full"><span>Tell us more</span><textarea class="cust-inp" name="message" placeholder="Venue, dietary needs, service style, budget…" style="min-height:90px;resize:vertical">{{ old('message') }}</textarea></label>
-            </div>
-            <button type="submit" class="btn btn-gold" style="margin-top:22px">Send inquiry <x-icon name="arrow" :size="18" /></button>
-        </form>
-    </div>
-@endif
+        <div class="cust-catering-tray-foot">
+            <a href="{{ route('checkout') }}" class="btn btn-gold">Go to checkout</a>
+        </div>
+    @endif
+</div>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    const guestInput = document.getElementById('catering-guest-count');
+    const totalEl = document.getElementById('catering-total');
+    const unitPrice = {{ json_encode($perPersonPrice) }};
+    const minGuests = {{ json_encode($minGuests) }};
+
+    if (!guestInput || !totalEl) return;
+
+    function updateTotal() {
+        const guests = Math.max(minGuests, parseInt(guestInput.value || minGuests, 10));
+        totalEl.innerHTML = 'Estimated total: <strong>$' + (guests * unitPrice).toFixed(2) + '</strong>';
+    }
+
+    guestInput.addEventListener('input', updateTotal);
+    updateTotal();
+})();
+</script>
+@endpush

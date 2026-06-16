@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AboutStat;
 use App\Models\AboutStory;
 use App\Models\AboutValue;
+use App\Models\Setting;
 use App\Models\TeamMember;
 use App\Services\AdminData;
 use Illuminate\Http\RedirectResponse;
@@ -19,11 +20,23 @@ class AboutController extends Controller
         return view('admin.about.index', [
             'active' => 'about',
             'badges' => AdminData::getNavBadges(),
+            'heroImage' => Setting::get('about_hero_image_path'),
             'story' => AboutStory::query()->orderBy('sort_order')->get(),
             'stats' => AboutStat::query()->orderBy('sort_order')->get(),
             'values' => AboutValue::query()->orderBy('sort_order')->get(),
             'team' => TeamMember::query()->orderBy('sort_order')->get(),
         ]);
+    }
+
+    public function updateHero(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'image' => 'required|image|max:4096',
+        ]);
+
+        Setting::set('about_hero_image_path', $request->file('image')->store('about', 'public'));
+
+        return back()->with('success', 'Story hero photo updated.');
     }
 
     public function storeStory(Request $request): RedirectResponse
@@ -133,15 +146,22 @@ class AboutController extends Controller
             'name' => 'required|string|max:120',
             'role' => 'required|string|max:120',
             'tag' => 'nullable|string|max:60',
+            'image' => 'nullable|image|max:4096',
         ]);
 
-        TeamMember::create([
+        $data = [
             'name' => $request->input('name'),
             'role' => $request->input('role'),
             'tag' => $request->input('tag'),
             'is_published' => $request->boolean('is_published', true),
             'sort_order' => TeamMember::count(),
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('about/team', 'public');
+        }
+
+        TeamMember::create($data);
 
         return back()->with('success', 'Team member added.');
     }
@@ -152,14 +172,21 @@ class AboutController extends Controller
             'name' => 'required|string|max:120',
             'role' => 'required|string|max:120',
             'tag' => 'nullable|string|max:60',
+            'image' => 'nullable|image|max:4096',
         ]);
 
-        $member->update([
+        $data = [
             'name' => $request->input('name'),
             'role' => $request->input('role'),
             'tag' => $request->input('tag'),
             'is_published' => $request->boolean('is_published'),
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('about/team', 'public');
+        }
+
+        $member->update($data);
 
         return back()->with('success', 'Team member updated.');
     }

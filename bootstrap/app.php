@@ -12,9 +12,33 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->validateCsrfTokens(except: [
+            'unsubscribe/*/one-click',
+        ]);
+
         $middleware->alias([
             'admin' => EnsureAdmin::class,
         ]);
+
+        $middleware->redirectGuestsTo(function (\Illuminate\Http\Request $request) {
+            if ($request->is('admin', 'admin/*')) {
+                return route('admin.login');
+            }
+
+            if ($request->is('account', 'account/*')) {
+                return route('account.login');
+            }
+
+            return route('home');
+        });
+
+        $middleware->redirectUsersTo(function (\Illuminate\Http\Request $request) {
+            if ($request->is('admin', 'admin/*')) {
+                return route('admin.dashboard');
+            }
+
+            return route('account.index');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

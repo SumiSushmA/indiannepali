@@ -6,12 +6,15 @@ use App\Contracts\ToastPaymentGateway;
 use App\Data\Toast\OrderChargeRequest;
 use App\Exceptions\ToastPaymentException;
 use App\Http\Controllers\Controller;
+use App\Mail\OrderConfirmationMail;
 use App\Models\MenuItem;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Support\CateringCart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class CheckoutController extends Controller
@@ -36,6 +39,7 @@ class CheckoutController extends Controller
         $deliveryFee = CartController::deliveryFee($subtotal, $mode);
         $tipRate = (float) $request->input('tip', session('checkout_tip', 0.18));
         $tipAmount = round($subtotal * $tipRate, 2);
+        $freeDelivery = CartController::freeDeliveryStatus($subtotal, $mode);
 
         return view('customer.checkout.index', array_merge($cart, [
             'mode' => $mode,
@@ -44,6 +48,8 @@ class CheckoutController extends Controller
             'tipRate' => $tipRate,
             'tipAmount' => $tipAmount,
             'total' => round($subtotal + $tax + $deliveryFee + $tipAmount, 2),
+            'prefill' => CustomerSession::prefill(),
+            'freeDelivery' => $freeDelivery,
         ]));
     }
 
@@ -93,6 +99,9 @@ class CheckoutController extends Controller
             ];
         }
 
+        $cateringNotes = $this->formatCateringNotes($cart['cartItems']);
+        $notes = trim(collect([$request->input('notes'), $cateringNotes])->filter()->implode("\n\n"));
+
         try {
             $payment = $this->payments->chargeOrder(new OrderChargeRequest(
                 items: $chargeItems,
@@ -101,7 +110,7 @@ class CheckoutController extends Controller
                 customerPhone: $request->input('phone'),
                 fulfillmentType: $mode,
                 address: $request->input('address'),
-                notes: $request->input('notes'),
+                notes: $notes,
                 subtotal: $subtotal,
                 tax: $tax,
                 deliveryFee: $deliveryFee,
@@ -120,17 +129,18 @@ class CheckoutController extends Controller
             return back()->withInput()->withErrors(['payment' => $payment->error ?? 'Payment could not be processed.']);
         }
 
-        $order = DB::transaction(function () use ($request, $cart, $mode, $subtotal, $tax, $deliveryFee, $tipAmount, $tipRate, $total, $payment, $menuItems) {
+        $order = DB::transaction(function () use ($request, $cart, $mode, $subtotal, $tax, $deliveryFee, $tipAmount, $tipRate, $total, $payment, $menuItems, $notes) {
             $orderNumber = 'NK-'.(4850 + Order::count() + 1);
 
             $order = Order::create([
+                'customer_id' => CustomerSession::customerId(),
                 'order_number' => $orderNumber,
                 'customer_name' => $request->input('name'),
                 'customer_email' => $request->input('email'),
                 'customer_phone' => $request->input('phone'),
                 'fulfillment_type' => $mode,
                 'address' => $request->input('address'),
-                'delivery_notes' => $request->input('notes'),
+                'delivery_notes' => $notes,
                 'channel' => 'Website',
                 'status' => 'New',
                 'subtotal' => $subtotal,
@@ -177,8 +187,35 @@ class CheckoutController extends Controller
             ],
             'cart' => [],
         ]);
+        CateringCart::clear();
+
+        $order->load('items');
+        Mail::to($order->customer_email)->send(new OrderConfirmationMail($order));
 
         return redirect()->route('checkout.confirmed');
+    }
+
+    /** @param array<int, array<string, mixed>> $cartItems */
+    private function formatCateringNotes(array $cartItems): string
+    {
+        $perPerson = collect($cartItems)->first(fn ($line) => ($line['id'] ?? '') === CateringCart::PER_PERSON_ID);
+
+        if (! $perPerson) {
+            return '';
+        }
+
+        $groups = collect(\App\Data\CateringMenu::perPerson()['groups'])->keyBy('id');
+        $lines = ['Catering menu selections ('.($perPerson['qty'] ?? 0).' guests):'];
+
+        foreach (($perPerson['selections'] ?? []) as $groupId => $items) {
+            if (empty($items)) {
+                continue;
+            }
+            $label = $groups->get($groupId)['label'] ?? ucfirst($groupId);
+            $lines[] = $label.': '.implode(', ', $items);
+        }
+
+        return implode("\n", $lines);
     }
 
     public function confirmed(): View|RedirectResponse

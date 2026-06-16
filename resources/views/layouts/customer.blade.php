@@ -8,6 +8,7 @@
     <link rel="icon" href="/logo.png" type="image/png">
     <link rel="stylesheet" href="/css/theme.css">
     <link rel="stylesheet" href="/css/customer.css">
+    <link rel="stylesheet" href="/css/footer-cta.css">
     @stack('styles')
 </head>
 <body id="cust-root" data-page="{{ $bodyPage ?? 'page' }}" @if(session('open_cart')) data-open-cart="1" @endif>
@@ -20,7 +21,15 @@
         <div class="cust-flash">{{ session('success') }}</div>
     @endif
 
+    <script src="/js/confirm-dialog.js"></script>
     <script src="/js/customer.js"></script>
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/sw.js').catch(function () {});
+        });
+    }
+    </script>
     @stack('scripts')
 </body>
 </html>
