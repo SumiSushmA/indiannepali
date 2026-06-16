@@ -65,6 +65,7 @@ jobs:
   deploy:
     name: Deploy to Production Server
     needs: ci
+    if: ${{ secrets.PROD_SSH_KEY != '' && secrets.PROD_HOST != '' && secrets.PROD_USERNAME != '' && secrets.PROD_APP_PATH != '' }}
     runs-on: ubuntu-latest
     environment: production
 
@@ -106,6 +107,7 @@ jobs:
   health-check:
     name: Health Check Production
     needs: deploy
+    if: ${{ always() && needs.deploy.result == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
