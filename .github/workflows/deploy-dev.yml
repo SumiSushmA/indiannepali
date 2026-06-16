@@ -36,6 +36,11 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist
 
+      - name: Prepare Laravel environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -103,6 +108,11 @@ jobs:
     steps:
       - name: Verify dev URL
         run: |
+          if [ -z "${{ secrets.DEV_URL }}" ]; then
+            echo "DEV_URL not set — skipping health check"
+            exit 0
+          fi
+
           for i in {1..5}; do
             STATUS=$(curl -s -L --max-time 10 -o /dev/null -w "%{http_code}" "${{ secrets.DEV_URL }}")
             echo "Attempt ${i}: ${STATUS}"
