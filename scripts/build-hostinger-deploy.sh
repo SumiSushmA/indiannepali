@@ -6,19 +6,21 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DEPLOY="$ROOT/hostinger-deploy"
 PUBLIC_HTML="$DEPLOY/public_html"
-LARAVEL="$PUBLIC_HTML/indiannepali-main"
+LARAVEL="$DEPLOY/indiannepali-main"
 TEMPLATES="$ROOT/deploy/hostinger/templates"
 
 echo "Building Hostinger deployment package..."
 
 mkdir -p "$PUBLIC_HTML" "$LARAVEL"
 
+# Remove legacy nested layout (indiannepali-main inside public_html)
+rm -rf "$PUBLIC_HTML/indiannepali-main"
+
 # Public assets → public_html (not the original index.php or .htaccess)
 rsync -a --delete \
   --exclude 'index.php' \
   --exclude '.htaccess' \
   --exclude 'storage' \
-  --exclude 'indiannepali-main/' \
   "$ROOT/public/" "$PUBLIC_HTML/"
 
 # Laravel core (everything except public/, dev-only dirs, and deploy output)
@@ -42,7 +44,7 @@ cp "$TEMPLATES/indiannepali-main/.htaccess" "$LARAVEL/.htaccess"
 
 # Uploaded files served at /storage/*
 rm -f "$PUBLIC_HTML/storage"
-ln -sfn indiannepali-main/storage/app/public "$PUBLIC_HTML/storage"
+ln -sfn ../indiannepali-main/storage/app/public "$PUBLIC_HTML/storage"
 
 echo "✅ Done: $DEPLOY"
 echo "   See hostinger-deploy/HOSTINGER_DEPLOYMENT_REPORT.md"

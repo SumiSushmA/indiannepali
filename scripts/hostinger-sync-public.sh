@@ -20,11 +20,14 @@ mkdir -p "$PUBLIC_HTML"
 
 echo "📂 Syncing public assets → $PUBLIC_HTML"
 
+# Remove legacy nested layout if present
+rm -rf "$PUBLIC_HTML/indiannepali-main"
+
 if command -v rsync >/dev/null 2>&1; then
   rsync -a --delete \
     --exclude 'index.php' \
     --exclude '.htaccess' \
-    --exclude 'indiannepali-main/' \
+    --exclude 'storage' \
     "$LARAVEL_ROOT/public/" "$PUBLIC_HTML/"
 else
   find "$PUBLIC_HTML" -mindepth 1 -maxdepth 1 ! -name 'index.php' ! -name '.htaccess' ! -name '.user.ini' -exec rm -rf {} +
@@ -41,7 +44,7 @@ if [ -f "$TEMPLATES/public_html/.user.ini" ]; then
   cp "$TEMPLATES/public_html/.user.ini" "$PUBLIC_HTML/.user.ini"
 fi
 
-# Block direct HTTP access to Laravel core when app lives inside public_html
+# Extra protection for Laravel core (useful if document root is misconfigured)
 if [ -f "$TEMPLATES/indiannepali-main/.htaccess" ]; then
   cp "$TEMPLATES/indiannepali-main/.htaccess" "$LARAVEL_ROOT/.htaccess"
 fi
@@ -49,7 +52,7 @@ fi
 # Uploaded files: public_html/storage → laravel/storage/app/public
 rm -f "$PUBLIC_HTML/storage"
 if [ "$(basename "$LARAVEL_ROOT")" = "indiannepali-main" ]; then
-  ln -sfn indiannepali-main/storage/app/public "$PUBLIC_HTML/storage"
+  ln -sfn ../indiannepali-main/storage/app/public "$PUBLIC_HTML/storage"
 else
   ln -sfn "$LARAVEL_ROOT/storage/app/public" "$PUBLIC_HTML/storage"
 fi

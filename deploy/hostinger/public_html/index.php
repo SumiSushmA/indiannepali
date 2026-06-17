@@ -5,7 +5,8 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-$appPath = __DIR__ . '/indiannepali-main';
+// Point to the secure folder outside public_html
+$appPath = __DIR__ . '/../indiannepali-main';
 
 if (file_exists($maintenance = $appPath . '/storage/framework/maintenance.php')) {
     require $maintenance;
