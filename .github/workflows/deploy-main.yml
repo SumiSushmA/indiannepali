@@ -113,6 +113,16 @@ jobs:
           php artisan route:cache
           php artisan view:cache
           php artisan queue:restart 2>/dev/null || true
+
+          chmod -R ug+rwx storage bootstrap/cache 2>/dev/null || true
+
+          if [ "$(basename "$(pwd)")" = "indiannepali-main" ]; then
+            PUBLIC_HTML="$(cd .. && pwd)"
+            bash scripts/hostinger-sync-public.sh . "$PUBLIC_HTML"
+          else
+            php artisan storage:link 2>/dev/null || true
+          fi
+
           php artisan up || true
           EOF
 

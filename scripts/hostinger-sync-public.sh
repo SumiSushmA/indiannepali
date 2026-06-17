@@ -33,15 +33,25 @@ else
 fi
 
 # Hostinger entry point + rewrite rules (keep our customized versions)
-cp "$LARAVEL_ROOT/deploy/hostinger/templates/public_html/index.php" "$PUBLIC_HTML/index.php"
-cp "$LARAVEL_ROOT/deploy/hostinger/templates/public_html/.htaccess" "$PUBLIC_HTML/.htaccess"
+TEMPLATES="$LARAVEL_ROOT/deploy/hostinger/templates"
+cp "$TEMPLATES/public_html/index.php" "$PUBLIC_HTML/index.php"
+cp "$TEMPLATES/public_html/.htaccess" "$PUBLIC_HTML/.htaccess"
 
-if [ -f "$LARAVEL_ROOT/deploy/hostinger/public_html/.user.ini" ]; then
-  cp "$LARAVEL_ROOT/deploy/hostinger/public_html/.user.ini" "$PUBLIC_HTML/.user.ini"
+if [ -f "$TEMPLATES/public_html/.user.ini" ]; then
+  cp "$TEMPLATES/public_html/.user.ini" "$PUBLIC_HTML/.user.ini"
+fi
+
+# Block direct HTTP access to Laravel core when app lives inside public_html
+if [ -f "$TEMPLATES/indiannepali-main/.htaccess" ]; then
+  cp "$TEMPLATES/indiannepali-main/.htaccess" "$LARAVEL_ROOT/.htaccess"
 fi
 
 # Uploaded files: public_html/storage → laravel/storage/app/public
 rm -f "$PUBLIC_HTML/storage"
-ln -sfn "$LARAVEL_ROOT/storage/app/public" "$PUBLIC_HTML/storage"
+if [ "$(basename "$LARAVEL_ROOT")" = "indiannepali-main" ]; then
+  ln -sfn indiannepali-main/storage/app/public "$PUBLIC_HTML/storage"
+else
+  ln -sfn "$LARAVEL_ROOT/storage/app/public" "$PUBLIC_HTML/storage"
+fi
 
 echo "✅ public_html sync complete"

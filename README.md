@@ -239,7 +239,7 @@ GitHub Actions workflows deploy automatically:
 
 Each server must have its own `.env` on disk (not in the repo). Required GitHub secrets include SSH key, host, username, app path, and health-check URL.
 
-Deploy steps on the server: `git pull`, `composer install`, `npm ci && npm run build`, `php artisan migrate --force`, and Laravel caches.
+Deploy steps on the server: `git pull`, `composer install`, `npm ci && npm run build`, `php artisan migrate --force`, Laravel caches, and (when the app lives in `public_html/indiannepali-main/`) automatic `hostinger-sync-public.sh` to refresh `index.php`, `.htaccess`, and public assets in `public_html/`.
 
 ---
 
