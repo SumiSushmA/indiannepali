@@ -24,6 +24,7 @@ if command -v rsync >/dev/null 2>&1; then
   rsync -a --delete \
     --exclude 'index.php' \
     --exclude '.htaccess' \
+    --exclude 'indiannepali-main/' \
     "$LARAVEL_ROOT/public/" "$PUBLIC_HTML/"
 else
   find "$PUBLIC_HTML" -mindepth 1 -maxdepth 1 ! -name 'index.php' ! -name '.htaccess' ! -name '.user.ini' -exec rm -rf {} +
@@ -32,8 +33,8 @@ else
 fi
 
 # Hostinger entry point + rewrite rules (keep our customized versions)
-cp "$LARAVEL_ROOT/deploy/hostinger/public_html/index.php" "$PUBLIC_HTML/index.php"
-cp "$LARAVEL_ROOT/deploy/hostinger/public_html/.htaccess" "$PUBLIC_HTML/.htaccess"
+cp "$LARAVEL_ROOT/deploy/hostinger/templates/public_html/index.php" "$PUBLIC_HTML/index.php"
+cp "$LARAVEL_ROOT/deploy/hostinger/templates/public_html/.htaccess" "$PUBLIC_HTML/.htaccess"
 
 if [ -f "$LARAVEL_ROOT/deploy/hostinger/public_html/.user.ini" ]; then
   cp "$LARAVEL_ROOT/deploy/hostinger/public_html/.user.ini" "$PUBLIC_HTML/.user.ini"

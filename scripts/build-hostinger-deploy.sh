@@ -13,6 +13,14 @@ echo "Building Hostinger deployment package..."
 
 mkdir -p "$PUBLIC_HTML" "$LARAVEL"
 
+# Public assets → public_html (not the original index.php or .htaccess)
+rsync -a --delete \
+  --exclude 'index.php' \
+  --exclude '.htaccess' \
+  --exclude 'storage' \
+  --exclude 'indiannepali-main/' \
+  "$ROOT/public/" "$PUBLIC_HTML/"
+
 # Laravel core (everything except public/, dev-only dirs, and deploy output)
 rsync -a --delete \
   --exclude 'public/' \
@@ -25,13 +33,6 @@ rsync -a --delete \
   --exclude '.DS_Store' \
   --exclude 'tests/' \
   "$ROOT/" "$LARAVEL/"
-
-# Public assets → public_html (not the original index.php or .htaccess)
-rsync -a --delete \
-  --exclude 'index.php' \
-  --exclude '.htaccess' \
-  --exclude 'storage' \
-  "$ROOT/public/" "$PUBLIC_HTML/"
 
 # Custom entry point, rewrite rules, and core protection
 cp "$TEMPLATES/public_html/index.php" "$PUBLIC_HTML/index.php"

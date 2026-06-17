@@ -2,6 +2,8 @@
 
 Generated for the **`hostinger-deploy/`** package. The original project at the repo root is **unchanged**; this folder is a copy ready to upload.
 
+**Last updated:** 2026-06-17
+
 ---
 
 ## 1. Final folder structure
@@ -9,8 +11,8 @@ Generated for the **`hostinger-deploy/`** package. The original project at the r
 ```
 hostinger-deploy/
 └── public_html/                          ← upload contents to Hostinger public_html
-    ├── index.php                         ← NEW (bootstraps Laravel from indiannepali-main/)
-    ├── .htaccess                         ← copied from public/.htaccess + security rules
+    ├── index.php                         ← Laravel 12 bootstrap (loads indiannepali-main/)
+    ├── .htaccess                         ← URL rewrite to index.php
     ├── .user.ini                         ← PHP limits for Hostinger
     ├── css/                              ← from public/css/
     ├── js/                               ← from public/js/
@@ -22,19 +24,20 @@ hostinger-deploy/
     ├── Group 1171275134.svg
     ├── storage → indiannepali-main/storage/app/public   ← symlink (uploaded files)
     └── indiannepali-main/                ← Laravel app (HTTP access denied)
-        ├── .htaccess                     ← NEW (Require all denied)
+        ├── .htaccess                     ← Require all denied
         ├── app/
         ├── bootstrap/
+        │   └── app.php                   ← required
         ├── config/
         ├── database/
         ├── resources/
         ├── routes/
         ├── storage/
         ├── vendor/
+        │   └── autoload.php              ← required
         ├── artisan
         ├── composer.json
-        ├── composer.lock
-        └── .env
+        └── .env                          ← configure on server
 ```
 
 There is **no** separate `images/` folder in this project. Images live at the web root (`logo.png`, SVG) or under `/storage/` (uploads).
@@ -61,29 +64,30 @@ There is **no** separate `images/` folder in this project. Images live at the we
 | `vendor/` | Composer dependencies (**present** in this build) |
 | `artisan`, `composer.json`, `composer.lock` | Laravel tooling |
 | `.env`, `.env.example` | Environment (edit `.env` on server) |
-| `README.md`, `package.json`, etc. | Non-essential but harmless |
 
 **Excluded from copy:** `public/`, `node_modules/`, `.git/`, `deploy/`, `hostinger-deploy/`, `prototype/`, `scripts/`, `tests/`
 
 ---
 
-## 3. Files modified / created (not in original Laravel)
+## 3. Files modified / created
 
 | File | Action |
 |------|--------|
-| `public_html/index.php` | **Created** — paths point to `indiannepali-main/` |
-| `public_html/.htaccess` | **Modified** — Laravel rewrites + block `/indiannepali-main/` + hidden files |
+| `public_html/index.php` | **Created/fixed** — Laravel 12 bootstrap with `$appPath = __DIR__ . '/indiannepali-main'` |
+| `public_html/.htaccess` | **Created** — rewrite non-file requests to `index.php` |
 | `public_html/.user.ini` | **Created** — PHP upload/memory limits |
 | `public_html/indiannepali-main/.htaccess` | **Created** — deny all direct HTTP access |
 | `public_html/storage` | **Symlink** → `indiannepali-main/storage/app/public` |
+| `scripts/build-hostinger-deploy.sh` | **Fixed** — public sync no longer deletes `indiannepali-main/` |
+| `deploy/hostinger/templates/*` | **Updated** — canonical Hostinger entry files |
+
+**Note:** `dex.php` was not found in this build; `index.php` is the correct Hostinger entry point.
 
 No controllers, routes, models, or Blade templates were changed.
 
 ---
 
-## 4. New `public_html/index.php`
-
-Based on `public/index.php`; only paths updated:
+## 4. `public_html/index.php`
 
 ```php
 <?php
@@ -93,242 +97,127 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-if (file_exists($maintenance = __DIR__.'/indiannepali-main/storage/framework/maintenance.php')) {
+$appPath = __DIR__ . '/indiannepali-main';
+
+if (file_exists($maintenance = $appPath . '/storage/framework/maintenance.php')) {
     require $maintenance;
 }
 
-require __DIR__.'/indiannepali-main/vendor/autoload.php';
+require $appPath . '/vendor/autoload.php';
 
 /** @var Application $app */
-$app = require_once __DIR__.'/indiannepali-main/bootstrap/app.php';
+$app = require_once $appPath . '/bootstrap/app.php';
 
 $app->handleRequest(Request::capture());
 ```
 
----
-
-## 5. New `.htaccess` files
-
-### `public_html/.htaccess`
-
-Standard Laravel front-controller rules (from `public/.htaccess`) plus:
-
-- `RewriteBase /` — routes work from domain root, not `/public`
-- `RewriteRule ^indiannepali-main/ - [F,L]` — forbid browsing Laravel core
-- `<FilesMatch "^\.">` — block hidden files
-
-### `public_html/indiannepali-main/.htaccess`
-
-```apache
-<IfModule mod_authz_core.c>
-    Require all denied
-</IfModule>
-<IfModule !mod_authz_core.c>
-    Order deny,allow
-    Deny from all
-</IfModule>
-```
-
-PHP still loads these files via the filesystem when handling requests through `index.php`.
+Folder name **`indiannepali-main`** is case-sensitive on Linux/Hostinger.
 
 ---
 
-## 6. Asset path verification
+## 5. HTTP 500 checklist
 
-| Asset type | How referenced | Works from `public_html/`? |
-|------------|----------------|----------------------------|
-| CSS | `/css/theme.css`, etc. (absolute paths in layouts) | Yes — `public_html/css/` |
-| JS | `/js/customer.js`, etc. | Yes — `public_html/js/` |
-| Logo / SVG | `/logo.png`, `asset('Group 1171275134.svg')` | Yes — files at web root |
-| Uploads | `asset('storage/...')` → `/storage/...` | Yes — via `storage` symlink |
-| Service worker | `/sw.js` | Yes |
+| Cause | Status in this build |
+|-------|----------------------|
+| Wrong folder name in `index.php` | ✅ Uses `indiannepali-main` |
+| Missing `vendor/` | ✅ Present (~80 MB) |
+| Missing `.env` on server | ⚠️ Copy/edit on server (local `.env` included in package) |
+| PHP version < 8.2 | ⚠️ Set PHP 8.2+ in hPanel |
+| Wrong `index.php` path | ✅ Fixed |
+| `storage/` not writable | ⚠️ Set permissions on server (see below) |
+| Broken `.htaccess` | ✅ Present |
+| Missing public assets | ✅ Synced from `public/` |
 
 ---
 
-## 7. `storage:link` — is it needed?
+## 6. Hostinger upload instructions
 
-**On your local machine:** you already have `public/storage` → `storage/app/public`.
+### Option A — Upload the pre-built package (recommended)
 
-**For this Hostinger package:** the symlink is **already created** at:
+1. On your Mac, zip the **contents** of `hostinger-deploy/public_html/` (not the `hostinger-deploy` folder itself).
+2. In hPanel → **Files** → open your domain’s `public_html/`.
+3. **Back up** existing files if the site is already live.
+4. Upload the zip and **Extract** so `index.php` sits directly in `public_html/` (not `public_html/public_html/`).
+5. Confirm this layout on the server:
 
 ```
-public_html/storage → indiannepali-main/storage/app/public
+public_html/
+├── index.php
+├── .htaccess
+├── build/
+├── css/
+├── js/
+├── favicon.ico
+├── logo.png
+└── indiannepali-main/
+    ├── app/
+    ├── bootstrap/
+    ├── vendor/
+    ├── .env
+    └── ...
 ```
 
-You do **not** need to run `php artisan storage:link` if you upload this symlink (FTP clients often preserve it; if not, recreate on the server):
+### Option B — Rebuild locally before upload
 
 ```bash
-cd ~/domains/yourdomain.com/public_html
-rm -f storage
-ln -sfn indiannepali-main/storage/app/public storage
+cd /path/to/indiannepali
+bash scripts/build-hostinger-deploy.sh
 ```
 
-Or via SSH:
-
-```bash
-php artisan storage:link
-```
-
-only works if your document root were `public/` inside Laravel; with this layout, the **manual symlink in `public_html/`** is the correct approach.
-
-Uploaded gallery/about images in `storage/app/public/` are included in the copy.
+Then upload `hostinger-deploy/public_html/` as above.
 
 ---
 
-## 8. `vendor/` status
+## 7. Manual steps in hPanel (after upload)
 
-**`vendor/` is present** in `hostinger-deploy/public_html/indiannepali-main/vendor/`.
+1. **PHP version** — hPanel → **Advanced** → **PHP Configuration** → select **PHP 8.2** or **8.3**.
 
-If you rebuild locally without `vendor/`, run before packaging:
+2. **Edit `.env`** — File Manager → `public_html/indiannepali-main/.env`:
+   - `APP_ENV=production`
+   - `APP_DEBUG=false`
+   - `APP_URL=https://yourdomain.com`
+   - Database credentials (MySQL from hPanel)
+   - Toast API keys, SMTP settings, etc.
 
-```bash
-composer install --no-dev --optimize-autoloader
-```
+3. **Storage permissions** — via SSH or File Manager:
+   ```bash
+   chmod -R 775 public_html/indiannepali-main/storage
+   chmod -R 775 public_html/indiannepali-main/bootstrap/cache
+   ```
 
-Then re-run:
+4. **Run migrations** (SSH or Hostinger terminal):
+   ```bash
+   cd ~/domains/yourdomain.com/public_html/indiannepali-main
+   php artisan migrate --force
+   php artisan storage:link   # only if /storage symlink is missing
+   php artisan config:cache
+   php artisan route:cache
+   php artisan view:cache
+   ```
 
-```bash
-./scripts/build-hostinger-deploy.sh
-```
+5. **Symlink check** — `public_html/storage` should point to `indiannepali-main/storage/app/public`. If symlinks are not supported, copy uploads manually or ask Hostinger support.
 
----
+6. **SSL** — hPanel → **SSL** → enable free certificate for your domain.
 
-## 9. Production `.env` recommendations
-
-Edit `public_html/indiannepali-main/.env` on the server (never commit production secrets):
-
-```ini
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://my-domain.com
-
-# Generate a unique key if deploying fresh:
-# php artisan key:generate
-
-DB_CONNECTION=mysql
-DB_HOST=localhost
-DB_PORT=3306
-DB_DATABASE=your_hostinger_db_name
-DB_USERNAME=your_hostinger_db_user
-DB_PASSWORD=your_hostinger_db_password
-
-SESSION_DRIVER=database
-CACHE_STORE=database
-QUEUE_CONNECTION=database
-
-SESSION_SECURE_COOKIE=true
-LOG_LEVEL=warning
-```
-
-Also configure `MAIL_*` and `TOAST_*` for production. Remove or ignore `.env.test-ci` on the server (copied by mistake from dev).
+7. **Test** — visit `https://yourdomain.com/` and `https://yourdomain.com/admin`.
 
 ---
 
-## 10. Permissions (via SSH or File Manager)
+## 8. Security notes
 
-From `public_html/indiannepali-main/`:
-
-```bash
-chmod -R 775 storage bootstrap/cache
-```
-
-If the web server user differs from your SSH user on Hostinger:
-
-```bash
-chown -R u123456789:u123456789 storage bootstrap/cache
-```
-
-(Replace `u123456789` with your Hostinger account user from hPanel.)
-
-Ensure `storage/logs`, `storage/framework/cache`, `storage/framework/sessions`, and `storage/framework/views` are writable.
-
----
-
-## 11. Commands to run on Hostinger (SSH)
-
-After uploading `hostinger-deploy/public_html/*` into your domain's `public_html/`:
-
-```bash
-cd ~/domains/yourdomain.com/public_html/indiannepali-main
-
-# 1. Edit .env (production values above)
-nano .env
-
-# 2. If vendor/ was not uploaded:
-composer install --no-dev --optimize-autoloader
-
-# 3. App key (only if APP_KEY is empty)
-php artisan key:generate
-
-# 4. Database
-php artisan migrate --force
-
-# 5. Cache for production
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-
-# 6. Permissions
-chmod -R 775 storage bootstrap/cache
-
-# 7. Recreate storage symlink if FTP dropped it
-cd ..
-ln -sfn indiannepali-main/storage/app/public storage
-```
-
-Set PHP **8.2+** in hPanel → Advanced → PHP Configuration.
-
----
-
-## 12. Upload instructions
-
-1. Zip `hostinger-deploy/public_html/` locally.
-2. In Hostinger File Manager, open your domain's `public_html/`.
-3. Upload and extract so `index.php` sits directly in `public_html/` (not `public_html/public_html/`).
-4. Confirm `indiannepali-main/.htaccess` and the `storage` symlink exist.
-5. Edit `.env`, run migrations, cache config.
-
-To rebuild this package anytime (original repo untouched):
-
-```bash
-./scripts/build-hostinger-deploy.sh
-```
-
----
-
-## 13. Possible HTTP 500 causes
-
-| Cause | Fix |
-|-------|-----|
-| Wrong PHP version (< 8.2) | Set PHP 8.2/8.3 in hPanel |
-| Missing `vendor/` | `composer install --no-dev --optimize-autoloader` |
-| Invalid or missing `APP_KEY` | `php artisan key:generate` |
-| Database connection failure | Check MySQL host/credentials in `.env` (often `localhost`) |
-| `storage/` or `bootstrap/cache/` not writable | `chmod -R 775 storage bootstrap/cache` |
-| Broken `storage` symlink | Recreate: `ln -sfn indiannepali-main/storage/app/public storage` |
-| Stale config cache after `.env` change | `php artisan config:clear` then `config:cache` |
-| `mod_rewrite` disabled | Ensure `.htaccess` is allowed; contact Hostinger support |
-| Symlink not allowed on plan | Copy `storage/app/public` contents to `public_html/storage/` (no symlink) |
-| Missing PHP extensions | Enable `mbstring`, `pdo_mysql`, `bcmath`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`, `fileinfo` |
-
-Check `indiannepali-main/storage/logs/laravel.log` after enabling logging.
-
----
-
-## 14. Security notes
-
-- `indiannepali-main/` is blocked from direct HTTP access (double layer: root rewrite + folder `.htaccess`).
+- `indiannepali-main/.htaccess` blocks direct browser access to Laravel core files.
 - Do **not** upload `.env` to a public repo; only to the server.
-- Set `APP_DEBUG=false` in production.
-- Delete `.env.test-ci` from the server if present.
+- Keep `APP_DEBUG=false` in production.
 
 ---
 
-## 15. Alternative (preferred if hPanel allows)
+## 9. Rebuild after code changes
 
-If Hostinger lets you set the document root to `.../public`, use standard Laravel layout instead:
+Whenever you change PHP, Blade, or front-end assets:
 
-- Document root → `indiannepali/public`
-- No custom `index.php` needed
+```bash
+npm run build                    # if CSS/JS changed
+bash scripts/build-hostinger-deploy.sh
+```
 
-This package is for the common case where **document root must stay `public_html/`**.
+Then re-upload changed files or the full `public_html/` package.
