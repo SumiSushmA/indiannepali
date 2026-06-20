@@ -26,8 +26,12 @@ class ContactReplyMail extends Mailable
 
         return new Envelope(
             subject: "Re: {$this->inquiry->subject} — {$name}",
-            headers: $this->listUnsubscribeHeaders($this->inquiry->customer_email),
         );
+    }
+
+    protected function listUnsubscribeRecipientEmail(): ?string
+    {
+        return $this->inquiry->customer_email;
     }
 
     public function content(): Content

@@ -4,20 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Review;
-use App\Services\AdminData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class ReviewController extends Controller
 {
-    public function index(): View
+    public function index(): RedirectResponse
     {
-        return view('admin.reviews.index', [
-            'active' => 'reviews',
-            'reviews' => Review::orderBy('sort_order')->get(),
-            'badges' => AdminData::getNavBadges(),
-        ]);
+        return redirect()->route('admin.content.index');
     }
 
     public function store(Request $request): RedirectResponse
@@ -35,7 +29,7 @@ class ReviewController extends Controller
 
         Review::create($data);
 
-        return back()->with('success', 'Review added.');
+        return redirect()->route('admin.content.index')->with('success', 'Review added.');
     }
 
     public function update(Request $request, Review $review): RedirectResponse
@@ -52,13 +46,13 @@ class ReviewController extends Controller
 
         $review->update($data);
 
-        return back()->with('success', 'Review updated.');
+        return redirect()->route('admin.content.index')->with('success', 'Review updated.');
     }
 
     public function destroy(Review $review): RedirectResponse
     {
         $review->delete();
 
-        return back()->with('success', 'Review deleted.');
+        return redirect()->route('admin.content.index')->with('success', 'Review deleted.');
     }
 }

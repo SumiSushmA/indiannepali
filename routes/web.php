@@ -3,7 +3,6 @@
 use App\Http\Controllers\Admin\AboutController as AdminAboutController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CateringController as AdminCateringController;
-use App\Http\Controllers\Admin\CateringPackageController;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
@@ -135,9 +134,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/catering', [AdminCateringController::class, 'index'])->name('catering.index');
         Route::patch('/catering/{catering}/status', [AdminCateringController::class, 'updateStatus'])->name('catering.status');
         Route::patch('/catering/{catering}/quote', [AdminCateringController::class, 'updateQuote'])->name('catering.quote');
-        Route::post('/catering/packages', [CateringPackageController::class, 'store'])->name('catering.packages.store');
-        Route::put('/catering/packages/{cateringPackage}', [CateringPackageController::class, 'update'])->name('catering.packages.update');
-        Route::delete('/catering/packages/{cateringPackage}', [CateringPackageController::class, 'destroy'])->name('catering.packages.destroy');
 
         Route::get('/inquiries', [InquiryController::class, 'index'])->name('inquiries.index');
         Route::get('/inquiries/{inquiry}', [InquiryController::class, 'show'])->name('inquiries.show');

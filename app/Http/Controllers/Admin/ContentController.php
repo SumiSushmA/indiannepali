@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ContentBlock;
+use App\Models\Review;
 use App\Services\AdminData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ class ContentController extends Controller
         return view('admin.content.index', [
             'active' => 'content',
             'content' => AdminData::getContent(),
+            'reviews' => Review::orderBy('sort_order')->get(),
             'badges' => AdminData::getNavBadges(),
         ]);
     }

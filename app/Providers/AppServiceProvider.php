@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        View::composer(['layouts.customer', 'customer.*'], function ($view) {
+        View::composer(['layouts.customer', 'customer.*', 'errors.*'], function ($view) {
             $view->with('site', SiteSettings::all());
             $view->with('content', SiteSettings::blocks()->map(fn ($block) => $block->value)->all());
         });

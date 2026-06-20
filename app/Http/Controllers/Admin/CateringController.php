@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CateringInquiry;
-use App\Models\CateringPackage;
 use App\Services\AdminData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,7 +16,6 @@ class CateringController extends Controller
         return view('admin.catering.index', [
             'active' => 'catering',
             'catering' => AdminData::getCatering(),
-            'packages' => CateringPackage::orderBy('sort_order')->get(),
             'badges' => AdminData::getNavBadges(),
         ]);
     }

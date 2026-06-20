@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\GiftCard;
 use App\Models\GiftCardDesign;
+use App\Models\GiftAmount;
 use App\Services\AdminData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class GiftCardController extends Controller
             'giftSales' => AdminData::getGiftSales(),
             'designs' => $designs,
             'activeDesigns' => $designs->where('is_active', true)->values(),
+            'giftAmounts' => GiftAmount::orderBy('sort_order')->get(),
             'badges' => AdminData::getNavBadges(),
         ]);
     }

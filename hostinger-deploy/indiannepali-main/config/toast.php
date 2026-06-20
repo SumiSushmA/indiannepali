@@ -27,4 +27,17 @@ return [
     'revenue_center_guid' => env('TOAST_REVENUE_CENTER_GUID'),
     'gift_card_menu_item_guid' => env('TOAST_GIFT_CARD_MENU_ITEM_GUID'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Toast hosted ordering pages
+    |--------------------------------------------------------------------------
+    |
+    | When set, /menu and /gift-cards redirect to Toast's online ordering and
+    | e-gift card pages instead of the built-in website checkout flow.
+    |
+    */
+
+    'online_ordering_url' => env('TOAST_ONLINE_ORDERING_URL'),
+    'gift_cards_url' => env('TOAST_GIFT_CARDS_URL'),
+
 ];

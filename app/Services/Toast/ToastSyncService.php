@@ -7,7 +7,11 @@ use App\Models\ToastSyncLog;
 
 class ToastSyncService
 {
-    public function __construct(private ToastApiClient $api) {}
+    public function __construct(
+        private ToastApiClient $api,
+        private ToastMenuParser $parser,
+        private ToastMenuCatalog $catalog,
+    ) {}
 
     public function sync(): ToastSyncLog
     {
@@ -20,12 +24,13 @@ class ToastSyncService
         }
 
         try {
-            $menus = $this->api->fetchMenus();
-            $synced = $this->syncMenuItems($menus);
+            $toastItems = $this->parser->flattenMenus($this->api->fetchMenus());
+            $synced = $this->syncMenuItems($toastItems);
+            $this->catalog->forget();
 
             return ToastSyncLog::create([
                 'logged_at' => now(),
-                'message' => "Live Toast sync completed — {$synced} menu items mapped.",
+                'message' => "Live Toast sync completed — {$synced} menu items updated.",
                 'is_success' => true,
             ]);
         } catch (\Throwable $e) {
@@ -37,27 +42,38 @@ class ToastSyncService
         }
     }
 
-    private function syncMenuItems(array $menus): int
+    /**
+     * @param  array<int, array{guid: string, name: string, price: ?float, description: ?string, available: bool}>  $toastItems
+     */
+    private function syncMenuItems(array $toastItems): int
     {
         $synced = 0;
+        $existing = MenuItem::query()->get();
 
-        foreach ($menus as $menu) {
-            foreach ($menu['menuGroups'] ?? [] as $group) {
-                foreach ($group['menuItems'] ?? [] as $item) {
-                    $guid = $item['guid'] ?? null;
-                    $name = $item['name'] ?? null;
+        foreach ($toastItems as $toastItem) {
+            $menuItem = $existing->firstWhere('toast_pos_id', $toastItem['guid'])
+                ?? $existing->first(fn (MenuItem $item) => ToastMenuParser::normalizeName($item->name) === ToastMenuParser::normalizeName($toastItem['name']));
 
-                    if (! filled($guid) || ! filled($name)) {
-                        continue;
-                    }
-
-                    $updated = MenuItem::query()
-                        ->where('name', $name)
-                        ->update(['toast_pos_id' => $guid]);
-
-                    $synced += $updated;
-                }
+            if (! $menuItem) {
+                continue;
             }
+
+            $updates = [
+                'toast_pos_id' => $toastItem['guid'],
+                'name' => $toastItem['name'],
+                'is_available' => $toastItem['available'],
+            ];
+
+            if ($toastItem['price'] !== null) {
+                $updates['price'] = $toastItem['price'];
+            }
+
+            if (filled($toastItem['description'])) {
+                $updates['description'] = $toastItem['description'];
+            }
+
+            $menuItem->update($updates);
+            $synced++;
         }
 
         return $synced;

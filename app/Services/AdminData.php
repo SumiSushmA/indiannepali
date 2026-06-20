@@ -285,9 +285,23 @@ class AdminData
         ];
     }
 
+    public static function customerContentSections(): array
+    {
+        return [
+            'Hero subtext',
+            'About story',
+            'Home story title',
+            'Home story text',
+            'Delivery blurb',
+            'Catering blurb',
+            'Footer tagline',
+        ];
+    }
+
     public static function getContent(): array
     {
         return ContentBlock::query()
+            ->whereIn('section', self::customerContentSections())
             ->orderBy('section')
             ->get()
             ->map(fn (ContentBlock $b) => $b->toLegacy())

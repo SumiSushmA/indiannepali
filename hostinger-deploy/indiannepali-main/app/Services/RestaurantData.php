@@ -16,6 +16,7 @@ use App\Models\Promo;
 use App\Models\Review;
 use App\Models\Setting;
 use App\Models\TeamMember;
+use App\Services\Toast\ToastMenuCatalog;
 use App\Support\StockImages;
 
 class RestaurantData
@@ -39,7 +40,7 @@ class RestaurantData
             ->where('is_available', true)
             ->orderBy('sort_order')
             ->get()
-            ->map(fn (MenuItem $item) => $item->toLegacy())
+            ->map(fn (MenuItem $item) => self::withToastMenu($item))
             ->all();
 
         return ['categories' => $categories, 'items' => $items];
@@ -58,7 +59,7 @@ class RestaurantData
             ->where('is_available', true)
             ->first();
 
-        return $item?->toLegacy();
+        return $item ? self::withToastMenu($item) : null;
     }
 
     public static function popularItems(int $limit = 6): array
@@ -70,8 +71,31 @@ class RestaurantData
             ->orderBy('sort_order')
             ->limit($limit)
             ->get()
-            ->map(fn (MenuItem $item) => $item->toLegacy())
+            ->map(fn (MenuItem $item) => self::withToastMenu($item))
             ->all();
+    }
+
+    private static function withToastMenu(MenuItem $item): array
+    {
+        $legacy = $item->toLegacy();
+        $toastItem = app(ToastMenuCatalog::class)->findForMenuItem($item);
+
+        if (! $toastItem) {
+            return $legacy;
+        }
+
+        $legacy['name'] = $toastItem['name'];
+        $legacy['toast_pos_id'] = $toastItem['guid'];
+
+        if ($toastItem['price'] !== null) {
+            $legacy['price'] = $toastItem['price'];
+        }
+
+        if (filled($toastItem['description'])) {
+            $legacy['desc'] = $toastItem['description'];
+        }
+
+        return $legacy;
     }
 
     public static function promos(): array

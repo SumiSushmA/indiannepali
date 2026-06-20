@@ -18,10 +18,10 @@ $gtone = ['Active' => 'green', 'Partially used' => 'gold', 'Redeemed' => 'neutra
 
 <div class="adm-stat-grid" style="margin-bottom:18px;">
     @foreach([
-        ['Sold (30d)', $giftStats['sold'], '+18%', true, 'tag'],
+        ['Sold (30d)', $giftStats['sold'], null, null, 'tag'],
         ['Outstanding balance', $giftStats['outstanding'], null, null, 'dollar'],
         ['Active cards', $giftStats['active'], null, null, 'box'],
-        ['Redeemed (30d)', $giftStats['redeemed30'], '+9%', true, 'check'],
+        ['Redeemed (30d)', $giftStats['redeemed30'], null, null, 'check'],
     ] as $stat)
     <div class="adm-card" style="padding:22px;">
         <div style="display:flex;justify-content:space-between;">
@@ -38,6 +38,36 @@ $gtone = ['Active' => 'green', 'Partially used' => 'gold', 'Redeemed' => 'neutra
         @endif
     </div>
     @endforeach
+</div>
+
+<div class="adm-card" style="padding:22px;margin-bottom:18px;" id="amounts">
+    <h3 style="font-size:17px;font-weight:600;margin-bottom:6px;">Preset amounts</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:14px;">Quick-select amounts on the customer gift card page.</p>
+    <form action="{{ route('admin.gift-amounts.store') }}" method="POST" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px;">
+        @csrf
+        <input name="amount" type="number" step="1" min="1" max="1000" placeholder="Amount ($)" required style="width:140px;background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
+        <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--cream-2);">
+            <input type="checkbox" name="is_active" value="1" checked> Active
+        </label>
+        <button type="submit" class="btn btn-gold btn-sm">Add amount</button>
+    </form>
+    <div style="display:grid;gap:8px;">
+        @foreach($giftAmounts as $amount)
+            <form action="{{ route('admin.gift-amounts.update', $amount) }}" method="POST" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                @csrf @method('PUT')
+                <span style="font-family:var(--serif);font-size:22px;font-weight:600;">$</span>
+                <input name="amount" type="number" step="1" min="1" max="1000" value="{{ (int) $amount->amount }}" style="width:100px;background:var(--ink-800);border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--cream);font-size:16px;font-family:var(--serif);font-weight:600;">
+                <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--cream-2);">
+                    <input type="checkbox" name="is_active" value="1" @checked($amount->is_active)> Active
+                </label>
+                <button type="submit" class="btn btn-ghost btn-sm">Save</button>
+                <button type="submit" form="delete-gift-amount-{{ $amount->id }}" style="width:34px;height:34px;border-radius:9px;background:transparent;border:1px solid var(--line);color:var(--sand);cursor:pointer;display:grid;place-items:center;" aria-label="Delete amount"><x-icon name="trash" :size="16"/></button>
+            </form>
+            <form id="delete-gift-amount-{{ $amount->id }}" action="{{ route('admin.gift-amounts.destroy', $amount) }}" method="POST" data-confirm="Delete this amount?">
+                @csrf @method('DELETE')
+            </form>
+        @endforeach
+    </div>
 </div>
 
 <div class="adm-card" style="padding:22px;margin-bottom:18px;">

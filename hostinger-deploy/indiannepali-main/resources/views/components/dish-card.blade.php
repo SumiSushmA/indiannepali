@@ -1,6 +1,15 @@
 @props(['item'])
 
-<a href="{{ route('menu', ['q' => $item['name']]) }}" class="cust-dish-card cust-click-card">
+@php
+    $orderOnlineUrl = \App\Services\Toast\ToastConfiguration::onlineOrderingUrl();
+    $cardHref = $orderOnlineUrl ?: route('menu', ['q' => $item['name']]);
+    $cardTarget = $orderOnlineUrl ? '_blank' : null;
+    $priceLabel = is_numeric($item['price'] ?? null)
+        ? number_format((float) $item['price'], 2, '.', '')
+        : ($item['price'] ?? '');
+@endphp
+
+<a href="{{ $cardHref }}" @if($cardTarget) target="{{ $cardTarget }}" rel="noopener noreferrer" @endif class="cust-dish-card cust-click-card">
     <div class="cust-dish-card-media">
         <x-food-image :item="$item" :h="200" />
         @if(!empty($item['popular']))
@@ -15,9 +24,16 @@
                 @endif
                 {{ $item['name'] }}
             </h4>
-            <span style="color:var(--brand-400);font-weight:600;font-family:var(--serif);font-size:21px">${{ $item['price'] }}</span>
+            <span style="color:var(--brand-400);font-weight:600;font-family:var(--serif);font-size:21px">${{ $priceLabel }}</span>
         </div>
         <p style="color:var(--muted);font-size:14px;line-height:1.55;margin-top:8px;min-height:44px">{{ $item['desc'] }}</p>
+        @if($orderOnlineUrl)
+            <div style="margin-top:16px" onclick="event.stopPropagation()">
+                <a href="{{ $orderOnlineUrl }}" target="_blank" rel="noopener noreferrer" class="btn btn-gold btn-sm" style="width:100%;justify-content:center;text-decoration:none;display:inline-flex">
+                    Order online <x-icon name="arrow" :size="16" />
+                </a>
+            </div>
+        @else
         <form action="{{ route('cart.add') }}" method="POST" style="margin-top:16px" onclick="event.stopPropagation()">
             @csrf
             <input type="hidden" name="item_id" value="{{ $item['id'] }}">
@@ -25,5 +41,6 @@
                 <x-icon name="plus" :size="16" /> Add to order
             </button>
         </form>
+        @endif
     </div>
 </a>

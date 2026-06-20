@@ -11,6 +11,7 @@ use App\Models\GiftAmount;
 use App\Models\GiftCard;
 use App\Models\GiftCardDesign;
 use App\Services\RestaurantData;
+use App\Services\Toast\ToastConfiguration;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,8 +23,12 @@ class GiftCardController extends Controller
 {
     public function __construct(private ToastPaymentGateway $payments) {}
 
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
+        if ($url = ToastConfiguration::giftCardsUrl()) {
+            return redirect()->away($url);
+        }
+
         return view('customer.gift-cards.create', [
             'giftDesigns' => RestaurantData::giftDesigns(),
             'giftAmounts' => GiftAmount::query()

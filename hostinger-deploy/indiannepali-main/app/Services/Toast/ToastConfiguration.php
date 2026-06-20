@@ -29,6 +29,20 @@ class ToastConfiguration
         return 'https://'.config('toast.api_hostname');
     }
 
+    public static function onlineOrderingUrl(): ?string
+    {
+        $url = trim((string) config('toast.online_ordering_url'));
+
+        return filled($url) ? $url : null;
+    }
+
+    public static function giftCardsUrl(): ?string
+    {
+        $url = trim((string) config('toast.gift_cards_url'));
+
+        return filled($url) ? $url : null;
+    }
+
     /** @return array<string, bool> */
     public static function credentialStatus(): array
     {

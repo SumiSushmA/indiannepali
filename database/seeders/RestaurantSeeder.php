@@ -60,59 +60,69 @@ class RestaurantSeeder extends Seeder
         $categoryIds = [];
 
         foreach ($menu['categories'] as $index => $category) {
-            $model = MenuCategory::create([
-                'slug' => $category['id'],
-                'name' => $category['name'],
-                'tag' => $category['tag'],
-                'description' => $category['desc'],
-                'sort_order' => $index,
-                'is_active' => true,
-            ]);
+            $model = MenuCategory::updateOrCreate(
+                ['slug' => $category['id']],
+                [
+                    'name' => $category['name'],
+                    'tag' => $category['tag'],
+                    'description' => $category['desc'],
+                    'sort_order' => $index,
+                    'is_active' => true,
+                ]
+            );
             $categoryIds[$category['id']] = $model->id;
         }
 
         foreach ($menu['items'] as $index => $item) {
-            MenuItem::create([
-                'menu_category_id' => $categoryIds[$item['cat']],
-                'slug' => $item['id'],
-                'name' => $item['name'],
-                'description' => $item['desc'],
-                'price' => $item['price'],
-                'is_veg' => $item['veg'],
-                'spice_level' => $item['spice'],
-                'is_popular' => ! empty($item['popular']),
-                'image_label' => $item['img'],
-                'is_available' => $item['id'] !== 'c2',
-                'sort_order' => $index,
-            ]);
+            MenuItem::updateOrCreate(
+                ['slug' => $item['id']],
+                [
+                    'menu_category_id' => $categoryIds[$item['cat']],
+                    'name' => $item['name'],
+                    'description' => $item['desc'],
+                    'price' => $item['price'],
+                    'is_veg' => $item['veg'],
+                    'spice_level' => $item['spice'],
+                    'is_popular' => ! empty($item['popular']),
+                    'image_label' => $item['img'],
+                    'is_available' => $item['id'] !== 'c2',
+                    'sort_order' => $index,
+                ]
+            );
         }
     }
 
     private function seedPromos(): void
     {
         foreach (LiveSiteContent::promos() as $index => $promo) {
-            Promo::create([
-                'slug' => $promo['id'],
-                'badge' => $promo['badge'],
-                'title' => $promo['title'],
-                'detail' => $promo['detail'],
-                'price_label' => $promo['price'],
-                'accent' => $promo['accent'],
-                'offer_type' => $promo['offer_type'] ?? 'limited_time',
-                'cta_type' => $promo['cta_type'] ?? 'menu',
-                'cta_label' => $promo['cta_label'] ?? null,
-                'menu_item_slug' => $promo['menu_item_slug'] ?? null,
-                'terms' => $promo['terms'] ?? null,
-                'min_order_amount' => $promo['min_order_amount'] ?? null,
-                'min_party_size' => $promo['min_party_size'] ?? null,
-                'is_active' => true,
-                'sort_order' => $index,
-            ]);
+            Promo::updateOrCreate(
+                ['slug' => $promo['id']],
+                [
+                    'badge' => $promo['badge'],
+                    'title' => $promo['title'],
+                    'detail' => $promo['detail'],
+                    'price_label' => $promo['price'],
+                    'accent' => $promo['accent'],
+                    'offer_type' => $promo['offer_type'] ?? 'limited_time',
+                    'cta_type' => $promo['cta_type'] ?? 'menu',
+                    'cta_label' => $promo['cta_label'] ?? null,
+                    'menu_item_slug' => $promo['menu_item_slug'] ?? null,
+                    'terms' => $promo['terms'] ?? null,
+                    'min_order_amount' => $promo['min_order_amount'] ?? null,
+                    'min_party_size' => $promo['min_party_size'] ?? null,
+                    'is_active' => true,
+                    'sort_order' => $index,
+                ]
+            );
         }
     }
 
     private function seedReviews(): void
     {
+        if (Review::query()->exists()) {
+            return;
+        }
+
         foreach (LiveSiteContent::reviews() as $index => $review) {
             Review::create([
                 'author_name' => $review['name'],
@@ -127,6 +137,10 @@ class RestaurantSeeder extends Seeder
 
     private function seedGallery(): void
     {
+        if (GalleryCategory::query()->exists()) {
+            return;
+        }
+
         $spans = [1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1];
 
         foreach (LiveSiteContent::galleryCategories() as $catIndex => $category) {
@@ -150,6 +164,10 @@ class RestaurantSeeder extends Seeder
 
     private function seedAbout(): void
     {
+        if (AboutStory::query()->exists()) {
+            return;
+        }
+
         $about = LiveSiteContent::about();
 
         foreach ($about['story'] as $index => $paragraph) {
@@ -190,29 +208,37 @@ class RestaurantSeeder extends Seeder
     private function seedGiftDesigns(): void
     {
         foreach (SeedData::giftDesigns() as $design) {
-            GiftCardDesign::create([
-                'slug' => $design['id'],
-                'name' => $design['name'],
-                'subtitle' => $design['sub'],
-                'accent' => $design['accent'],
-                'is_active' => true,
-            ]);
+            GiftCardDesign::updateOrCreate(
+                ['slug' => $design['id']],
+                [
+                    'name' => $design['name'],
+                    'subtitle' => $design['sub'],
+                    'accent' => $design['accent'],
+                    'is_active' => true,
+                ]
+            );
         }
     }
 
     private function seedGiftAmounts(): void
     {
         foreach ([25, 50, 75, 100, 150, 250] as $index => $amount) {
-            GiftAmount::create([
-                'amount' => $amount,
-                'is_active' => true,
-                'sort_order' => $index,
-            ]);
+            GiftAmount::updateOrCreate(
+                ['amount' => $amount],
+                [
+                    'is_active' => true,
+                    'sort_order' => $index,
+                ]
+            );
         }
     }
 
     private function seedCateringPackages(): void
     {
+        if (CateringPackage::query()->exists()) {
+            return;
+        }
+
         $packages = [
             ['name' => 'The Gathering', 'range' => '20–40 guests', 'price' => 'from $22/guest', 'items' => ['Choice of 3 curries', 'Two momo varieties', 'Biryani & rice', 'Naan basket & achar', 'One dessert'], 'popular' => false],
             ['name' => 'The Celebration', 'range' => '40–120 guests', 'price' => 'from $28/guest', 'items' => ['Choice of 5 curries', 'Live momo station', 'Tandoor platter', 'Two biryani', 'Breads, sides & 2 desserts', 'Chafing & service ware'], 'popular' => true],
@@ -234,11 +260,13 @@ class RestaurantSeeder extends Seeder
     private function seedContentBlocks(): void
     {
         foreach (LiveSiteContent::contentBlocks() as $section => $value) {
-            ContentBlock::create([
-                'section' => $section,
-                'value' => $value,
-                'type' => 'Text',
-            ]);
+            ContentBlock::updateOrCreate(
+                ['section' => $section],
+                [
+                    'value' => $value,
+                    'type' => 'Text',
+                ]
+            );
         }
     }
 
@@ -269,19 +297,25 @@ class RestaurantSeeder extends Seeder
         ];
 
         foreach ($users as $user) {
-            User::create([
-                'name' => $user['name'],
-                'email' => $user['email'],
-                'password' => Hash::make('password'),
-                'role' => $user['role'],
-                'status' => $statusMap[$user['status']] ?? 'active',
-                'last_active_at' => $lastActiveMap[$user['last']] ?? null,
-            ]);
+            User::updateOrCreate(
+                ['email' => $user['email']],
+                [
+                    'name' => $user['name'],
+                    'password' => Hash::make('password'),
+                    'role' => $user['role'],
+                    'status' => $statusMap[$user['status']] ?? 'active',
+                    'last_active_at' => $lastActiveMap[$user['last']] ?? null,
+                ]
+            );
         }
     }
 
     private function seedOrders(): void
     {
+        if (Order::query()->exists()) {
+            return;
+        }
+
         $orders = SeedData::orders();
         $menuItemsByName = MenuItem::all()->keyBy('name');
 
@@ -326,6 +360,10 @@ class RestaurantSeeder extends Seeder
 
     private function seedReservations(): void
     {
+        if (Reservation::query()->exists()) {
+            return;
+        }
+
         $reservations = SeedData::reservations();
 
         foreach ($reservations as $reservation) {
@@ -346,6 +384,10 @@ class RestaurantSeeder extends Seeder
 
     private function seedCateringInquiries(): void
     {
+        if (CateringInquiry::query()->exists()) {
+            return;
+        }
+
         $inquiries = SeedData::cateringInquiries();
         $packages = CateringPackage::all();
 
@@ -370,6 +412,10 @@ class RestaurantSeeder extends Seeder
 
     private function seedContactMessages(): void
     {
+        if (ContactMessage::query()->exists()) {
+            return;
+        }
+
         $messages = SeedData::contactMessages();
 
         foreach ($messages as $message) {
@@ -389,6 +435,10 @@ class RestaurantSeeder extends Seeder
 
     private function seedGiftCards(): void
     {
+        if (GiftCard::query()->exists()) {
+            return;
+        }
+
         $cards = SeedData::giftCards();
         $designsByName = GiftCardDesign::all()->keyBy('name');
 
@@ -409,6 +459,10 @@ class RestaurantSeeder extends Seeder
 
     private function seedToastSyncLogs(): void
     {
+        if (ToastSyncLog::query()->exists()) {
+            return;
+        }
+
         $logs = SeedData::toastLogs();
         $today = now()->startOfDay();
 

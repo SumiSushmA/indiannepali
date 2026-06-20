@@ -29,8 +29,12 @@ class GiftCardPurchaseMail extends Mailable
 
         return new Envelope(
             subject: "Your {$name} gift card — \${$this->card->face_value}",
-            headers: $this->listUnsubscribeHeaders($this->recipientEmail),
         );
+    }
+
+    protected function listUnsubscribeRecipientEmail(): ?string
+    {
+        return $this->recipientEmail;
     }
 
     public function content(): Content

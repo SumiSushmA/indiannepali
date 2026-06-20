@@ -32,8 +32,12 @@ class CustomerVerificationMail extends Mailable
 
         return new Envelope(
             subject: $subject,
-            headers: $this->listUnsubscribeHeaders($this->email),
         );
+    }
+
+    protected function listUnsubscribeRecipientEmail(): ?string
+    {
+        return $this->email;
     }
 
     public function content(): Content

@@ -226,6 +226,20 @@
   margin-top: 8px;
 }
 
+.cust-foot-credit {
+  margin-top: 8px;
+}
+
+.cust-foot-credit a {
+  color: var(--sand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cust-foot-credit a:hover {
+  color: var(--cream);
+}
+
 .cust-foot-unsub a {
   color: var(--sand);
   text-decoration: underline;

@@ -24,8 +24,12 @@ class ReservationConfirmationMail extends Mailable
 
         return new Envelope(
             subject: "Table reserved — {$this->reservation->reference} · {$name}",
-            headers: $this->listUnsubscribeHeaders($this->reservation->customer_email),
         );
+    }
+
+    protected function listUnsubscribeRecipientEmail(): ?string
+    {
+        return $this->reservation->customer_email;
     }
 
     public function content(): Content

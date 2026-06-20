@@ -7,17 +7,12 @@ use App\Models\GiftAmount;
 use App\Services\AdminData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class GiftAmountController extends Controller
 {
-    public function index(): View
+    public function index(): RedirectResponse
     {
-        return view('admin.gift-amounts.index', [
-            'active' => 'gift-amounts',
-            'amounts' => GiftAmount::orderBy('sort_order')->get(),
-            'badges' => AdminData::getNavBadges(),
-        ]);
+        return redirect()->route('admin.gift-cards.index')->withFragment('amounts');
     }
 
     public function store(Request $request): RedirectResponse
@@ -32,7 +27,7 @@ class GiftAmountController extends Controller
 
         GiftAmount::create($data);
 
-        return back()->with('success', 'Gift amount added.');
+        return redirect()->route('admin.gift-cards.index')->withFragment('amounts')->with('success', 'Gift amount added.');
     }
 
     public function update(Request $request, GiftAmount $giftAmount): RedirectResponse
@@ -46,13 +41,13 @@ class GiftAmountController extends Controller
 
         $giftAmount->update($data);
 
-        return back()->with('success', 'Gift amount updated.');
+        return redirect()->route('admin.gift-cards.index')->withFragment('amounts')->with('success', 'Gift amount updated.');
     }
 
     public function destroy(GiftAmount $giftAmount): RedirectResponse
     {
         $giftAmount->delete();
 
-        return back()->with('success', 'Gift amount deleted.');
+        return redirect()->route('admin.gift-cards.index')->withFragment('amounts')->with('success', 'Gift amount deleted.');
     }
 }

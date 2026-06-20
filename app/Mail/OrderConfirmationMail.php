@@ -24,8 +24,12 @@ class OrderConfirmationMail extends Mailable
 
         return new Envelope(
             subject: "Order confirmed — {$this->order->order_number} · {$name}",
-            headers: $this->listUnsubscribeHeaders($this->order->customer_email),
         );
+    }
+
+    protected function listUnsubscribeRecipientEmail(): ?string
+    {
+        return $this->order->customer_email;
     }
 
     public function content(): Content

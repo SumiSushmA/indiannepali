@@ -65,6 +65,7 @@
 
                 <div class="cust-foot-base">
                     <p>© {{ date('Y') }} {{ $site['restaurant_name'] ?? 'Indian-Nepali Kitchen' }}. All rights reserved.</p>
+                    <p class="cust-foot-credit">Developed by: <a href="https://www.linkedin.com/in/sushma-sharma-123943293/" target="_blank" rel="noopener noreferrer">Sushma Sharma</a></p>
                 </div>
             </div>
         </div>
