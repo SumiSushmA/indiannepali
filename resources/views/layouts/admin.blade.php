@@ -6,7 +6,7 @@
     <title>{{ $site['restaurant_name'] ?? 'Indian Nepali Kitchen' }} — Admin @isset($pageTitle) · {{ $pageTitle }} @endisset</title>
     <link rel="icon" href="/logo.png" type="image/png">
     <link rel="stylesheet" href="/css/theme.css">
-    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/admin.css?v={{ filemtime(public_path('css/admin.css')) }}">
     @stack('styles')
 </head>
 <body>

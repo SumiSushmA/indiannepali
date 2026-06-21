@@ -17,24 +17,20 @@ $inProgress = count(array_filter($orders, fn($o) => in_array($o['status'], ['Pre
 @endphp
 
 @section('content')
-<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px;">
-    <div>
-        <h1 style="font-size:30px;font-weight:600;">Orders</h1>
-        <p style="color:var(--muted);font-size:14.5px;margin-top:6px;">{{ $newCount }} new · {{ $inProgress }} in progress</p>
+<div class="adm-page-head">
+    <div class="adm-page-head__main">
+        <h1 class="adm-page-title">Orders</h1>
+        <p class="adm-page-sub">{{ $newCount }} new · {{ $inProgress }} in progress</p>
     </div>
-    <a href="{{ route('menu') }}" target="_blank" class="btn btn-ghost btn-sm" style="text-decoration:none;">View customer menu ↗</a>
+    <a href="{{ route('menu') }}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm adm-page-head__action">View customer menu ↗</a>
 </div>
 
-<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px;">
-    <div class="adm-tabs" style="margin-bottom:0;border-bottom:none;flex:1;min-width:340px;">
-        @foreach($tabs as $tab)
-        <a href="{{ $tab === 'All' ? route('admin.orders.index', request()->only('q')) : route('admin.orders.index', array_merge(['status' => $tab], request()->only('q'))) }}" class="adm-tab {{ $activeTab === $tab ? 'active' : '' }}">
-            {{ $tab }} <span class="adm-tab-count">{{ $counts[$tab] ?? 0 }}</span>
-        </a>
-        @endforeach
-    </div>
-
-    <div></div>
+<div class="adm-tabs adm-tabs--scroll">
+    @foreach($tabs as $tab)
+    <a href="{{ $tab === 'All' ? route('admin.orders.index', request()->only('q')) : route('admin.orders.index', array_merge(['status' => $tab], request()->only('q'))) }}" class="adm-tab {{ $activeTab === $tab ? 'active' : '' }}">
+        {{ $tab }} <span class="adm-tab-count">{{ $counts[$tab] ?? 0 }}</span>
+    </a>
+    @endforeach
 </div>
 
 <div class="adm-card" style="padding:8px;">

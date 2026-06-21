@@ -10,31 +10,43 @@ use Illuminate\Support\Collection;
 
 class AdminNotifications
 {
+    public static function markAllRead(): void
+    {
+        session(['admin_notifications_cleared_at' => now()->timestamp]);
+    }
+
+    private static function clearedAfter(): int
+    {
+        return (int) session('admin_notifications_cleared_at', 0);
+    }
+
     /** @return array{items: list<array<string, mixed>>, total: int} */
     public static function get(): array
     {
-        $items = collect()
-            ->merge(static::orderNotifications())
-            ->merge(static::reservationNotifications())
-            ->merge(static::cateringNotifications())
-            ->merge(static::inquiryNotifications())
+        $items = static::buildItems()
+            ->filter(fn (array $item) => ($item['at'] ?? 0) > static::clearedAfter())
             ->sortByDesc('at')
-            ->values()
-            ->take(15)
-            ->all();
+            ->values();
 
         return [
-            'items' => $items,
-            'total' => static::actionableCount(),
+            'items' => $items->take(15)->all(),
+            'total' => $items->count(),
         ];
     }
 
     public static function actionableCount(): int
     {
-        return Order::query()->whereIn('status', ['New', 'Preparing'])->count()
-            + Reservation::query()->where('status', 'Pending')->count()
-            + CateringInquiry::query()->where('status', 'New')->count()
-            + ContactMessage::query()->where('status', 'Unread')->count();
+        return static::get()['total'];
+    }
+
+    /** @return Collection<int, array<string, mixed>> */
+    private static function buildItems(): Collection
+    {
+        return collect()
+            ->merge(static::orderNotifications())
+            ->merge(static::reservationNotifications())
+            ->merge(static::cateringNotifications())
+            ->merge(static::inquiryNotifications());
     }
 
     private static function orderNotifications(): Collection

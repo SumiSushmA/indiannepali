@@ -83,7 +83,6 @@ class User extends Authenticatable
             'about',
             'gallery',
             'giftcards',
-            'toast',
             'users',
             'settings',
             'profile',

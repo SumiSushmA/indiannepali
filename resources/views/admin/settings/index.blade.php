@@ -5,14 +5,14 @@ $tab = $tab ?? 'restaurant';
 @endphp
 
 @section('content')
-<div style="max-width:1080px;">
-    <div style="margin-bottom:26px;">
-        <h1 style="font-size:30px;font-weight:600;">Settings</h1>
-        <p style="color:var(--muted);font-size:14.5px;margin-top:6px;">Manage restaurant settings, users, and your profile in one place.</p>
+<div class="adm-settings">
+    <div class="adm-settings-head">
+        <h1 class="adm-page-title">Settings</h1>
+        <p class="adm-page-sub">Manage restaurant settings, users, and your profile in one place.</p>
     </div>
 
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <div class="adm-settings-toolbar">
+        <div class="adm-settings-tabs">
             @foreach([
                 'restaurant' => 'Settings',
                 'users' => 'Users & roles',
@@ -20,22 +20,22 @@ $tab = $tab ?? 'restaurant';
             ] as $key => $label)
                 <a href="{{ route('admin.settings.index', ['tab' => $key]) }}"
                    class="btn btn-sm {{ $tab === $key ? 'btn-gold' : 'btn-ghost' }}"
-                   style="text-decoration:none;">{{ $label }}</a>
+                   style="text-decoration:none;flex-shrink:0;">{{ $label }}</a>
             @endforeach
         </div>
         @if($tab === 'restaurant')
-            <button type="submit" form="restaurant-settings-form" class="btn btn-gold">Save settings</button>
+            <button type="submit" form="restaurant-settings-form" class="btn btn-gold adm-settings-save adm-settings-save--top">Save settings</button>
         @endif
     </div>
 
     @if($tab === 'restaurant')
-        <form id="restaurant-settings-form" action="{{ route('admin.settings.update') }}" method="POST">
+        <form id="restaurant-settings-form" class="adm-settings-form" action="{{ route('admin.settings.update') }}" method="POST">
             @csrf @method('PUT')
 
-            <div style="display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px;margin-bottom:16px;align-items:start;">
-                <div class="adm-card" style="padding:22px;">
+            <div class="adm-settings-layout">
+                <div class="adm-card adm-settings-card">
                     <h3 style="font-size:18px;font-weight:600;margin-bottom:16px;">Restaurant profile</h3>
-                    <div style="display:grid;gap:14px;">
+                    <div class="adm-settings-fields">
                         <label style="display:flex;flex-direction:column;gap:6px;">
                             <span style="font-size:13px;color:var(--sand);font-weight:600;">Name</span>
                             <input name="restaurant_name" value="{{ $settings['restaurant_name'] ?? 'Indian-Nepali Kitchen' }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
@@ -75,10 +75,10 @@ $tab = $tab ?? 'restaurant';
                     </div>
                 </div>
 
-                <div style="display:grid;gap:16px;">
-                    <div class="adm-card" style="padding:22px;">
+                <div class="adm-settings-stack">
+                    <div class="adm-card adm-settings-card">
                         <h3 style="font-size:18px;font-weight:600;margin-bottom:16px;">Social links</h3>
-                        <div style="display:grid;gap:14px;">
+                        <div class="adm-settings-fields">
                             @foreach([
                                 ['instagram_url', 'Instagram URL'],
                                 ['facebook_url', 'Facebook URL'],
@@ -92,9 +92,9 @@ $tab = $tab ?? 'restaurant';
                         </div>
                     </div>
 
-                    <div class="adm-card" style="padding:22px;">
+                    <div class="adm-card adm-settings-card">
                         <h3 style="font-size:18px;font-weight:600;margin-bottom:16px;">Ordering & pricing</h3>
-                        <div style="display:grid;grid-template-columns:1fr;gap:14px;">
+                        <div class="adm-settings-fields">
                             <label style="display:flex;flex-direction:column;gap:6px;">
                                 <span style="font-size:13px;color:var(--sand);font-weight:600;">Tax rate</span>
                                 <input name="tax_rate" type="number" step="0.0001" value="{{ $settings['tax_rate'] ?? 0.0875 }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
@@ -128,17 +128,20 @@ $tab = $tab ?? 'restaurant';
                     </div>
                 </div>
             </div>
+            <div class="adm-settings-save-wrap">
+                <button type="submit" class="btn btn-gold adm-settings-save adm-settings-save--bottom">Save settings</button>
+            </div>
         </form>
     @elseif($tab === 'users')
-        <div class="adm-card" style="padding:22px;margin-bottom:18px;">
+        <div class="adm-card adm-settings-card" style="margin-bottom:18px;">
             <h3 style="font-size:17px;font-weight:600;margin-bottom:14px;">Invite sub-admin / admin user</h3>
-            <form action="{{ route('admin.users.store') }}" method="POST" style="display:grid;gap:12px;">
+            <form action="{{ route('admin.users.store') }}" method="POST" class="adm-settings-form" style="display:grid;gap:12px;">
                 @csrf
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="adm-settings-grid-2">
                     <input name="name" placeholder="Full name" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
                     <input name="email" type="email" placeholder="Email" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="adm-settings-grid-2">
                     <select name="role" required data-adm-user-role style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
                         @foreach(['Owner', 'Manager', 'Sub-admin', 'Staff'] as $role)
                             <option value="{{ $role }}">{{ $role }}</option>
@@ -146,7 +149,7 @@ $tab = $tab ?? 'restaurant';
                     </select>
                     <input name="password" type="password" placeholder="Temporary password" required minlength="8" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
                 </div>
-                <div style="display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:8px;" data-adm-user-permissions>
+                <div class="adm-settings-perms" data-adm-user-permissions>
                     <p style="grid-column:1/-1;margin:0;font-size:12px;color:var(--muted);">Owners always have full access. For other roles, choose which admin sections they can open.</p>
                     @foreach($areas as $area)
                         <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sand);">
@@ -160,13 +163,13 @@ $tab = $tab ?? 'restaurant';
         </div>
 
         @if($editUser)
-            <form action="{{ route('admin.users.update', $editUser) }}" method="POST" class="adm-card" style="padding:22px;margin-bottom:18px;">
+            <form action="{{ route('admin.users.update', $editUser) }}" method="POST" class="adm-card adm-settings-form adm-settings-card" style="margin-bottom:18px;">
                 @csrf @method('PATCH')
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                     <h3 style="font-size:17px;font-weight:600;">Edit user: {{ $editUser->name }}</h3>
                     <a href="{{ route('admin.settings.index', ['tab' => 'users']) }}" class="btn btn-ghost btn-sm" style="text-decoration:none;">Close</a>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="adm-settings-grid-2">
                     <input name="name" value="{{ $editUser->name }}" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);">
                     <input name="email" type="email" value="{{ $editUser->email }}" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);">
                     <select name="role" data-adm-user-role style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);">
@@ -180,7 +183,7 @@ $tab = $tab ?? 'restaurant';
                         <option value="inactive" @selected($editUser->status === 'inactive')>Inactive</option>
                     </select>
                 </div>
-                <div style="display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:8px;margin-top:10px;" data-adm-user-permissions>
+                <div class="adm-settings-perms" style="margin-top:10px;" data-adm-user-permissions>
                     <p style="grid-column:1/-1;margin:0;font-size:12px;color:var(--muted);">Owners always have full access. For other roles, choose which admin sections they can open.</p>
                     @foreach($areas as $area)
                         <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sand);">
@@ -224,12 +227,12 @@ $tab = $tab ?? 'restaurant';
             </div>
         </div>
     @else
-        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start;">
-            <form action="{{ route('admin.profile.update') }}" method="POST">
+        <div class="adm-profile-grid">
+            <form action="{{ route('admin.profile.update') }}" method="POST" class="adm-settings-form">
                 @csrf @method('PUT')
-                <div class="adm-card" style="padding:22px;height:100%;">
+                <div class="adm-card adm-settings-card" style="height:100%;">
                     <h3 style="font-size:18px;font-weight:600;margin-bottom:16px;">Profile details</h3>
-                    <div style="display:grid;gap:14px;">
+                    <div class="adm-settings-fields">
                         <input name="name" value="{{ old('name', $profileUser->name) }}" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);">
                         <input name="email" type="email" value="{{ old('email', $profileUser->email) }}" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);">
                     </div>
@@ -237,11 +240,11 @@ $tab = $tab ?? 'restaurant';
                 </div>
             </form>
 
-            <form action="{{ route('admin.profile.password') }}" method="POST">
+            <form action="{{ route('admin.profile.password') }}" method="POST" class="adm-settings-form">
                 @csrf @method('PUT')
-                <div class="adm-card" style="padding:22px;height:100%;">
+                <div class="adm-card adm-settings-card" style="height:100%;">
                     <h3 style="font-size:18px;font-weight:600;margin-bottom:16px;">Change password</h3>
-                    <div style="display:grid;gap:14px;">
+                    <div class="adm-settings-fields">
                         <input name="current_password" type="password" required placeholder="Current password" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);">
                         <input name="password" type="password" required minlength="8" placeholder="New password" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);">
                         <input name="password_confirmation" type="password" required minlength="8" placeholder="Confirm new password" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);">

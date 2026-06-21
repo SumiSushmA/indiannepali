@@ -119,6 +119,13 @@
   font-size: 18px;
 }
 
+.cust-catering-total-note {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
 .cust-catering-groups {
   display: grid;
   gap: 12px;
@@ -132,6 +139,25 @@
   overflow: hidden;
 }
 
+.cust-catering-prep {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--ink-800);
+  border: 1px solid var(--line);
+  color: var(--sand);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.cust-catering-prep svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
 .cust-catering-group summary {
   cursor: pointer;
   list-style: none;
@@ -139,6 +165,37 @@
   font-weight: 600;
   color: var(--cream);
   font-size: 14.5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cust-catering-group-title {
+  min-width: 0;
+}
+
+.cust-catering-group-tag {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 10px;
+  flex-shrink: 0;
+}
+
+.cust-catering-options--included {
+  grid-template-columns: 1fr;
+}
+
+.cust-catering-option__price--included {
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .cust-catering-group summary::-webkit-details-marker {
@@ -154,17 +211,45 @@
 
 .cust-catering-option {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   font-size: 13.5px;
   color: var(--cream-2);
   line-height: 1.4;
   cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: border-color .15s, background .15s;
 }
 
-.cust-catering-option input {
+.cust-catering-option:hover {
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.cust-catering-option__label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cust-catering-option__label input {
   margin-top: 3px;
   accent-color: var(--gold-500);
+  flex-shrink: 0;
+}
+
+.cust-catering-option__price {
+  color: var(--gold-400);
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .cust-catering-note {
@@ -262,6 +347,10 @@
   .cust-catering-wrap {
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  .cust-catering-tabs {
+    justify-content: center;
   }
 
   .cust-catering-tray-grid {

@@ -17,7 +17,6 @@ $nav = [
         ['id' => 'giftcards', 'label' => 'Gift Cards', 'icon' => 'tag', 'route' => 'admin.gift-cards.index'],
     ]],
     ['group' => 'System', 'items' => [
-        ['id' => 'toast', 'label' => 'Toast POS', 'icon' => 'refresh', 'route' => 'admin.toast.index'],
         ['id' => 'settings', 'label' => 'Settings', 'icon' => 'settings', 'route' => 'admin.settings.index'],
     ]],
 ];
@@ -47,7 +46,6 @@ $nav = [
                             str_contains($item['route'], 'about') => 'about',
                             str_contains($item['route'], 'gallery') => 'gallery',
                             str_contains($item['route'], 'gift') => 'giftcards',
-                            str_contains($item['route'], 'toast') => 'toast',
                             str_contains($item['route'], 'users') => 'users',
                             str_contains($item['route'], 'settings') => 'settings',
                             str_contains($item['route'], 'profile') => 'profile',

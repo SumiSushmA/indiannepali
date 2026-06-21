@@ -5,17 +5,18 @@ $total = $galleryCats->sum(fn($c) => $c->images->count());
 @endphp
 
 @section('content')
-<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px;">
-    <div>
-        <h1 style="font-size:30px;font-weight:600;">Gallery</h1>
-        <p style="color:var(--muted);font-size:14.5px;margin-top:6px;">{{ $total }} images live · {{ $galleryCats->count() }} categories</p>
+<div class="adm-page-head">
+    <div class="adm-page-head__main">
+        <h1 class="adm-page-title">Gallery</h1>
+        <p class="adm-page-sub">{{ $total }} images live · {{ $galleryCats->count() }} categories</p>
     </div>
 </div>
 
-<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+<div class="adm-gallery-tabs">
     @foreach($galleryCats as $c)
-    <a href="{{ route('admin.gallery.index', ['category' => $c->slug]) }}" style="text-decoration:none;background:{{ $activeCategory && $c->id === $activeCategory->id ? 'var(--gold-600)' : 'var(--ink-700)' }};color:{{ $activeCategory && $c->id === $activeCategory->id ? '#211405' : 'var(--cream-2)' }};border:1px solid {{ $activeCategory && $c->id === $activeCategory->id ? 'var(--gold-600)' : 'var(--line)' }};border-radius:999px;padding:9px 16px;cursor:pointer;font-size:13.5px;font-weight:600;font-family:var(--sans);display:flex;gap:8px;align-items:center;">
-        {{ $c->name }} <span style="font-size:11px;opacity:.7;">{{ $c->images->count() }}</span>
+    <a href="{{ route('admin.gallery.index', ['category' => $c->slug]) }}"
+       class="adm-gallery-tab {{ $activeCategory && $c->id === $activeCategory->id ? 'is-active' : '' }}">
+        {{ $c->name }} <span class="adm-gallery-tab__count">{{ $c->images->count() }}</span>
     </a>
     @endforeach
 </div>

@@ -2,45 +2,46 @@
 
 @php
     $orderOnlineUrl = \App\Services\Toast\ToastConfiguration::onlineOrderingUrl();
-    $cardHref = $orderOnlineUrl ?: route('menu', ['q' => $item['name']]);
-    $cardTarget = $orderOnlineUrl ? '_blank' : null;
+    $menuHref = route('menu', ['q' => $item['name']]);
     $priceLabel = is_numeric($item['price'] ?? null)
         ? number_format((float) $item['price'], 2, '.', '')
         : ($item['price'] ?? '');
 @endphp
 
-<a href="{{ $cardHref }}" @if($cardTarget) target="{{ $cardTarget }}" rel="noopener noreferrer" @endif class="cust-dish-card cust-click-card">
-    <div class="cust-dish-card-media">
-        <x-food-image :item="$item" :h="200" />
-        @if(!empty($item['popular']))
-            <div style="position:absolute;top:14px;left:14px;background:rgba(10,10,10,.75);backdrop-filter:blur(6px);border:1px solid var(--brand-700);color:var(--brand-400);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 11px;border-radius:999px">★ Popular</div>
-        @endif
-    </div>
-    <div style="padding:22px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
-            <h4 style="font-size:21px;display:flex;align-items:center;gap:8px;margin:0">
-                @if(!empty($item['veg']))
-                    <x-icon name="veg" :size="13" color="var(--leaf-500)" />
-                @endif
-                {{ $item['name'] }}
-            </h4>
-            <span style="color:var(--brand-400);font-weight:600;font-family:var(--serif);font-size:21px">${{ $priceLabel }}</span>
+<article class="cust-dish-card">
+    <a href="{{ $menuHref }}" class="cust-dish-card-main">
+        <div class="cust-dish-card-media">
+            <x-food-image :item="$item" :h="200" />
+            @if(!empty($item['popular']))
+                <div class="cust-dish-card-badge">★ Popular</div>
+            @endif
         </div>
-        <p style="color:var(--muted);font-size:14px;line-height:1.55;margin-top:8px;min-height:44px">{{ $item['desc'] }}</p>
-        @if($orderOnlineUrl)
-            <div style="margin-top:16px" onclick="event.stopPropagation()">
-                <a href="{{ $orderOnlineUrl }}" target="_blank" rel="noopener noreferrer" class="btn btn-gold btn-sm" style="width:100%;justify-content:center;text-decoration:none;display:inline-flex">
-                    Order online <x-icon name="arrow" :size="16" />
-                </a>
+        <div class="cust-dish-card-body">
+            <div class="cust-dish-card-title-row">
+                <h4 class="cust-dish-card-title">
+                    @if(!empty($item['veg']))
+                        <x-icon name="veg" :size="13" color="var(--leaf-500)" />
+                    @endif
+                    {{ $item['name'] }}
+                </h4>
+                <span class="cust-dish-card-price">${{ $priceLabel }}</span>
             </div>
-        @else
-        <form action="{{ route('cart.add') }}" method="POST" style="margin-top:16px" onclick="event.stopPropagation()">
+            <p class="cust-dish-card-desc">{{ $item['desc'] }}</p>
+        </div>
+    </a>
+    @if($orderOnlineUrl)
+        <div class="cust-dish-card-action">
+            <a href="{{ $orderOnlineUrl }}" target="_blank" rel="noopener noreferrer" class="btn btn-gold btn-sm cust-dish-card-btn">
+                Order online <x-icon name="arrow" :size="16" />
+            </a>
+        </div>
+    @else
+        <form action="{{ route('cart.add') }}" method="POST" class="cust-dish-card-action">
             @csrf
             <input type="hidden" name="item_id" value="{{ $item['id'] }}">
-            <button type="submit" class="btn btn-gold btn-sm" style="width:100%;justify-content:center">
+            <button type="submit" class="btn btn-gold btn-sm cust-dish-card-btn">
                 <x-icon name="plus" :size="16" /> Add to order
             </button>
         </form>
-        @endif
-    </div>
-</a>
+    @endif
+</article>

@@ -6,9 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $site['restaurant_name'] ?? 'Indian Nepali Kitchen' }} @isset($pageTitle) · {{ $pageTitle }} @endisset</title>
     <link rel="icon" href="/logo.png" type="image/png">
-    <link rel="stylesheet" href="/css/theme.css">
-    <link rel="stylesheet" href="/css/customer.css">
-    <link rel="stylesheet" href="/css/footer-cta.css">
+    <link rel="stylesheet" href="/css/theme.css?v={{ filemtime(public_path('css/theme.css')) }}">
+    <link rel="stylesheet" href="/css/customer.css?v={{ filemtime(public_path('css/customer.css')) }}">
+    <link rel="stylesheet" href="/css/footer-cta.css?v={{ filemtime(public_path('css/footer-cta.css')) }}">
     @stack('styles')
 </head>
 <body id="cust-root" data-page="{{ $bodyPage ?? 'page' }}" @if(session('open_cart')) data-open-cart="1" @endif>

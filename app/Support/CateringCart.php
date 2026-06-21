@@ -100,12 +100,15 @@ class CateringCart
                 $summary .= '…';
             }
 
+            $unitPrice = CateringMenu::perPersonUnitPrice($selections);
+
             $lines[] = [
                 'id' => self::PER_PERSON_ID,
                 'name' => 'Catering Menu ('.$guests.' guests)',
-                'price' => CateringMenu::PER_PERSON_PRICE,
+                'price' => $unitPrice,
                 'qty' => $guests,
                 'desc' => $summary ?: 'Custom catering selections',
+                'img' => 'catering spread',
                 'catering' => true,
                 'catering_type' => 'per_person',
                 'selections' => $selections,
@@ -124,6 +127,7 @@ class CateringCart
                 'price' => $tray['price'],
                 'qty' => (int) $qty,
                 'desc' => $tray['serves'],
+                'img' => $tray['name'],
                 'catering' => true,
                 'catering_type' => 'tray',
             ];

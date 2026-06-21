@@ -5,12 +5,12 @@ $gtone = ['Active' => 'green', 'Partially used' => 'gold', 'Redeemed' => 'neutra
 @endphp
 
 @section('content')
-<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px;">
-    <div>
-        <h1 style="font-size:30px;font-weight:600;">Gift cards</h1>
-        <p style="color:var(--muted);font-size:14.5px;margin-top:6px;">{{ $giftStats['active'] }} active cards · {{ $giftStats['outstanding'] }} outstanding balance</p>
+<div class="adm-page-head">
+    <div class="adm-page-head__main">
+        <h1 class="adm-page-title">Gift cards</h1>
+        <p class="adm-page-sub">{{ $giftStats['active'] }} active cards · {{ $giftStats['outstanding'] }} outstanding balance</p>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <div class="adm-page-head__action" style="display:flex;gap:8px;flex-wrap:wrap;">
         <button type="button" class="btn btn-gold btn-sm" onclick="document.getElementById('gift-issue-dialog')?.showModal()"><x-icon name="plus" :size="16"/> Issue card</button>
         <button type="button" class="btn btn-gold btn-sm" onclick="document.getElementById('gift-add-design-dialog')?.showModal()"><x-icon name="plus" :size="16"/> Add design</button>
     </div>
@@ -40,7 +40,7 @@ $gtone = ['Active' => 'green', 'Partially used' => 'gold', 'Redeemed' => 'neutra
     @endforeach
 </div>
 
-<div class="adm-card" style="padding:22px;margin-bottom:18px;" id="amounts">
+<div class="adm-card adm-gift-card" id="amounts">
     <h3 style="font-size:17px;font-weight:600;margin-bottom:6px;">Preset amounts</h3>
     <p style="color:var(--muted);font-size:13px;margin-bottom:14px;">Quick-select amounts on the customer gift card page.</p>
     <form action="{{ route('admin.gift-amounts.store') }}" method="POST" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px;">
@@ -70,30 +70,38 @@ $gtone = ['Active' => 'green', 'Partially used' => 'gold', 'Redeemed' => 'neutra
     </div>
 </div>
 
-<div class="adm-card" style="padding:22px;margin-bottom:18px;">
+<div class="adm-card adm-gift-card">
     <h3 style="font-size:17px;font-weight:600;margin-bottom:14px;">Card design colors</h3>
     <p style="color:var(--muted);font-size:13px;margin-bottom:14px;">Update existing designs. Active designs appear on the customer gift cards page.</p>
 
-    <div style="display:grid;gap:8px;">
+    <div>
         @foreach($designs as $design)
             @php($palette = $design->palette())
-            <form action="{{ route('admin.gift-cards.designs.update', $design) }}" method="POST" style="display:grid;grid-template-columns:48px 1.2fr 1fr .75fr .75fr .75fr .75fr auto auto auto;gap:10px;align-items:center;">
+            <form action="{{ route('admin.gift-cards.designs.update', $design) }}" method="POST" class="adm-gift-design-form">
                 @csrf @method('PATCH')
-                <div style="width:48px;height:38px;border-radius:8px;border:1px solid var(--line);background:linear-gradient(125deg, {{ $palette['start'] }} 0%, {{ $palette['mid'] }} 48%, {{ $palette['end'] }} 100%);"></div>
-                <input name="name" value="{{ $design->name }}" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:9px 10px;color:var(--cream);font-family:var(--sans);">
-                <input name="subtitle" value="{{ $design->subtitle }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:9px 10px;color:var(--cream);font-family:var(--sans);">
-                <input name="bg_start" type="color" value="{{ $palette['start'] }}" style="width:100%;height:36px;background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:3px;">
-                <input name="bg_mid" type="color" value="{{ $palette['mid'] }}" style="width:100%;height:36px;background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:3px;">
-                <input name="bg_end" type="color" value="{{ $palette['end'] }}" style="width:100%;height:36px;background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:3px;">
-                <input name="text_color" type="color" value="{{ $palette['text'] }}" style="width:100%;height:36px;background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:3px;">
-                <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sand);"><input type="checkbox" name="is_active" value="1" @checked($design->is_active)> Active</label>
-                <button type="submit" class="btn btn-ghost btn-sm">Save</button>
-                <button type="submit"
-                        form="delete-design-{{ $design->id }}"
-                        class="btn btn-ghost btn-sm"
-                        style="color:var(--spice-400);border-color:var(--spice-600);">
-                    Delete
-                </button>
+                <div class="adm-gift-design-main">
+                    <div class="adm-gift-design-swatch" style="background:linear-gradient(125deg, {{ $palette['start'] }} 0%, {{ $palette['mid'] }} 48%, {{ $palette['end'] }} 100%);"></div>
+                    <div class="adm-gift-design-fields">
+                        <input name="name" value="{{ $design->name }}" required placeholder="Design name">
+                        <input name="subtitle" value="{{ $design->subtitle }}" placeholder="Subtitle">
+                    </div>
+                </div>
+                <div class="adm-gift-design-colors">
+                    <input name="bg_start" type="color" value="{{ $palette['start'] }}" title="Start color">
+                    <input name="bg_mid" type="color" value="{{ $palette['mid'] }}" title="Mid color">
+                    <input name="bg_end" type="color" value="{{ $palette['end'] }}" title="End color">
+                    <input name="text_color" type="color" value="{{ $palette['text'] }}" title="Text color">
+                </div>
+                <div class="adm-gift-design-actions">
+                    <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sand);"><input type="checkbox" name="is_active" value="1" @checked($design->is_active)> Active</label>
+                    <button type="submit" class="btn btn-ghost btn-sm">Save</button>
+                    <button type="submit"
+                            form="delete-design-{{ $design->id }}"
+                            class="btn btn-ghost btn-sm"
+                            style="color:var(--spice-400);border-color:var(--spice-600);">
+                        Delete
+                    </button>
+                </div>
             </form>
             <form id="delete-design-{{ $design->id }}"
                   action="{{ route('admin.gift-cards.designs.destroy', $design) }}"
@@ -107,8 +115,8 @@ $gtone = ['Active' => 'green', 'Partially used' => 'gold', 'Redeemed' => 'neutra
     </div>
 </div>
 
-<div class="adm-card" style="padding:8px;">
-    <div class="adm-table-wrap">
+<div class="adm-card" style="padding:8px;min-width:0;">
+    <div class="adm-table-wrap adm-gift-table-wrap">
         <table class="adm-table">
             <thead>
                 <tr>
@@ -160,7 +168,7 @@ $gtone = ['Active' => 'green', 'Partially used' => 'gold', 'Redeemed' => 'neutra
                 @endforeach
             </select>
         </label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="adm-gift-dialog-grid-2">
             <label style="display:grid;gap:6px;">
                 <span style="font-size:13px;color:var(--sand);font-weight:600;">Face value ($)</span>
                 <input name="face_value" type="number" step="1" min="10" max="1000" placeholder="e.g. 50" required class="adm-inp">
@@ -170,7 +178,7 @@ $gtone = ['Active' => 'green', 'Partially used' => 'gold', 'Redeemed' => 'neutra
                 <input name="recipient_name" placeholder="Recipient name" required class="adm-inp">
             </label>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="adm-gift-dialog-grid-2">
             <label style="display:grid;gap:6px;">
                 <span style="font-size:13px;color:var(--sand);font-weight:600;">Sender name</span>
                 <input name="sender_name" placeholder="Optional" class="adm-inp">
@@ -192,7 +200,7 @@ $gtone = ['Active' => 'green', 'Partially used' => 'gold', 'Redeemed' => 'neutra
         @csrf
         <h4 style="margin:0;font-size:19px;font-weight:600;">Add design</h4>
         <p style="margin:0;font-size:13px;color:var(--muted);">Create a new gift card color theme for the customer page.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="adm-gift-dialog-grid-2">
             <label style="display:grid;gap:6px;">
                 <span style="font-size:13px;color:var(--sand);font-weight:600;">Design name</span>
                 <input name="name" placeholder="Design name" required class="adm-inp">
@@ -202,7 +210,7 @@ $gtone = ['Active' => 'green', 'Partially used' => 'gold', 'Redeemed' => 'neutra
                 <input name="subtitle" placeholder="Subtitle" class="adm-inp">
             </label>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+        <div class="adm-gift-dialog-colors">
             <label style="display:grid;gap:6px;">
                 <span style="font-size:12px;color:var(--sand);">Start color</span>
                 <input name="bg_start" type="color" value="#c9922a" class="adm-inp" style="height:44px;padding:4px;">

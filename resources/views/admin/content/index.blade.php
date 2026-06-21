@@ -45,7 +45,7 @@ $typeTone = ['Text' => 'neutral', 'Promotion' => 'gold', 'Media' => 'purple'];
     </div>
 </div>
 
-<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:18px;">
+<div class="adm-review-section-head">
     <div>
         <h2 style="font-size:22px;font-weight:600;">Guest reviews</h2>
         <p style="color:var(--muted);font-size:14px;margin-top:6px;">{{ $reviews->count() }} reviews · featured on the homepage</p>
@@ -57,13 +57,13 @@ $typeTone = ['Text' => 'neutral', 'Promotion' => 'gold', 'Media' => 'purple'];
     <form action="{{ route('admin.reviews.store') }}" method="POST" style="padding:18px;display:grid;gap:12px;">
         @csrf
         <h3 style="font-size:19px;font-weight:600;margin:0;">Add review</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-            <input name="author_name" placeholder="Author name" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
-            <input name="stars" type="number" min="1" max="5" value="5" placeholder="Stars" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
-            <input name="source_tag" placeholder="Source (e.g. Google)" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);">
+        <div class="adm-review-dialog-grid">
+            <input name="author_name" placeholder="Author name" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);width:100%;box-sizing:border-box;">
+            <input name="stars" type="number" min="1" max="5" value="5" placeholder="Stars" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);width:100%;box-sizing:border-box;">
+            <input name="source_tag" placeholder="Source (e.g. Google)" required style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);width:100%;box-sizing:border-box;">
         </div>
-        <textarea name="body" placeholder="Review text" required rows="2" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);resize:vertical;"></textarea>
-        <div style="display:flex;gap:12px;align-items:center;justify-content:flex-end;">
+        <textarea name="body" placeholder="Review text" required rows="2" style="background:var(--ink-800);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--cream);font-family:var(--sans);resize:vertical;width:100%;box-sizing:border-box;"></textarea>
+        <div class="adm-review-dialog-footer">
             <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--cream-2);margin-right:auto;">
                 <input type="checkbox" name="is_featured" value="1" checked> Featured on site
             </label>
@@ -73,40 +73,35 @@ $typeTone = ['Text' => 'neutral', 'Promotion' => 'gold', 'Media' => 'purple'];
     </form>
 </dialog>
 
-<div class="adm-card" style="padding:8px;">
-    <div class="adm-table-wrap">
-        <table class="adm-table">
-            <thead>
-                <tr>
-                    <th>Author</th><th>Stars</th><th>Review</th><th>Source</th><th>Featured</th><th class="right"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($reviews as $review)
-                <tr>
-                    <td colspan="6" style="padding:16px;">
-                        <form action="{{ route('admin.reviews.update', $review) }}" method="POST" style="display:grid;gap:10px;">
-                            @csrf @method('PUT')
-                            <div style="display:grid;grid-template-columns:1fr 80px 120px auto auto;gap:10px;align-items:center;">
-                                <input name="author_name" value="{{ $review->author_name }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--cream);font-size:14px;font-family:var(--sans);">
-                                <input name="stars" type="number" min="1" max="5" value="{{ $review->stars }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--cream);font-size:14px;font-family:var(--sans);">
-                                <input name="source_tag" value="{{ $review->source_tag }}" style="background:var(--ink-800);border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--cream);font-size:14px;font-family:var(--sans);">
-                                <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--cream-2);white-space:nowrap;">
-                                    <input type="checkbox" name="is_featured" value="1" @checked($review->is_featured)> Featured
-                                </label>
-                                <button type="submit" class="btn btn-ghost btn-sm">Save</button>
-                            </div>
-                            <textarea name="body" rows="2" style="background:var(--ink-800);border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--cream);font-size:14px;font-family:var(--sans);resize:vertical;">{{ $review->body }}</textarea>
-                        </form>
-                        <form action="{{ route('admin.reviews.destroy', $review) }}" method="POST" style="margin-top:8px;" data-confirm="Delete this review?">
-                            @csrf @method('DELETE')
-                            <button type="submit" style="width:34px;height:34px;border-radius:9px;background:transparent;border:1px solid var(--spice-600);color:var(--spice-400);cursor:pointer;display:grid;place-items:center;" aria-label="Delete review"><x-icon name="trash" :size="16"/></button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+<div class="adm-card" style="padding:0;min-width:0;">
+    <div class="adm-review-list">
+        @forelse($reviews as $review)
+        <div class="adm-review-card">
+            <form action="{{ route('admin.reviews.update', $review) }}" method="POST" class="adm-review-form">
+                @csrf @method('PUT')
+                <div class="adm-review-row">
+                    <input name="author_name" value="{{ $review->author_name }}" placeholder="Author">
+                    <input name="stars" type="number" min="1" max="5" value="{{ $review->stars }}" placeholder="Stars">
+                    <input name="source_tag" value="{{ $review->source_tag }}" placeholder="Source">
+                </div>
+                <textarea name="body" rows="3" placeholder="Review text">{{ $review->body }}</textarea>
+                <div class="adm-review-footer">
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--cream-2);">
+                        <input type="checkbox" name="is_featured" value="1" @checked($review->is_featured)> Featured
+                    </label>
+                    <div class="adm-review-meta">
+                        <button type="submit" class="btn btn-ghost btn-sm">Save</button>
+                        <button type="submit" form="delete-review-{{ $review->id }}" style="width:34px;height:34px;border-radius:9px;background:transparent;border:1px solid var(--spice-600);color:var(--spice-400);cursor:pointer;display:grid;place-items:center;" aria-label="Delete review"><x-icon name="trash" :size="16"/></button>
+                    </div>
+                </div>
+            </form>
+            <form id="delete-review-{{ $review->id }}" action="{{ route('admin.reviews.destroy', $review) }}" method="POST" data-confirm="Delete this review?">
+                @csrf @method('DELETE')
+            </form>
+        </div>
+        @empty
+        <div style="padding:28px 16px;text-align:center;color:var(--muted);font-size:14px;">No reviews yet.</div>
+        @endforelse
     </div>
 </div>
 @endsection

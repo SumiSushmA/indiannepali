@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="cust-checkout-page">
-    <a href="{{ route('menu') }}" class="btn btn-ghost btn-sm cust-checkout-back"><x-icon name="arrowL" :size="16" /> Back to menu</a>
+    <a href="{{ ($isCateringOnly ?? false) ? route('catering') : route('menu') }}" class="btn btn-ghost btn-sm cust-checkout-back"><x-icon name="arrowL" :size="16" /> Back to {{ ($isCateringOnly ?? false) ? 'catering' : 'menu' }}</a>
     <h1 class="cust-checkout-title">Checkout</h1>
 
     <div class="cust-payment-badge {{ ($toastPayment['live'] ?? false) ? 'live' : '' }}">

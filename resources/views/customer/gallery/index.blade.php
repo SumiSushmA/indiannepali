@@ -7,8 +7,8 @@
     <p style="color:var(--sand);font-size:17px;line-height:1.65;margin-top:18px">The plates, the room, and the feasts we cater — browse by what you're after.</p>
 </div>
 
-<div style="max-width:1200px;margin:0 auto;padding:0 32px 110px">
-    <div style="display:flex;justify-content:center;gap:8px;margin:40px 0 36px;flex-wrap:wrap">
+<div class="cust-gallery-page">
+    <div class="cust-gallery-tabs">
         <a href="{{ route('gallery') }}" class="cust-tab {{ $tab === 'all' ? 'active' : '' }}">All</a>
         @foreach($cats as $c)
             <a href="{{ route('gallery', ['tab' => $c['id']]) }}" class="cust-tab {{ $tab === $c['id'] ? 'active' : '' }}">{{ $c['name'] }}</a>

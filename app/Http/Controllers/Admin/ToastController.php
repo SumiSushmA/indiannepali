@@ -20,10 +20,6 @@ class ToastController extends Controller
             'active' => 'toast',
             'toast' => AdminData::getToast(),
             'badges' => AdminData::getNavBadges(),
-            'paymentMode' => ToastConfiguration::mode(),
-            'paymentLabel' => ToastConfiguration::label(),
-            'credentials' => ToastConfiguration::credentialStatus(),
-            'isLive' => ToastConfiguration::isLive(),
         ]);
     }
 

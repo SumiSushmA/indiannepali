@@ -91,6 +91,10 @@
   color: var(--brand-400);
 }
 
+.ink-hero__marquee .cust-marquee-track {
+  animation: marq 40s linear infinite;
+}
+
 .ink-hero__pill {
   display: inline-flex;
   align-items: center;
@@ -257,7 +261,17 @@
   }
 
   .ink-hero__marquee .cust-marquee-word {
-    font-size: 18px;
+    font-size: 17px;
+    gap: 36px;
+  }
+
+  .ink-hero__marquee .cust-marquee-row {
+    gap: 36px;
+    padding-right: 36px;
+  }
+
+  .ink-hero__marquee .cust-marquee-track {
+    animation: marq 120s linear infinite !important;
   }
 }
 
@@ -275,5 +289,73 @@
   .ink-hero__cta {
     width: 100%;
     justify-content: center;
+  }
+
+  .ink-hero__marquee .cust-marquee-track {
+    animation: marq 150s linear infinite !important;
+  }
+}
+
+.cust-home-block,
+.cust-home-wrap {
+  padding-top: 110px;
+  padding-bottom: 110px;
+}
+
+.cust-home-bands {
+  display: flex;
+  flex-direction: column;
+  gap: 110px;
+}
+
+.cust-home-head {
+  margin-bottom: 52px;
+}
+
+.cust-home-head__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cust-home-head__row h2 {
+  margin: 0;
+  min-width: 0;
+}
+
+.cust-home-head__row .btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .cust-home-block,
+  .cust-home-wrap {
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+
+  #story.cust-home-block {
+    padding-top: 64px;
+  }
+
+  .cust-home-reviews {
+    padding-bottom: 64px;
+  }
+
+  .cust-home-bands {
+    gap: 48px;
+  }
+
+  .cust-home-bands .cust-band__action {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100%;
+    text-align: center;
+  }
+
+  .cust-home-bands .cust-band__action .btn {
+    margin-inline: auto;
   }
 }

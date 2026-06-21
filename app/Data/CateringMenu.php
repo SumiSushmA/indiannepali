@@ -4,7 +4,7 @@ namespace App\Data;
 
 /**
  * Catering catalog aligned with indiannepalikitchen.com Square Online.
- * Per-person builder ($5/guest, 20 minimum) + tray menu.
+ * Per-person builder ($5/guest base + item prices, 20 minimum) + tray menu.
  */
 class CateringMenu
 {
@@ -12,60 +12,190 @@ class CateringMenu
 
     public const PER_PERSON_PRICE = 5.00;
 
+    public const PREP_TIME_DAYS = 2;
+
     public static function perPerson(): array
     {
         return [
             'title' => 'Catering Menu (20 people required)',
-            'description' => 'Our catering menu offers a variety of delectable dishes to choose from, with a base price of $5.00 per person. A minimum of 20 people is required for all catering orders. If you order for less than 20 people, your order won\'t be fulfilled and your money will be refunded.',
-            'price_label' => '$5.00 / person',
+            'description' => 'Our catering menu offers a variety of delectable dishes to choose from, with a base price of $5.00 per person. Each dish shows its per-person price — add your selections below. A minimum of 20 people is required for all catering orders. If you order for less than 20 people, your order won\'t be fulfilled and your money will be refunded.',
+            'price_label' => '$5.00 / person base',
+            'prep_notice' => 'This order has a prep time of '.self::PREP_TIME_DAYS.' calendar days. Availability may change when your order is confirmed.',
             'groups' => [
+                [
+                    'id' => 'included',
+                    'label' => 'Included (Per person)',
+                    'optional' => true,
+                    'options' => [
+                        self::includedOption('Rice'),
+                        self::includedOption('Salad'),
+                        self::includedOption('Raita'),
+                    ],
+                ],
                 [
                     'id' => 'appetizers',
                     'label' => 'Appetizers',
-                    'options' => ['Vegetable Samosas', 'Vegetable Pakora', 'Mixed Appetizers', 'Samosa Chaat', 'Papadum'],
+                    'options' => [
+                        self::option('Vegetable Samosas', 6.95),
+                        self::option('Vegetable Pakora', 6.50),
+                        self::option('Mixed Appetizers', 8.99),
+                        self::option('Samosa Chaat', 7.95),
+                        self::option('Papadum', 1.99),
+                    ],
                 ],
                 [
                     'id' => 'momos',
                     'label' => 'Momos (Dumplings)',
-                    'options' => ['Steamed Momo', 'Fried Momo', 'Jhol Momo', 'Chilli Momo', 'Sandheko Momo', 'Tandoori Momo', 'Combo Momo'],
+                    'options' => [
+                        self::option('Steamed Momo', 11.99),
+                        self::option('Fried Momo', 13.99),
+                        self::option('Jhol Momo', 13.99),
+                        self::option('Chilli Momo', 13.99),
+                        self::option('Sandheko Momo', 13.99),
+                        self::option('Tandoori Momo', 19.99),
+                        self::option('Combo Momo', 14.99),
+                    ],
                 ],
                 [
                     'id' => 'chicken',
                     'label' => 'Chicken Entrees',
-                    'options' => ['Butter Curry', 'Tikka Masala', 'Chicken Curry Nepali', 'Korma', 'Karahi', 'Jalfrezi', 'Vindaloo'],
+                    'options' => [
+                        self::option('Butter Curry', 17.95),
+                        self::option('Tikka Masala', 17.95),
+                        self::option('Chicken Curry Nepali', 17.95),
+                        self::option('Korma', 17.95),
+                        self::option('Karahi', 17.95),
+                        self::option('Jalfrezi', 17.95),
+                        self::option('Vindaloo', 17.95),
+                    ],
                 ],
                 [
                     'id' => 'lamb',
                     'label' => 'Lamb & Goat Entrees',
-                    'options' => ['Lamb Butter Curry', 'Goat Curry', 'Lamb Kofta', 'Lamb Sekuwa', 'Lamb Biryani'],
+                    'options' => [
+                        self::option('Lamb Butter Curry', 17.95),
+                        self::option('Goat Curry', 19.95),
+                        self::option('Lamb Kofta', 17.95),
+                        self::option('Lamb Sekuwa', 17.99),
+                        self::option('Lamb Biryani', 21.50),
+                    ],
                 ],
                 [
                     'id' => 'nepali',
                     'label' => 'Nepali Special Entrees',
-                    'options' => ['Gundruk', 'Aloo Rayoko Saag', 'Aloo Bodi Tama', 'Veg Dal Bhat', 'Masu Chiura'],
+                    'options' => [
+                        self::option('Gundruk', 14.50),
+                        self::option('Aloo Rayoko Saag', 14.50),
+                        self::option('Aloo Bodi Tama', 14.50),
+                        self::option('Veg Dal Bhat', 14.50),
+                        self::option('Masu Chiura', 17.99),
+                    ],
                 ],
                 [
                     'id' => 'vegetarian',
                     'label' => 'Vegetarian Entrees',
-                    'options' => ['Dal Makhani', 'Dal Tadka', 'Chana Masala', 'Aloo Gobi', 'Matar Paneer', 'Malai Kofta', 'Saag (Spinach)'],
+                    'options' => [
+                        self::option('Dal Makhani', 14.50),
+                        self::option('Dal Tadka', 14.50),
+                        self::option('Chana Masala', 14.50),
+                        self::option('Aloo Gobi', 14.95),
+                        self::option('Matar Paneer', 14.95),
+                        self::option('Malai Kofta', 14.95),
+                        self::option('Saag (Spinach)', 17.95),
+                    ],
                 ],
                 [
                     'id' => 'tandoori',
                     'label' => 'Tandoori Specialties',
-                    'options' => ['Tandoori Chicken', 'Chicken Sekuwa', 'Seekh Kebab', 'Tandoori Platter'],
+                    'options' => [
+                        self::option('Tandoori Chicken', 18.50),
+                        self::option('Chicken Sekuwa', 17.99),
+                        self::option('Seekh Kebab', 18.99),
+                        self::option('Tandoori Platter', 23.95),
+                    ],
                 ],
                 [
                     'id' => 'rice_bread',
                     'label' => 'Biryani, Rice & Breads',
-                    'options' => ['Chicken Biryani', 'Lamb Biryani', 'Vegetable Biryani', 'Basmati Rice', 'Garlic Naan', 'Garlic Basil Naan', 'Plain Naan'],
+                    'options' => [
+                        self::option('Chicken Biryani', 18.95),
+                        self::option('Lamb Biryani', 21.50),
+                        self::option('Vegetable Biryani', 15.95),
+                        self::option('Basmati Rice', 2.50),
+                        self::option('Garlic Naan', 3.95),
+                        self::option('Garlic Basil Naan', 4.50),
+                        self::option('Plain Naan', 2.95),
+                    ],
                 ],
                 [
                     'id' => 'desserts',
                     'label' => 'Desserts',
-                    'options' => ['Gulab Jamun', 'Ras Malai', 'Kulfi', 'Rice Pudding'],
+                    'options' => [
+                        self::option('Gulab Jamun', 4.50),
+                        self::option('Ras Malai', 4.50),
+                        self::option('Kulfi', 2.99),
+                        self::option('Rice Pudding', 4.50),
+                    ],
                 ],
             ],
         ];
+    }
+
+    /** @return array{name: string, price: float} */
+    private static function option(string $name, float $price): array
+    {
+        return ['name' => $name, 'price' => $price];
+    }
+
+    /** @return array{name: string, price: float, included: true} */
+    private static function includedOption(string $name): array
+    {
+        return ['name' => $name, 'price' => 0.0, 'included' => true];
+    }
+
+    /** @return array<string, array<string, array{name: string, price: float}>> */
+    public static function optionIndex(): array
+    {
+        static $index = null;
+
+        if ($index !== null) {
+            return $index;
+        }
+
+        $index = [];
+
+        foreach (self::perPerson()['groups'] as $group) {
+            foreach ($group['options'] as $option) {
+                $index[$group['id']][$option['name']] = $option;
+            }
+        }
+
+        return $index;
+    }
+
+    public static function optionPrice(string $groupId, string $name): ?float
+    {
+        return self::optionIndex()[$groupId][$name]['price'] ?? null;
+    }
+
+    /** Per-guest price: base + sum of selected dish prices. */
+    public static function perPersonUnitPrice(array $selections): float
+    {
+        $total = self::PER_PERSON_PRICE;
+        $index = self::optionIndex();
+
+        foreach ($selections as $groupId => $items) {
+            foreach ($items as $name) {
+                $total += $index[$groupId][$name]['price'] ?? 0;
+            }
+        }
+
+        return round($total, 2);
+    }
+
+    public static function perPersonTotal(int $guestCount, array $selections): float
+    {
+        return round(self::perPersonUnitPrice($selections) * max(self::MIN_GUESTS, $guestCount), 2);
     }
 
     /** @return array<int, array{slug: string, name: string, description: string, price: float, serves: string}> */

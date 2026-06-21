@@ -12,32 +12,6 @@
     </form>
 </div>
 
-<div class="adm-card" style="display:flex;align-items:center;gap:18px;margin-bottom:18px;padding:22px;border-color:{{ ($isLive ?? false) ? 'var(--leaf-600)' : 'var(--line)' }};background:linear-gradient(90deg,{{ ($isLive ?? false) ? 'rgba(79,125,68,.1)' : 'rgba(200,133,47,.08)' }},var(--ink-700));">
-    <div style="width:52px;height:52px;border-radius:13px;background:{{ ($isLive ?? false) ? 'rgba(79,125,68,.18)' : 'rgba(200,133,47,.16)' }};border:1px solid {{ ($isLive ?? false) ? 'var(--leaf-600)' : 'var(--gold-700)' }};display:grid;place-items:center;color:{{ ($isLive ?? false) ? '#86b074' : 'var(--gold-400)' }};flex-shrink:0;">
-        <x-icon name="link" :size="24"/>
-    </div>
-    <div style="flex:1;">
-        <div style="display:flex;align-items:center;gap:10px;">
-            <h3 style="font-size:19px;font-weight:600;">{{ ($isLive ?? false) ? 'Toast connected (live payments)' : 'Demo mode (mock payments)' }}</h3>
-            @include('admin.partials.badge', ['tone' => ($isLive ?? false) ? 'green' : 'gold', 'dot' => true, 'label' => ($isLive ?? false) ? 'Live' : 'Mock'])
-        </div>
-        <div style="font-size:13.5px;color:var(--muted);margin-top:3px;">{{ $paymentLabel ?? '' }} · Last sync {{ $toast['lastSync'] }}</div>
-    </div>
-</div>
-
-<div class="adm-card" style="padding:22px;margin-bottom:18px;">
-    <h3 style="font-size:17px;font-weight:600;margin-bottom:14px;">Toast credentials in .env</h3>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">
-        @foreach($credentials ?? [] as $key => $set)
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;background:var(--ink-800);border:1px solid var(--line);font-size:13px;">
-            <span style="color:var(--sand)">{{ str_replace('_', ' ', $key) }}</span>
-            @include('admin.partials.badge', ['tone' => $set ? 'green' : 'neutral', 'dot' => $set, 'label' => $set ? 'Set' : 'Missing'])
-        </div>
-        @endforeach
-    </div>
-    <p style="font-size:13px;color:var(--muted);margin-top:14px;line-height:1.6">Add the four required keys (<code style="color:var(--gold-400)">TOAST_CLIENT_ID</code>, <code style="color:var(--gold-400)">TOAST_CLIENT_SECRET</code>, <code style="color:var(--gold-400)">TOAST_RESTAURANT_GUID</code>, <code style="color:var(--gold-400)">TOAST_MERCHANT_UUID</code>) to switch to live Toast payments automatically. No code changes needed.</p>
-</div>
-
 <div class="adm-stat-grid">
     @foreach([
         ['Items synced', '64', 'fork'],

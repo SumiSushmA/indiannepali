@@ -97,7 +97,7 @@ $dow = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 <div data-adm-view="reservations" data-adm-panel="calendar">
     <div class="adm-cal-wrap">
-        <div class="adm-card" style="padding:20px;">
+        <div class="adm-card adm-cal-card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
                 <h3 style="font-size:21px;font-weight:600;">{{ $monthLabel }}</h3>
             </div>
@@ -114,8 +114,8 @@ $dow = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                     $heat = $count === 0 ? 0 : ($count < 6 ? 1 : ($count < 12 ? 2 : 3));
                 @endphp
                 <div class="adm-cal-cell {{ $d === $today ? 'today' : '' }} {{ $heat ? 'heat-' . $heat : '' }}" style="cursor:default;">
-                    <span style="font-size:13.5px;font-weight:{{ $d === $today ? '700' : '500' }};color:{{ $d === $today ? 'var(--gold-400)' : 'var(--cream-2)' }};">{{ $d }}</span>
-                    @if($count > 0)<span style="font-size:11px;color:var(--sand);font-weight:600;">{{ $count }} bk</span>@endif
+                    <span class="adm-cal-day {{ $d === $today ? 'is-today' : '' }}">{{ $d }}</span>
+                    @if($count > 0)<span class="adm-cal-count">{{ $count }} bk</span>@endif
                 </div>
                 @endfor
             </div>

@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 
 @section('content')
-<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px;">
-    <div>
-        <h1 style="font-size:30px;font-weight:600;">Offers & promos</h1>
-        <p style="color:var(--muted);font-size:14.5px;margin-top:6px;">Manage live deals — combo meals, spend & save, reservation perks, and limited-time specials.</p>
+<div class="adm-page-head">
+    <div class="adm-page-head__main">
+        <h1 class="adm-page-title">Offers & promos</h1>
+        <p class="adm-page-sub">Manage live deals — combo meals, spend & save, reservation perks, and limited-time specials.</p>
     </div>
-    <button type="button" class="btn btn-gold btn-sm" onclick="document.getElementById('add-offer-dialog')?.showModal()"><x-icon name="plus" :size="16"/> Add offer</button>
+    <button type="button" class="btn btn-gold btn-sm adm-page-head__action" onclick="document.getElementById('add-offer-dialog')?.showModal()"><x-icon name="plus" :size="16"/> Add offer</button>
 </div>
 
 <dialog id="add-offer-dialog" style="width:min(980px,calc(100vw - 28px));border:1px solid var(--line);border-radius:14px;background:var(--ink-700);color:var(--cream);padding:0;box-shadow:var(--shadow-3);">
@@ -19,10 +19,10 @@
     </div>
 </dialog>
 
-<div style="display:flex;flex-direction:column;gap:16px;">
+<div class="adm-promo-list">
     @forelse($promos as $promo)
-        <div class="adm-card" style="padding:22px;">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px;">
+        <div class="adm-card adm-promo-card">
+            <div class="adm-promo-card__head">
                 <div>
                     @include('admin.partials.badge', ['tone' => $promo->is_active ? 'green' : 'neutral', 'dot' => true, 'label' => $promo->is_active ? 'Live' : 'Hidden'])
                     <span style="margin-left:8px;color:var(--muted);font-size:13px;">{{ $offerTypes[$promo->offer_type] ?? $promo->offer_type }}</span>

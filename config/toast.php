@@ -39,5 +39,6 @@ return [
 
     'online_ordering_url' => env('TOAST_ONLINE_ORDERING_URL'),
     'gift_cards_url' => env('TOAST_GIFT_CARDS_URL'),
+    'catering_url' => env('TOAST_CATERING_URL'),
 
 ];

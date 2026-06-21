@@ -9,7 +9,7 @@ $available = count(array_filter($menu['items'], fn($it) => !empty($it['available
 <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px;">
     <div>
         <h1 style="font-size:30px;font-weight:600;">Menu</h1>
-        <p style="color:var(--muted);font-size:14.5px;margin-top:6px;">{{ count($menu['items']) }} items · {{ $available }} available · synced with Toast POS</p>
+        <p style="color:var(--muted);font-size:14.5px;margin-top:6px;">{{ count($menu['items']) }} items · {{ $available }} available</p>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('add-menu-category-dialog')?.showModal()"><x-icon name="plus" :size="16"/> Add category</button>

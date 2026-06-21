@@ -45,7 +45,11 @@ class CateringController extends Controller
         $hasSelection = false;
 
         foreach ($groups as $groupId) {
-            $picked = array_values(array_filter($validated['selections'][$groupId] ?? []));
+            $allowed = array_keys(CateringMenu::optionIndex()[$groupId] ?? []);
+            $picked = array_values(array_filter(
+                $validated['selections'][$groupId] ?? [],
+                fn ($name) => in_array($name, $allowed, true)
+            ));
             if ($picked) {
                 $hasSelection = true;
             }

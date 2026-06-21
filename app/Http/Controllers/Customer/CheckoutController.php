@@ -40,6 +40,7 @@ class CheckoutController extends Controller
         $tipRate = (float) $request->input('tip', session('checkout_tip', 0.18));
         $tipAmount = round($subtotal * $tipRate, 2);
         $freeDelivery = CartController::freeDeliveryStatus($subtotal, $mode);
+        $isCateringOnly = collect($cart['cartItems'])->every(fn ($line) => ! empty($line['catering']));
 
         return view('customer.checkout.index', array_merge($cart, [
             'mode' => $mode,
@@ -50,6 +51,7 @@ class CheckoutController extends Controller
             'total' => round($subtotal + $tax + $deliveryFee + $tipAmount, 2),
             'prefill' => CustomerSession::prefill(),
             'freeDelivery' => $freeDelivery,
+            'isCateringOnly' => $isCateringOnly,
         ]));
     }
 
