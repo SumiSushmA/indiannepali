@@ -15,14 +15,14 @@ $tabs = [
 @endphp
 
 @push('styles')
-<link rel="stylesheet" href="/css/account.css">
+<link rel="stylesheet" href="/css/account.css?v={{ filemtime(public_path('css/account.css')) }}">
 @endpush
 
 @section('content')
-<div class="cust-page-head cust-pad">
+<div class="cust-page-head cust-pad acct-page-head">
     <div class="eyebrow center" style="justify-content:center;margin-bottom:16px">My account</div>
     <h1 style="font-size:clamp(34px,4.5vw,54px);line-height:1.05">Welcome back, {{ $customer->name }}</h1>
-    <p style="color:var(--sand);font-size:17px;line-height:1.65;margin-top:14px">Your orders, reservations, catering quotes, contact replies, and payment history — all in one place.</p>
+    <p style="color:var(--sand);margin-top:14px">Your orders, reservations, catering quotes, contact replies, and payment history — all in one place.</p>
 </div>
 
 <div class="acct-shell">
@@ -55,7 +55,6 @@ $tabs = [
             <div class="acct-panel cust-card">
                 <div class="acct-panel-head">
                     <h2>Online orders</h2>
-                    <a href="{{ route('menu') }}" class="btn btn-gold btn-sm">Order again</a>
                 </div>
 
                 @if($orders->isEmpty())
@@ -85,7 +84,6 @@ $tabs = [
             <div class="acct-panel cust-card">
                 <div class="acct-panel-head">
                     <h2>Table reservations</h2>
-                    <a href="{{ route('reserve') }}" class="btn btn-gold btn-sm">Book a table</a>
                 </div>
 
                 @if($reservations->isEmpty())
@@ -120,7 +118,6 @@ $tabs = [
             <div class="acct-panel cust-card">
                 <div class="acct-panel-head">
                     <h2>Catering inquiries</h2>
-                    <a href="{{ route('catering') }}" class="btn btn-gold btn-sm">Order catering</a>
                 </div>
 
                 @if($cateringInquiries->isEmpty())
@@ -157,7 +154,6 @@ $tabs = [
             <div class="acct-panel cust-card">
                 <div class="acct-panel-head">
                     <h2>Contact messages</h2>
-                    <a href="{{ route('contact') }}" class="btn btn-gold btn-sm">Send message</a>
                 </div>
 
                 @if($contactMessages->isEmpty())

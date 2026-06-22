@@ -1901,9 +1901,23 @@ textarea.cust-inp {
 @media (max-width: 600px) {
   .cust-section, .cust-pad { padding-left: 20px !important; padding-right: 20px !important; }
   .cust-page-head {
-    padding-top: 104px;
+    padding-top: 96px;
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  #cust-header .cust-inner {
+    height: 68px;
+    gap: 10px;
+  }
+
+  .cust-header-actions {
+    gap: 8px;
+  }
+
+  .cust-header-actions .btn-gold.btn-sm,
+  .cust-header-actions .cust-account-btn {
+    display: none;
   }
   .cust-about-wrap {
     padding: 24px 16px 64px;
