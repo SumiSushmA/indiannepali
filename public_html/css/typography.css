@@ -1,0 +1,126 @@
+/* Unified typography — loaded last across customer + admin */
+
+:root {
+  --font-family: var(--sans);
+}
+
+/* ---- headings: one family, one size ---- */
+#cust-root h1,
+#cust-root h2,
+#cust-root h3,
+#cust-root h4,
+#cust-root h5,
+#cust-root h6,
+#cust-root .ink-hero__headline,
+#cust-root .cust-hero-title,
+#cust-root .cust-prefooter__title,
+#cust-root .cust-foot-brand,
+#cust-root .cust-page-title,
+#cust-root .cust-drawer-title,
+.adm-app h1,
+.adm-app h2,
+.adm-app h3,
+.adm-app h4,
+.adm-app h5,
+.adm-app h6,
+.adm-app .adm-page-title,
+.adm-app .adm-stat-value {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-heading-size) !important;
+  line-height: var(--font-line-heading) !important;
+}
+
+#cust-root .ink-hero__headline em {
+  font-family: var(--font-family) !important;
+  font-style: italic;
+}
+
+/* ---- body copy: one family, one size ---- */
+#cust-root p,
+#cust-root li,
+#cust-root dd,
+#cust-root dt,
+#cust-root blockquote,
+#cust-root figcaption,
+#cust-root .ink-hero__sub,
+#cust-root .cust-hero-sub,
+#cust-root .cust-prefooter__text,
+#cust-root .cust-foot-copy,
+#cust-root .cust-foot-link,
+#cust-root .cust-dish-card-desc,
+#cust-root .cust-review-card__body,
+#cust-root .cust-review-card__name,
+#cust-root .cust-review-card__meta,
+#cust-root .cust-gallery-cap,
+#cust-root .cust-dish-card-price,
+#cust-root .cust-drawer-line,
+#cust-root .cust-drawer-total,
+#cust-root .cust-drawer-item-name,
+#cust-root .cust-drawer-item-qty,
+#cust-root .cust-page-lead,
+#cust-root .cust-band__body p,
+#cust-root .cust-about-story p,
+#cust-root .cust-val-grid p,
+#cust-root .cust-team-grid p,
+#cust-root .cust-story-grid p,
+#cust-root .cust-cater-grid p,
+#cust-root label:not(.eyebrow),
+.adm-app p,
+.adm-app li,
+.adm-app td,
+.adm-app th,
+.adm-app label,
+.adm-app .adm-muted,
+.adm-app .adm-flash {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-body-size) !important;
+  line-height: var(--font-line-body) !important;
+}
+
+#cust-root .cust-about-story p,
+#cust-root .cust-val-grid p,
+#cust-root .cust-team-grid p {
+  font-style: normal !important;
+  font-weight: 400 !important;
+}
+
+/* ---- buttons: one family, one size ---- */
+#cust-root .btn,
+#cust-root .btn-sm,
+#cust-root .btn-lg,
+#cust-root .ink-hero__cta,
+#cust-root .cust-dish-card-btn,
+#cust-root .cust-nav-order,
+#cust-root .cust-tab,
+.adm-app .btn,
+.adm-app .btn-sm,
+.adm-app .btn-lg,
+.adm-app button.btn,
+.adm-app a.btn {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-button-size) !important;
+}
+
+/* labels / nav: same family, keep compact sizes from component CSS */
+#cust-root .eyebrow,
+#cust-root .cust-navlinks a,
+#cust-root .cust-marquee-word,
+#cust-root .ink-hero__pill,
+#cust-root .ink-hero__scroll,
+.adm-app .adm-nav a,
+.adm-app .adm-topbar-title {
+  font-family: var(--font-family) !important;
+}
+
+.cust-text-sand { color: var(--sand); }
+.cust-text-muted { color: var(--muted); }
+.cust-text-cream { color: var(--cream); }
+.cust-page-lead { margin-top: 18px; }
+.cust-drawer-title { font-weight: 600; margin: 0; }
+.cust-drawer-item-name { font-weight: 600; }
+.cust-drawer-item-qty {
+  min-width: 22px;
+  text-align: center;
+  font-weight: 600;
+}
+.cust-drawer-total span:last-child { color: var(--gold-400); }

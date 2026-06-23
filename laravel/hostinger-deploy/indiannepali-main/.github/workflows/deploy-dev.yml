@@ -1,0 +1,151 @@
+name: CI/CD Deploy Dev
+
+on:
+  push:
+    branches:
+      - dev
+
+concurrency:
+  group: indiannepali-dev-deploy
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    name: CI Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring, pdo, sqlite, bcmath
+          coverage: none
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Prepare Laravel environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install frontend dependencies
+        run: npm install
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Verify build output exists
+        run: |
+          if [ ! -d "public/build" ] || [ -z "$(ls -A public/build)" ]; then
+            echo "public/build missing or empty"
+            exit 1
+          fi
+
+      - name: Run tests
+        run: php artisan test
+
+  deploy:
+    name: Deploy to Dev Server
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check required dev secrets
+        id: secrets_check
+        env:
+          DEV_SSH_KEY: ${{ secrets.DEV_SSH_KEY }}
+          DEV_HOST: ${{ secrets.DEV_HOST }}
+          DEV_USERNAME: ${{ secrets.DEV_USERNAME }}
+          DEV_APP_PATH: ${{ secrets.DEV_APP_PATH }}
+        run: |
+          if [ -z "$DEV_SSH_KEY" ] || [ -z "$DEV_HOST" ] || [ -z "$DEV_USERNAME" ] || [ -z "$DEV_APP_PATH" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Dev deploy secrets are missing. Skipping deploy job steps."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup SSH
+        if: steps.secrets_check.outputs.ready == 'true'
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEV_SSH_KEY }}" > ~/.ssh/deploy_key.pem
+          chmod 600 ~/.ssh/deploy_key.pem
+          ssh-keyscan -H "${{ secrets.DEV_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy on Hostinger dev
+        if: steps.secrets_check.outputs.ready == 'true'
+        run: |
+          ssh -i ~/.ssh/deploy_key.pem "${{ secrets.DEV_USERNAME }}@${{ secrets.DEV_HOST }}" << 'EOF'
+          set -e
+          cd "${{ secrets.DEV_APP_PATH }}"
+
+          git config --global --add safe.directory '*' 2>/dev/null || true
+          git rev-parse HEAD > "${{ secrets.DEV_ROLLBACK_FILE }}"
+          git fetch origin dev
+          git reset --hard origin/dev
+
+          composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+          npm install
+          npm run build
+          php artisan migrate --force
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          php artisan queue:restart 2>/dev/null || true
+
+          chmod -R ug+rwx storage bootstrap/cache 2>/dev/null || true
+
+          if [ "$(basename "$(pwd)")" = "indiannepali-main" ]; then
+            PUBLIC_HTML="$(cd .. && pwd)"
+            bash scripts/hostinger-sync-public.sh . "$PUBLIC_HTML"
+          else
+            php artisan storage:link 2>/dev/null || true
+          fi
+          EOF
+
+      - name: Cleanup SSH key
+        if: always() && steps.secrets_check.outputs.ready == 'true'
+        run: rm -f ~/.ssh/deploy_key.pem
+
+  health-check:
+    name: Health Check Dev
+    needs: deploy
+    if: ${{ always() && needs.deploy.result == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Verify dev URL
+        run: |
+          if [ -z "${{ secrets.DEV_URL }}" ]; then
+            echo "DEV_URL not set — skipping health check"
+            exit 0
+          fi
+
+          for i in {1..5}; do
+            STATUS=$(curl -s -L --max-time 10 -o /dev/null -w "%{http_code}" "${{ secrets.DEV_URL }}")
+            echo "Attempt ${i}: ${STATUS}"
+            if [ "$STATUS" = "200" ] || [ "$STATUS" = "302" ]; then
+              exit 0
+            fi
+            sleep 10
+          done
+          exit 1
