@@ -5,7 +5,11 @@
 @endpush
 
 @section('content')
-
+@php
+    use App\Services\Toast\ToastConfiguration;
+    $menuHref = ToastConfiguration::onlineOrderingUrl() ?: route('menu');
+    $cateringHref = ToastConfiguration::cateringUrl() ?: route('catering');
+@endphp
 {{-- Hero — glassmorphism full-bleed --}}
 <section class="ink-hero">
     <div class="ink-hero__bg" aria-hidden="true">
@@ -15,7 +19,7 @@
 
     <div class="ink-hero__body">
         <div class="ink-hero__center fade-up">
-            <a href="{{ route('menu') }}" class="ink-hero__pill">
+            <a href="{{ $menuHref }}" class="ink-hero__pill">
                 <span class="ink-hero__pill-dot"></span>
                 Open for delivery · {{ $site['city'] ?? 'Seattle' }}
                 <x-icon name="arrow" :size="14" color="rgba(255,255,255,0.5)" />
@@ -31,7 +35,7 @@
             </p>
 
             <div class="ink-hero__actions">
-                <a href="{{ route('menu') }}" class="ink-hero__cta">
+                <a href="{{ $menuHref }}" class="ink-hero__cta">
                     Order Online <x-icon name="arrow" :size="18" />
                 </a>
                 <a href="{{ route('reserve') }}" class="ink-hero__cta ink-hero__cta--ghost">
@@ -52,7 +56,7 @@
             @for($r = 0; $r < 2; $r++)
                 <div class="cust-marquee-row">
                     @foreach($words as $w)
-                        <a href="{{ route('menu', ['q' => $w]) }}" class="cust-marquee-word">{{ $w }} <span style="color:var(--brand-400)">◆</span></a>
+                        <a href="{{ $menuHref }}" class="cust-marquee-word">{{ $w }} <span style="color:var(--brand-400)">◆</span></a>
                     @endforeach
                 </div>
             @endfor
@@ -69,13 +73,13 @@
         <a href="{{ route('about') }}" class="btn btn-ghost btn-sm" style="margin-top:22px">Read our story <x-icon name="arrow" :size="16" /></a>
     </div>
     <div class="cust-story-grid">
-        <a href="{{ route('menu') }}" class="cust-click-card">
+        <a href="{{ $menuHref }}" class="cust-click-card">
             <x-ph label="Goat curry platter" :src="\App\Support\StockImages::scene('clay oven favorites')" :h="360" :r="16" style="margin-bottom:24px;border:none" />
             <div class="eyebrow" style="margin-bottom:14px">Curries</div>
             <h3 style="margin-bottom:12px">Goat curry &amp; classics</h3>
             <p class="cust-text-sand">Goat curry, butter chicken, paneer tikka, and tandoori momos — slow-simmered gravies and roasted favorites from our kitchen.</p>
         </a>
-        <a href="{{ route('menu', ['q' => 'momo']) }}" class="cust-click-card">
+        <a href="{{ $menuHref }}" class="cust-click-card">
             <x-ph label="Combo Momo" :src="\App\Support\StockImages::scene('momo destination')" :h="360" :r="16" style="margin-bottom:24px;border:none" />
             <div class="eyebrow" style="margin-bottom:14px">Momo</div>
             <h3 style="margin-bottom:12px">Seattle's momo destination</h3>
@@ -91,7 +95,7 @@
             <div class="eyebrow" style="margin-bottom:16px">Most loved</div>
             <div class="cust-home-head__row">
                 <h2>Signature dishes</h2>
-                <a href="{{ route('menu') }}" class="btn btn-ghost btn-sm">See full menu <x-icon name="arrow" :size="18" /></a>
+                <a href="{{ $menuHref }}" class="btn btn-ghost btn-sm">See full menu <x-icon name="arrow" :size="18" /></a>
             </div>
         </div>
         <div class="cust-dish-grid">
@@ -106,7 +110,7 @@
 <section class="cust-section cust-home-block cust-home-bands">
     <div class="cust-band">
         <div class="cust-band__eyebrow eyebrow">Order online</div>
-        <a href="{{ route('menu') }}" class="cust-band__media cust-click-card">
+        <a href="{{ $menuHref }}" class="cust-band__media cust-click-card">
             <x-ph label="Indian-Nepali delivery spread" :src="\App\Support\StockImages::scene('packed delivery bags')" :h="380" :r="18" style="border:none" />
         </a>
         <div class="cust-band__body">
@@ -114,7 +118,7 @@
             <p class="cust-text-sand" style="margin-top:18px;max-width:440px">{{ $content['Delivery blurb'] ?? 'Order online for pickup or delivery from our Aurora Avenue kitchen.' }}</p>
         </div>
         <div class="cust-band__action">
-            <a href="{{ route('menu') }}" class="btn btn-gold"><x-icon name="bag" :size="18" /> Start an order</a>
+            <a href="{{ $menuHref }}" class="btn btn-gold"><x-icon name="bag" :size="18" /> Start an order</a>
         </div>
     </div>
     <div class="cust-band cust-band--reverse">
@@ -142,7 +146,7 @@
         <p class="cust-text-sand" style="max-width:560px;margin:20px auto 0">{{ $content['Catering blurb'] ?? 'Catering for groups of 20 or more.' }}</p>
         <div class="cust-cater-grid" style="margin:48px 0">
             @foreach([['box', 'Family-size trays', 'Half & full pans of every curry, biryani and momo'], ['users', 'Events 20+ guests', 'Weddings, office lunches, pujas & celebrations — minimum 20 guests'], ['fork', 'Live momo station', 'A chef pleating & steaming on-site, on request']] as [$icon, $title, $text])
-                <a href="{{ route('catering') }}" class="cust-click-card" style="background:var(--ink-700);border:1px solid var(--line);border-radius:16px;padding:26px">
+                <a href="{{ $cateringHref }}" class="cust-click-card" style="background:var(--ink-700);border:1px solid var(--line);border-radius:16px;padding:26px">
                     <div style="width:46px;height:46px;border-radius:12px;background:var(--brand-glow);border:1px solid var(--brand-700);display:grid;place-items:center;color:var(--brand-400);margin-bottom:16px">
                         <x-icon :name="$icon" :size="22" />
                     </div>
@@ -151,7 +155,7 @@
                 </a>
             @endforeach
         </div>
-        <a href="{{ route('catering') }}" class="btn btn-gold btn-lg">Order catering <x-icon name="arrow" :size="18" /></a>
+        <a href="{{ $cateringHref }}" class="btn btn-gold btn-lg">Order catering <x-icon name="arrow" :size="18" /></a>
     </section>
 </div>
 
@@ -168,11 +172,10 @@
         @foreach($galleryPreview as $i => $g)
             <a href="{{ route('gallery') }}" class="cust-click-card cust-gallery-tile {{ $i === 0 ? 'large' : '' }}">
                 @if($g['url'])
-                    <img src="{{ $g['url'] }}" alt="{{ $g['label'] }}" loading="lazy">
+                    <img src="{{ $g['url'] }}" alt="" loading="lazy">
                 @else
-                    <div class="ph cust-gallery-ph"><span>{{ $g['label'] }}</span></div>
+                    <div class="ph cust-gallery-ph" aria-hidden="true"></div>
                 @endif
-                <span class="cust-gallery-cap">{{ $g['label'] }}</span>
             </a>
         @endforeach
     </div>

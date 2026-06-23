@@ -1,11 +1,13 @@
 @php
+use App\Services\Toast\ToastConfiguration;
+
 $navLinks = [
-    ['route' => 'menu', 'label' => 'Menu'],
-    ['route' => 'catering', 'label' => 'Catering'],
+    ['route' => 'menu', 'label' => 'Menu', 'href' => ToastConfiguration::onlineOrderingUrl() ?: route('menu')],
+    ['route' => 'catering', 'label' => 'Catering', 'href' => ToastConfiguration::cateringUrl() ?: route('catering')],
     ['route' => 'gallery', 'label' => 'Gallery'],
     ['route' => 'about', 'label' => 'About'],
     ['route' => 'promos', 'label' => 'Offers'],
-    ['route' => 'giftcards', 'label' => 'Gift Cards'],
+    ['route' => 'giftcards', 'label' => 'Gift Cards', 'href' => ToastConfiguration::giftCardsUrl() ?: route('giftcards')],
     ['route' => 'contact', 'label' => 'Contact'],
 ];
 $mobileLinks = array_merge(
@@ -21,7 +23,7 @@ $mobileLinks = array_merge(
 
         <nav class="cust-navlinks">
             @foreach($navLinks as $link)
-                <a href="{{ route($link['route']) }}" class="{{ request()->routeIs($link['route']) ? 'active' : '' }}">{{ $link['label'] }}</a>
+                <a href="{{ $link['href'] ?? route($link['route']) }}" class="{{ request()->routeIs($link['route']) ? 'active' : '' }}">{{ $link['label'] }}</a>
             @endforeach
         </nav>
 
@@ -44,7 +46,7 @@ $mobileLinks = array_merge(
                 @endif
             </button>
             <a href="{{ route('reserve') }}" class="btn btn-ghost btn-sm cust-reserve-btn">Reserve</a>
-            <a href="{{ route('menu') }}" class="btn btn-gold btn-sm">Order Online</a>
+            <a href="{{ ToastConfiguration::onlineOrderingUrl() ?: route('menu') }}" class="btn btn-gold btn-sm">Order Online</a>
             <button type="button" id="cust-burger" class="cust-burger" aria-label="Menu" style="background:none;border:1px solid var(--line);border-radius:10px;width:44px;height:44px;place-items:center;cursor:pointer;color:var(--cream)">
                 <x-icon name="menu" :size="20" />
             </button>
@@ -61,8 +63,8 @@ $mobileLinks = array_merge(
             </button>
         </div>
         @foreach($mobileLinks as $link)
-            <a href="{{ route($link['route']) }}" class="{{ request()->routeIs($link['route']) ? 'active' : '' }}">{{ $link['label'] }}</a>
+            <a href="{{ $link['href'] ?? route($link['route']) }}" class="{{ request()->routeIs($link['route']) ? 'active' : '' }}">{{ $link['label'] }}</a>
         @endforeach
-        <a href="{{ route('menu') }}" class="btn btn-gold" style="margin-top:18px;text-align:center">Order Online</a>
+        <a href="{{ ToastConfiguration::onlineOrderingUrl() ?: route('menu') }}" class="btn btn-gold" style="margin-top:18px;text-align:center">Order Online</a>
     </div>
 </div>

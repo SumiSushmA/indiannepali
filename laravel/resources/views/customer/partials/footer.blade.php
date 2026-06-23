@@ -9,7 +9,7 @@
             <p class="cust-prefooter__sub">
                 {{ $content['Delivery blurb'] ?? 'Order online for pickup or delivery — hand-pleated momo, tandoori, curries, and Nepali thali from our kitchen on Aurora Avenue.' }}
             </p>
-            <a href="{{ route('menu') }}" class="cust-prefooter__btn">
+            <a href="{{ \App\Services\Toast\ToastConfiguration::onlineOrderingUrl() ?: route('menu') }}" class="cust-prefooter__btn">
                 Order Online <x-icon name="arrow" :size="17" />
             </a>
         </div>
@@ -36,8 +36,18 @@
                     </div>
                     <div class="cust-foot-col">
                         <h4>Order</h4>
-                        @foreach([['Menu & Order', 'menu'], ['Reserve a Table', 'reserve'], ['Catering', 'catering'], ['Gift Cards', 'giftcards'], ['Offers', 'promos']] as [$label, $route])
-                            <a href="{{ route($route) }}">{{ $label }}</a>
+                        @php
+                            use App\Services\Toast\ToastConfiguration;
+                            $footerOrderLinks = [
+                                ['Menu & Order', ToastConfiguration::onlineOrderingUrl() ?: route('menu')],
+                                ['Reserve a Table', route('reserve')],
+                                ['Catering', ToastConfiguration::cateringUrl() ?: route('catering')],
+                                ['Gift Cards', ToastConfiguration::giftCardsUrl() ?: route('giftcards')],
+                                ['Offers', route('promos')],
+                            ];
+                        @endphp
+                        @foreach($footerOrderLinks as [$label, $href])
+                            <a href="{{ $href }}">{{ $label }}</a>
                         @endforeach
                     </div>
                     <div class="cust-foot-col">

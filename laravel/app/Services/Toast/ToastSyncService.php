@@ -15,11 +15,11 @@ class ToastSyncService
 
     public function sync(): ToastSyncLog
     {
-        if (! ToastConfiguration::isLive()) {
+        if (! ToastConfiguration::canFetchMenus()) {
             return ToastSyncLog::create([
                 'logged_at' => now(),
-                'message' => 'Mock sync completed — add Toast API keys to .env for live sync.',
-                'is_success' => true,
+                'message' => 'Menu sync skipped — add TOAST_CLIENT_ID, TOAST_CLIENT_SECRET, and TOAST_RESTAURANT_GUID to .env.',
+                'is_success' => false,
             ]);
         }
 

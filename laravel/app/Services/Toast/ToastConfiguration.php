@@ -8,8 +8,32 @@ class ToastConfiguration
     {
         return filled(config('toast.client_id'))
             && filled(config('toast.client_secret'))
-            && filled(config('toast.restaurant_guid'))
+            && filled(static::restaurantGuid())
             && filled(config('toast.merchant_uuid'));
+    }
+
+    public static function canFetchMenus(): bool
+    {
+        return filled(config('toast.client_id'))
+            && filled(config('toast.client_secret'))
+            && filled(static::restaurantGuid());
+    }
+
+    public static function restaurantGuid(): ?string
+    {
+        $guid = trim((string) config('toast.restaurant_guid'));
+
+        if (filled($guid)) {
+            return $guid;
+        }
+
+        $cateringUrl = trim((string) config('toast.catering_url'));
+
+        if (preg_match('#/restaurants/([0-9a-f-]{36})#i', $cateringUrl, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
     }
 
     public static function mode(): string
@@ -56,7 +80,7 @@ class ToastConfiguration
         return [
             'client_id' => filled(config('toast.client_id')),
             'client_secret' => filled(config('toast.client_secret')),
-            'restaurant_guid' => filled(config('toast.restaurant_guid')),
+            'restaurant_guid' => filled(static::restaurantGuid()),
             'merchant_uuid' => filled(config('toast.merchant_uuid')),
             'card_encryption_key' => filled(config('toast.card_encryption_key')),
             'card_encryption_key_id' => filled(config('toast.card_encryption_key_id')),

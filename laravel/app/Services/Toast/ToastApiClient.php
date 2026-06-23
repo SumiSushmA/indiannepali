@@ -89,7 +89,7 @@ class ToastApiClient
 
     public function fetchMenus(): array
     {
-        $restaurantGuid = config('toast.restaurant_guid');
+        $restaurantGuid = ToastConfiguration::restaurantGuid();
 
         $response = $this->request()
             ->get("/menus/v2/menus", [

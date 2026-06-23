@@ -34,10 +34,8 @@ class ToastMenuCatalog
 
         $needle = ToastMenuParser::normalizeName($item->name);
 
-        foreach ($catalog as $toastItem) {
-            if (ToastMenuParser::normalizeName($toastItem['name']) === $needle) {
-                return $toastItem;
-            }
+        if (isset($catalog['__by_name__'][$needle])) {
+            return $catalog['__by_name__'][$needle];
         }
 
         return null;
@@ -53,7 +51,7 @@ class ToastMenuCatalog
      */
     private function load(): array
     {
-        if (! ToastConfiguration::isLive()) {
+        if (! ToastConfiguration::canFetchMenus()) {
             return [];
         }
 
@@ -74,10 +72,18 @@ class ToastMenuCatalog
      */
     private function indexByGuid(array $items): array
     {
-        $indexed = [];
+        $indexed = [
+            '__by_name__' => [],
+        ];
 
         foreach ($items as $item) {
             $indexed[$item['guid']] = $item;
+
+            $normalizedName = ToastMenuParser::normalizeName($item['name']);
+
+            if ($normalizedName !== '' && ! isset($indexed['__by_name__'][$normalizedName])) {
+                $indexed['__by_name__'][$normalizedName] = $item;
+            }
         }
 
         return $indexed;

@@ -2,7 +2,7 @@
 
 @php
     $orderOnlineUrl = \App\Services\Toast\ToastConfiguration::onlineOrderingUrl();
-    $menuHref = route('menu', ['q' => $item['name']]);
+    $menuHref = $orderOnlineUrl ?: route('menu', ['q' => $item['name']]);
     $priceLabel = is_numeric($item['price'] ?? null)
         ? number_format((float) $item['price'], 2, '.', '')
         : ($item['price'] ?? '');
@@ -31,7 +31,7 @@
     </a>
     @if($orderOnlineUrl)
         <div class="cust-dish-card-action">
-            <a href="{{ $orderOnlineUrl }}" target="_blank" rel="noopener noreferrer" class="btn btn-gold btn-sm cust-dish-card-btn">
+            <a href="{{ $orderOnlineUrl }}" class="btn btn-gold btn-sm cust-dish-card-btn">
                 Order online <x-icon name="arrow" :size="16" />
             </a>
         </div>
