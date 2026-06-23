@@ -3,7 +3,7 @@ use App\Services\Toast\ToastConfiguration;
 
 $navLinks = [
     ['route' => 'menu', 'label' => 'Menu', 'href' => ToastConfiguration::onlineOrderingUrl() ?: route('menu')],
-    ['route' => 'catering', 'label' => 'Catering', 'href' => ToastConfiguration::cateringUrl() ?: route('catering')],
+    ['route' => 'catering', 'label' => 'Reservation', 'href' => ToastConfiguration::cateringUrl() ?: route('catering')],
     ['route' => 'gallery', 'label' => 'Gallery'],
     ['route' => 'about', 'label' => 'About'],
     ['route' => 'promos', 'label' => 'Offers'],
@@ -13,7 +13,7 @@ $navLinks = [
 $mobileLinks = array_merge(
     [['route' => 'home', 'label' => 'Home']],
     $navLinks,
-    [['route' => 'reserve', 'label' => 'Reserve'], ['route' => 'account.index', 'label' => 'My Account']]
+    [['route' => 'account.index', 'label' => 'My Account']]
 );
 @endphp
 
@@ -45,7 +45,6 @@ $mobileLinks = array_merge(
                     <span id="cust-cart-count">{{ $cartCount }}</span>
                 @endif
             </button>
-            <a href="{{ route('reserve') }}" class="btn btn-ghost btn-sm cust-reserve-btn">Reserve</a>
             <a href="{{ ToastConfiguration::onlineOrderingUrl() ?: route('menu') }}" class="btn btn-gold btn-sm">Order Online</a>
             <button type="button" id="cust-burger" class="cust-burger" aria-label="Menu" style="background:none;border:1px solid var(--line);border-radius:10px;width:44px;height:44px;place-items:center;cursor:pointer;color:var(--cream)">
                 <x-icon name="menu" :size="20" />
