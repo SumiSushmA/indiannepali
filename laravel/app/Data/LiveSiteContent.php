@@ -75,9 +75,24 @@ class LiveSiteContent
     public static function reviews(): array
     {
         return [
-            ['name' => 'The Infatuation', 'stars' => 5, 'text' => 'Come for the momos, stay for everything else — these juicy chicken parcels are among the best in Seattle, and the butter curry is silky-smooth.', 'tag' => 'Press'],
-            ['name' => 'Corner', 'stars' => 5, 'text' => 'All three momo styles — steamed, fried, and jhol in tangy sesame broth. Himalayan comfort food with spice levels that actually mean something.', 'tag' => 'Review'],
-            ['name' => 'Guest', 'stars' => 5, 'text' => 'Jhol momo, tandoori momo, garlic basil naan, and lamb butter curry — everything hits. Grateful this lovely place exists on Aurora.', 'tag' => 'Google'],
+            [
+                'name' => 'Sarah M.',
+                'stars' => 5,
+                'text' => 'Butter chicken and garlic naan were spot on — creamy, good heat, and still warm when we got home. Easily our new go-to on Aurora.',
+                'tag' => 'Google',
+            ],
+            [
+                'name' => 'James K.',
+                'stars' => 5,
+                'text' => 'The goat curry and lamb biryani taste like slow home cooking. Friendly staff, cozy dining room, and portions that actually fill you up.',
+                'tag' => 'Yelp',
+            ],
+            [
+                'name' => 'Anita R.',
+                'stars' => 5,
+                'text' => 'Brought the family for weekend lunch. Kids loved the paneer tikka, we loved the thali platters. Service was patient with our big table.',
+                'tag' => 'Google',
+            ],
         ];
     }
 

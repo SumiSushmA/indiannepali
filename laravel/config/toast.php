@@ -32,8 +32,8 @@ return [
     | Toast hosted ordering pages
     |--------------------------------------------------------------------------
     |
-    | When set, /menu and /gift-cards redirect to Toast's online ordering and
-    | e-gift card pages instead of the built-in website checkout flow.
+    | When set, /menu, /gift-cards, and /catering redirect to Toast's hosted
+    | ordering, e-gift card, and catering pages instead of the built-in flow.
     |
     */
 

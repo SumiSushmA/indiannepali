@@ -194,7 +194,6 @@
             <div class="cust-rev-grid" data-rev-track>
             @foreach($reviews as $review)
                 <div class="cust-review-card">
-                    <div class="cust-review-card__quote" aria-hidden="true">"</div>
                     <div class="cust-review-card__head">
                         <div class="cust-review-card__avatar">{{ strtoupper(substr($review['name'], 0, 1)) }}</div>
                         <div>
@@ -202,12 +201,9 @@
                             <x-stars :value="$review['stars']" :size="13" />
                         </div>
                     </div>
-                    <p class="cust-review-card__body">"{{ $review['text'] }}"</p>
+                    <p class="cust-review-card__body">{{ $review['text'] }}</p>
                     <div class="cust-review-card__foot">
                         <span class="cust-review-card__meta">{{ $review['tag'] }}</span>
-                        <div class="cust-review-card__actions" aria-hidden="true">
-                            <span></span><span></span><span></span>
-                        </div>
                     </div>
                 </div>
             @endforeach

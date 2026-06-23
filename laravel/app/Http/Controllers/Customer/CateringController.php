@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Data\CateringMenu;
 use App\Http\Controllers\Controller;
+use App\Services\Toast\ToastConfiguration;
 use App\Support\CateringCart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,8 +12,12 @@ use Illuminate\View\View;
 
 class CateringController extends Controller
 {
-    public function create(Request $request): View
+    public function create(Request $request): View|RedirectResponse
     {
+        if ($url = ToastConfiguration::cateringUrl()) {
+            return redirect()->away($url);
+        }
+
         $tab = $request->query('tab', 'per-person');
         if (! in_array($tab, ['per-person', 'trays'], true)) {
             $tab = 'per-person';

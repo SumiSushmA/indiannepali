@@ -45,7 +45,6 @@ class GalleryController extends Controller
             'cats' => $cats,
             'tab' => $tab,
             'shown' => $shown,
-            'spans' => [2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1],
         ]);
     }
 }

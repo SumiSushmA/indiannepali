@@ -64,9 +64,24 @@ class SeedData
     public static function reviews(): array
     {
         return [
-            ['name' => 'Aarti S.', 'stars' => 5, 'text' => 'The jhol momo are unreal and the thali is the most authentic I\'ve had outside Kathmandu.', 'tag' => 'Google'],
-            ['name' => 'Marcus L.', 'stars' => 5, 'text' => 'Butter chicken with that smoky tikka — easily the best in the city. Warm, beautiful room.', 'tag' => 'Yelp'],
-            ['name' => 'Priya & Dev', 'stars' => 5, 'text' => 'Catered our 60-person event. Flawless, generous, and everyone asked who made the goat curry.', 'tag' => 'Google'],
+            [
+                'name' => 'Sarah M.',
+                'stars' => 5,
+                'text' => 'Butter chicken and garlic naan were spot on — creamy, good heat, and still warm when we got home. Easily our new go-to on Aurora.',
+                'tag' => 'Google',
+            ],
+            [
+                'name' => 'James K.',
+                'stars' => 5,
+                'text' => 'The goat curry and lamb biryani taste like slow home cooking. Friendly staff, cozy dining room, and portions that actually fill you up.',
+                'tag' => 'Yelp',
+            ],
+            [
+                'name' => 'Anita R.',
+                'stars' => 5,
+                'text' => 'Brought the family for weekend lunch. Kids loved the paneer tikka, we loved the thali platters. Service was patient with our big table.',
+                'tag' => 'Google',
+            ],
         ];
     }
 

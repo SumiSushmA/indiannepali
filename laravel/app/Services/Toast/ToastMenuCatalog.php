@@ -17,7 +17,7 @@ class ToastMenuCatalog
     ) {}
 
     /**
-     * @return array<string, array{guid: string, name: string, price: ?float, description: ?string, available: bool}>
+     * @return array<string, array{guid: string, name: string, price: ?float, description: ?string, available: bool, image_url: ?string}>
      */
     public function itemsByGuid(): array
     {
@@ -49,7 +49,7 @@ class ToastMenuCatalog
     }
 
     /**
-     * @return array<string, array{guid: string, name: string, price: ?float, description: ?string, available: bool}>
+     * @return array<string, array{guid: string, name: string, price: ?float, description: ?string, available: bool, image_url: ?string}>
      */
     private function load(): array
     {
@@ -69,8 +69,8 @@ class ToastMenuCatalog
     }
 
     /**
-     * @param  array<int, array{guid: string, name: string, price: ?float, description: ?string, available: bool}>  $items
-     * @return array<string, array{guid: string, name: string, price: ?float, description: ?string, available: bool}>
+     * @param  array<int, array{guid: string, name: string, price: ?float, description: ?string, available: bool, image_url: ?string}>  $items
+     * @return array<string, array{guid: string, name: string, price: ?float, description: ?string, available: bool, image_url: ?string}>
      */
     private function indexByGuid(array $items): array
     {

@@ -43,7 +43,7 @@ class ToastSyncService
     }
 
     /**
-     * @param  array<int, array{guid: string, name: string, price: ?float, description: ?string, available: bool}>  $toastItems
+     * @param  array<int, array{guid: string, name: string, price: ?float, description: ?string, available: bool, image_url: ?string}>  $toastItems
      */
     private function syncMenuItems(array $toastItems): int
     {
@@ -71,6 +71,8 @@ class ToastSyncService
             if (filled($toastItem['description'])) {
                 $updates['description'] = $toastItem['description'];
             }
+
+            $updates['toast_image_url'] = $toastItem['image_url'];
 
             $menuItem->update($updates);
             $synced++;

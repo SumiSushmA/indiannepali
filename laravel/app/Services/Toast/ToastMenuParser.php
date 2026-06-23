@@ -5,7 +5,7 @@ namespace App\Services\Toast;
 class ToastMenuParser
 {
     /**
-     * @return array<int, array{guid: string, name: string, price: ?float, description: ?string, available: bool}>
+     * @return array<int, array{guid: string, name: string, price: ?float, description: ?string, available: bool, image_url: ?string}>
      */
     public function flattenMenus(mixed $payload): array
     {
@@ -32,7 +32,7 @@ class ToastMenuParser
 
     /**
      * @param  array<string, mixed>  $group
-     * @param  array<string, array{guid: string, name: string, price: ?float, description: ?string, available: bool}>  $items
+     * @param  array<string, array{guid: string, name: string, price: ?float, description: ?string, available: bool, image_url: ?string}>  $items
      */
     private function collectFromGroup(array $group, array &$items): void
     {
@@ -57,7 +57,7 @@ class ToastMenuParser
 
     /**
      * @param  array<string, mixed>  $item
-     * @return array{guid: string, name: string, price: ?float, description: ?string, available: bool}|null
+     * @return array{guid: string, name: string, price: ?float, description: ?string, available: bool, image_url: ?string}|null
      */
     public function parseItem(array $item): ?array
     {
@@ -74,7 +74,32 @@ class ToastMenuParser
             'price' => $this->resolvePrice($item),
             'description' => filled($item['description'] ?? null) ? trim((string) $item['description']) : null,
             'available' => $this->isAvailable($item),
+            'image_url' => $this->resolveImageUrl($item),
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     */
+    public function resolveImageUrl(array $item): ?string
+    {
+        $images = $item['images'] ?? [];
+
+        if (is_array($images)) {
+            foreach ($images as $url) {
+                if (is_string($url) && filled(trim($url))) {
+                    return trim($url);
+                }
+            }
+        }
+
+        $image = $item['image'] ?? null;
+
+        if (is_string($image) && filled(trim($image))) {
+            return trim($image);
+        }
+
+        return null;
     }
 
     /**

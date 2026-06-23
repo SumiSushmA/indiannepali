@@ -60,6 +60,7 @@ class CartController extends Controller
                 continue;
             }
             $legacy = $item->toLegacy();
+            $legacy['image_path'] = $item->customerImagePath();
             $legacy['qty'] = (int) $qty;
             $items[] = $legacy;
             $count += (int) $qty;

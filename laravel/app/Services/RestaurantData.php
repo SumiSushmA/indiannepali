@@ -180,6 +180,8 @@ class RestaurantData
         $toastItem = app(ToastMenuCatalog::class)->findForMenuItem($item);
 
         if (! $toastItem) {
+            $legacy['image_path'] = $item->customerImagePath();
+
             return $legacy;
         }
 
@@ -193,6 +195,8 @@ class RestaurantData
         if (filled($toastItem['description'])) {
             $legacy['desc'] = $toastItem['description'];
         }
+
+        $legacy['image_path'] = $item->customerImagePath();
 
         return $legacy;
     }

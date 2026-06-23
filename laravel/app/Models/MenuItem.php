@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Toast\ToastMenuCatalog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -24,6 +25,7 @@ class MenuItem extends Model
         'is_popular',
         'image_label',
         'image_path',
+        'toast_image_url',
         'toast_pos_id',
         'is_available',
         'sort_order',
@@ -49,6 +51,21 @@ class MenuItem extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function customerImagePath(): ?string
+    {
+        if (filled($this->toast_image_url)) {
+            return $this->toast_image_url;
+        }
+
+        $toastItem = app(ToastMenuCatalog::class)->findForMenuItem($this);
+
+        if (filled($toastItem['image_url'] ?? null)) {
+            return $toastItem['image_url'];
+        }
+
+        return $this->image_path;
     }
 
     public function toLegacy(): array
