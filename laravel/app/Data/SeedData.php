@@ -143,7 +143,7 @@ class SeedData
     public static function users(): array
     {
         return [
-            ['name' => 'Suman Adhikari', 'role' => 'Owner', 'email' => 'suman@indiannepali.kitchen', 'status' => 'Active', 'last' => '2m ago'],
+            ['name' => 'Baburam', 'role' => 'Owner', 'email' => 'baburam@indiannepalikitchen.kitchen', 'status' => 'Active', 'last' => '2m ago'],
             ['name' => 'Bishnu Karki', 'role' => 'Manager', 'email' => 'bishnu@indiannepali.kitchen', 'status' => 'Active', 'last' => '1h ago'],
             ['name' => 'Rekha Lama', 'role' => 'Chef', 'email' => 'rekha@indiannepali.kitchen', 'status' => 'Active', 'last' => 'Today'],
             ['name' => 'Daniel Ortiz', 'role' => 'Front of house', 'email' => 'daniel@indiannepali.kitchen', 'status' => 'Active', 'last' => 'Yesterday'],
