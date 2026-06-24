@@ -10,66 +10,56 @@
     $menuHref = ToastConfiguration::onlineOrderingUrl() ?: route('menu');
     $cateringHref = ToastConfiguration::cateringUrl() ?: route('catering');
 @endphp
-{{-- Hero — glassmorphism full-bleed --}}
-<section class="ink-hero">
-    <div class="ink-hero__bg" aria-hidden="true">
-        <img src="{{ $heroImage }}" alt="">
-    </div>
-    <div class="ink-hero__glow" aria-hidden="true"></div>
+<div class="ink-hero-wrap">
+    <section class="ink-hero">
+        <div class="ink-hero__media" aria-hidden="true">
+            <img src="{{ asset('images/herosection.jpg') }}" alt="">
+        </div>
 
-    <div class="ink-hero__body">
-        <div class="ink-hero__center fade-up">
-            <a href="{{ $menuHref }}" class="ink-hero__pill">
-                <span class="ink-hero__pill-dot"></span>
-                Open for delivery · {{ $site['city'] ?? 'Seattle' }}
-                <x-icon name="arrow" :size="14" color="rgba(255,255,255,0.5)" />
-            </a>
-
+        @php
+            $heroSub = $content['Hero subtext'] ?? 'Seattle\'s go-to for momo, tandoori & curries — Nepali thali served daily on Aurora Avenue.';
+            if (str_contains($heroSub, ' — ')) {
+                [$heroSubLine1, $heroSubLine2] = explode(' — ', $heroSub, 2);
+                $heroSubLine1 .= ' —';
+            } else {
+                $heroSubLine1 = $heroSub;
+                $heroSubLine2 = null;
+            }
+        @endphp
+        <div class="ink-hero__panel fade-up">
             <h1 class="ink-hero__headline">
-                <span class="ink-hero__line">Flavors that</span>
-                <span class="ink-hero__line"><em>grow</em> with every visit.</span>
+                <span class="ink-hero__line">Bringing warmth to</span>
+                <span class="ink-hero__line ink-hero__line--accent">Indian &amp; Nepali dining.</span>
             </h1>
-
             <p class="ink-hero__sub">
-                {{ $content['Hero subtext'] ?? 'Hand-pleated momo, charcoal-fired kebabs, and curries ground fresh each morning — served in a warm, candle-lit room.' }}
+                <span class="ink-hero__sub-line">{{ $heroSubLine1 }}</span>
+                @if($heroSubLine2)
+                    <span class="ink-hero__sub-line">{{ $heroSubLine2 }}</span>
+                @endif
             </p>
+        </div>
 
-            <div class="ink-hero__actions">
-                <a href="{{ $menuHref }}" class="ink-hero__cta">
-                    Order Online <x-icon name="arrow" :size="18" />
-                </a>
-                <a href="{{ route('reserve') }}" class="ink-hero__cta ink-hero__cta--ghost">
-                    Reserve a table
-                </a>
+        @php $words = ['Momo', 'Tandoor', 'Thali', 'Biryani', 'Jhol', 'Sekuwa', 'Naan', 'Masala', 'Sukuti', 'Dal']; @endphp
+        <div class="ink-hero__marquee cust-marquee">
+            <div class="cust-marquee-track">
+                @for($r = 0; $r < 2; $r++)
+                    <div class="cust-marquee-row">
+                        @foreach($words as $w)
+                            <a href="{{ $menuHref }}" class="cust-marquee-word">{{ $w }} <span style="color:var(--brand-400)">◆</span></a>
+                        @endforeach
+                    </div>
+                @endfor
             </div>
         </div>
-
-        <a href="#story" class="ink-hero__scroll" aria-label="Scroll to explore">
-            <span>Explore</span>
-            <x-icon name="down" :size="16" color="rgba(255,255,255,0.45)" />
-        </a>
-    </div>
-
-    @php $words = ['Momo', 'Tandoor', 'Thali', 'Biryani', 'Jhol', 'Sekuwa', 'Naan', 'Masala', 'Sukuti', 'Dal']; @endphp
-    <div class="ink-hero__marquee cust-marquee">
-        <div class="cust-marquee-track">
-            @for($r = 0; $r < 2; $r++)
-                <div class="cust-marquee-row">
-                    @foreach($words as $w)
-                        <a href="{{ $menuHref }}" class="cust-marquee-word">{{ $w }} <span style="color:var(--brand-400)">◆</span></a>
-                    @endforeach
-                </div>
-            @endfor
-        </div>
-    </div>
-</section>
+    </section>
+</div>
 
 {{-- Story --}}
 <section id="story" class="cust-section cust-home-block" style="scroll-margin-top:90px">
-    <div style="text-align:center;max-width:640px;margin:0 auto 64px">
+    <div class="cust-home-story__intro">
         <div class="eyebrow center" style="justify-content:center;margin-bottom:18px">{{ $content['About story'] ?? 'Indian & Nepali cuisine' }}</div>
-        <h2>{{ $content['Home story title'] ?? 'Come for the momos, stay for everything else' }}</h2>
-        <p class="cust-text-sand" style="margin-top:20px">{{ $content['Home story text'] ?? '' }}</p>
+        <h2 class="cust-home-story__title">{{ $content['Home story title'] ?? 'Come for the momos, stay for everything else' }}</h2>
+        <p class="cust-text-sand cust-home-story__lead">{{ $content['Home story text'] ?? '' }}</p>
         <a href="{{ route('about') }}" class="btn btn-ghost btn-sm" style="margin-top:22px">Read our story <x-icon name="arrow" :size="16" /></a>
     </div>
     <div class="cust-story-grid">
@@ -138,7 +128,7 @@
 
 {{-- Catering --}}
 <div style="position:relative;overflow:hidden;background:var(--ink-900);border-top:1px solid var(--line)">
-    <x-ph label="catering spread photo" :src="\App\Support\StockImages::scene('catering spread photo')" style="position:absolute;inset:0;border:none;height:100%;min-height:100%" />
+    <img src="{{ asset('images/catering.jpg') }}" alt="" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:none">
     <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,10,10,.96),rgba(10,10,10,.78))"></div>
     <section class="cust-section cust-home-block" style="position:relative;z-index:2;text-align:center">
         <div class="eyebrow center" style="justify-content:center;margin-bottom:18px">Catering & events</div>

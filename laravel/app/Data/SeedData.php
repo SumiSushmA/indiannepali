@@ -130,7 +130,7 @@ class SeedData
     {
         return [
             ['section' => 'Hero headline', 'value' => 'Where the Himalayas meet the tandoor.', 'type' => 'Text'],
-            ['section' => 'Hero subtext', 'value' => 'Hand-pleated momo, charcoal-fired kebabs, and curries ground fresh each morning — served in a warm, candle-lit room.', 'type' => 'Text'],
+            ['section' => 'Hero subtext', 'value' => 'Seattle\'s go-to for momo, tandoori & curries — Nepali thali served daily on Aurora Avenue.', 'type' => 'Text'],
             ['section' => 'Footer tagline', 'value' => 'Hand-pleated momo, charcoal tandoor, and the slow-simmered curries of the Indian subcontinent and the Himalayan hills.', 'type' => 'Text'],
             ['section' => 'Hours banner', 'value' => 'Tue–Sun · 11:30 – 22:00', 'type' => 'Text'],
             ['section' => 'Promo 1', 'value' => 'Himalayan Lunch Thali — $14', 'type' => 'Promotion'],

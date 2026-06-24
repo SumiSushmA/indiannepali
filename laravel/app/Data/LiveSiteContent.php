@@ -39,7 +39,7 @@ class LiveSiteContent
     {
         return [
             'Hero headline' => 'Discover the fusion magic of India and Nepal.',
-            'Hero subtext' => 'Seattle\'s go-to for momo, tandoori, and comforting curries — from juicy chicken dumplings and butter lamb curry to garlic naan and Nepali thali, cooked with passion on Aurora Avenue.',
+            'Hero subtext' => 'Seattle\'s go-to for momo, tandoori & curries — Nepali thali served daily on Aurora Avenue.',
             'Footer tagline' => 'Discover the fusion magic of India and Nepal — momo, curries, tandoori, and Nepali specialties. Dine in, pickup, or delivery.',
             'Hours banner' => 'Daily · 10:00 AM – 9:30 PM',
             'About story' => 'Indian & Nepali cuisine on Aurora Avenue.',
@@ -146,7 +146,7 @@ class LiveSiteContent
         return [
             ['id' => 'food', 'name' => 'The Food', 'items' => [
                 'Samosa Chaat', 'Chicken Chili', 'Combo Momo', 'Chilli Momo',
-                'Chicken Pakora', 'Taas', 'Goat Curry', 'Shahi Paneer',
+                'Chicken Pakora', 'Lamb Sekuwa', 'Goat Curry', 'Shahi Paneer',
                 'Aloo Gobi', 'Green Salad', 'Naan', 'Dal Makhani', 'Gundruk', 'Korma', 'Mango Lassi',
             ]],
             ['id' => 'space', 'name' => 'The Restaurant', 'items' => [
@@ -213,7 +213,7 @@ class LiveSiteContent
                 ['id' => 'aloo-bodi-tama', 'cat' => 'nepali-special', 'name' => 'Aloo-Bodi-Tama', 'price' => 14.50, 'veg' => true, 'spice' => 2, 'desc' => 'Potatoes, bamboo shoot and black eye beans — originally Nepali taste.', 'img' => 'Aloo Bodi Tama'],
                 ['id' => 'aloo-rayo-saag', 'cat' => 'nepali-special', 'name' => 'Aloo Rayo Ko Saag', 'price' => 14.50, 'veg' => true, 'spice' => 2, 'desc' => 'Potatoes and mustard greens with Nepalese spices.', 'img' => 'Aloo Rayo Ko Saag'],
                 ['id' => 'goat-curry-nepali', 'cat' => 'nepali-special', 'name' => 'Goat Curry (Nepali)', 'price' => 19.95, 'veg' => false, 'spice' => 3, 'popular' => true, 'desc' => 'Nepali-style goat curry with onion, tomato, garlic and ginger.', 'img' => 'Goat Curry'],
-                ['id' => 'taas', 'cat' => 'nepali-special', 'name' => 'Taas', 'price' => 17.99, 'veg' => false, 'spice' => 2, 'desc' => 'Spiced grilled meat with seasoned puffed rice, cucumber, carrot and onion.', 'img' => 'Taas'],
+                ['id' => 'lamb-sekuwa', 'cat' => 'nepali-special', 'name' => 'Lamb Sekuwa', 'price' => 17.99, 'veg' => false, 'spice' => 2, 'desc' => 'Spiced grilled meat with seasoned puffed rice, cucumber, carrot and onion.', 'img' => 'Lamb Sekuwa'],
                 ['id' => 'sekuwa', 'cat' => 'nepali-special', 'name' => 'Sekuwa', 'price' => 17.99, 'veg' => false, 'spice' => 2, 'desc' => 'Marinated meat skewered and barbecued in the clay oven, served with chatpate.', 'img' => 'Sekuwa'],
                 // Vegetarian
                 ['id' => 'dal-makhani', 'cat' => 'vegetarian', 'name' => 'Dal Makhani', 'price' => 14.50, 'veg' => true, 'spice' => 1, 'desc' => 'Black lentils slow cooked with spices and butter.', 'img' => 'Dal Makhani'],

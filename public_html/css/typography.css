@@ -5,13 +5,12 @@
 }
 
 /* ---- headings: one family, one size ---- */
-#cust-root h1,
+#cust-root h1:not(.ink-hero__headline),
 #cust-root h2,
 #cust-root h3,
 #cust-root h4,
 #cust-root h5,
 #cust-root h6,
-#cust-root .ink-hero__headline,
 #cust-root .cust-hero-title,
 #cust-root .cust-prefooter__title,
 #cust-root .cust-foot-brand,
@@ -51,7 +50,6 @@
 #cust-root .cust-review-card__body,
 #cust-root .cust-review-card__name,
 #cust-root .cust-review-card__meta,
-#cust-root .cust-gallery-cap,
 #cust-root .cust-dish-card-price,
 #cust-root .cust-drawer-line,
 #cust-root .cust-drawer-total,
@@ -105,8 +103,7 @@
 #cust-root .eyebrow,
 #cust-root .cust-navlinks a,
 #cust-root .cust-marquee-word,
-#cust-root .ink-hero__pill,
-#cust-root .ink-hero__scroll,
+#cust-root .ink-hero__sub,
 .adm-app .adm-nav a,
 .adm-app .adm-topbar-title {
   font-family: var(--font-family) !important;
