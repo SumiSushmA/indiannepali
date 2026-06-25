@@ -40,7 +40,7 @@
                             use App\Services\Toast\ToastConfiguration;
                             $footerOrderLinks = [
                                 ['Menu & Order', ToastConfiguration::onlineOrderingUrl() ?: route('menu')],
-                                ['Reserve a Table', route('reserve')],
+                                ['Reserve a Table', ToastConfiguration::reservationUrl() ?: route('reserve')],
                                 ['Catering', ToastConfiguration::cateringUrl() ?: route('catering')],
                                 ['Gift Cards', ToastConfiguration::giftCardsUrl() ?: route('giftcards')],
                                 ['Offers', route('promos')],

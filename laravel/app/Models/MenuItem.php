@@ -53,7 +53,7 @@ class MenuItem extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function customerImagePath(): ?string
+    public function toastImageUrl(): ?string
     {
         if (filled($this->toast_image_url)) {
             return $this->toast_image_url;
@@ -65,7 +65,12 @@ class MenuItem extends Model
             return $toastItem['image_url'];
         }
 
-        return $this->image_path;
+        return null;
+    }
+
+    public function customerImagePath(): ?string
+    {
+        return $this->toastImageUrl() ?? $this->image_path;
     }
 
     public function toLegacy(): array

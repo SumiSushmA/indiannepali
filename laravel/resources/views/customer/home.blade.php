@@ -113,7 +113,7 @@
     </div>
     <div class="cust-band cust-band--reverse">
         <div class="cust-band__eyebrow eyebrow">Reservations</div>
-        <a href="{{ route('reserve') }}" class="cust-band__media cust-click-card">
+        <a href="{{ \App\Services\Toast\ToastConfiguration::reservationUrl() ?: route('reserve') }}" class="cust-band__media cust-click-card">
             <x-ph label="Nepali thali" :src="\App\Support\StockImages::scene('dining room on aurora ave')" :h="380" :r="18" style="border:none" />
         </a>
         <div class="cust-band__body">
@@ -121,7 +121,7 @@
             <p class="cust-text-sand" style="margin-top:18px;max-width:440px">Walk in or reserve a table in our cozy black-and-red dining room on Aurora Avenue — peaceful even at peak hours.</p>
         </div>
         <div class="cust-band__action">
-            <a href="{{ route('reserve') }}" class="btn btn-gold"><x-icon name="cal" :size="18" /> Reserve a table</a>
+            <a href="{{ \App\Services\Toast\ToastConfiguration::reservationUrl() ?: route('reserve') }}" class="btn btn-gold"><x-icon name="cal" :size="18" /> Reserve a table</a>
         </div>
     </div>
 </section>
@@ -171,7 +171,8 @@
     </div>
 </section>
 
-{{-- Reviews --}}
+{{-- Reviews (only when real reviews exist) --}}
+@if(count($reviews) > 0)
 <div class="cust-home-wrap cust-home-reviews" style="background:var(--ink-850);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
     <section class="cust-section">
         <div style="text-align:center;margin-bottom:56px">
@@ -209,4 +210,5 @@
         </div>
     </section>
 </div>
+@endif
 @endsection

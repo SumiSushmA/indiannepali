@@ -74,6 +74,13 @@ class ToastConfiguration
         return filled($catering) ? $catering : null;
     }
 
+    public static function reservationUrl(): ?string
+    {
+        $url = trim((string) config('toast.reservation_url'));
+
+        return filled($url) ? $url : null;
+    }
+
     /** @return array<string, bool> */
     public static function credentialStatus(): array
     {

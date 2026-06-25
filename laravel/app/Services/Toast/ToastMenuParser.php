@@ -83,20 +83,41 @@ class ToastMenuParser
      */
     public function resolveImageUrl(array $item): ?string
     {
-        $images = $item['images'] ?? [];
+        foreach ($item['images'] ?? [] as $image) {
+            $url = $this->normalizeImageUrl($image);
 
-        if (is_array($images)) {
-            foreach ($images as $url) {
-                if (is_string($url) && filled(trim($url))) {
-                    return trim($url);
-                }
+            if ($url !== null) {
+                return $url;
             }
         }
 
-        $image = $item['image'] ?? null;
+        foreach ($item['catalogProductInfo']['product']['images'] ?? [] as $image) {
+            $url = $this->normalizeImageUrl($image);
 
+            if ($url !== null) {
+                return $url;
+            }
+        }
+
+        foreach ($item['catalogProductInfo']['productVariant']['images'] ?? [] as $image) {
+            $url = $this->normalizeImageUrl($image);
+
+            if ($url !== null) {
+                return $url;
+            }
+        }
+
+        return $this->normalizeImageUrl($item['image'] ?? null);
+    }
+
+    private function normalizeImageUrl(mixed $image): ?string
+    {
         if (is_string($image) && filled(trim($image))) {
             return trim($image);
+        }
+
+        if (is_array($image) && filled($image['url'] ?? null)) {
+            return trim((string) $image['url']);
         }
 
         return null;

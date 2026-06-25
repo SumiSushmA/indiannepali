@@ -3,7 +3,7 @@ use App\Services\Toast\ToastConfiguration;
 
 $navLinks = [
     ['route' => 'menu', 'label' => 'Menu', 'href' => ToastConfiguration::onlineOrderingUrl() ?: route('menu')],
-    ['route' => 'catering', 'label' => 'Reservation', 'href' => ToastConfiguration::cateringUrl() ?: route('catering')],
+    ['route' => 'reserve', 'label' => 'Reservation', 'href' => ToastConfiguration::reservationUrl() ?: route('reserve')],
     ['route' => 'gallery', 'label' => 'Gallery'],
     ['route' => 'about', 'label' => 'About'],
     ['route' => 'promos', 'label' => 'Offers'],

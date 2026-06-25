@@ -90,21 +90,39 @@ class RestaurantData
             ->where('is_popular', true)
             ->orderBy('sort_order')
             ->limit(40)
-            ->get();
+            ->get()
+            ->sort(function (MenuItem $a, MenuItem $b) {
+                $aHasToastImage = filled($a->toastImageUrl()) ? 0 : 1;
+                $bHasToastImage = filled($b->toastImageUrl()) ? 0 : 1;
+
+                if ($aHasToastImage !== $bHasToastImage) {
+                    return $aHasToastImage <=> $bHasToastImage;
+                }
+
+                return $a->sort_order <=> $b->sort_order;
+            })
+            ->values();
 
         foreach ($candidates as $item) {
             $legacy = self::withToastMenu($item);
-            $path = $legacy['image_path'] ?? null;
+            $imagePath = $legacy['image_path'] ?? null;
+            $displayImage = StockImages::resolve(
+                $legacy['img'] ?? $legacy['name'] ?? '',
+                $imagePath
+            );
 
-            if (! $path) {
+            if ($displayImage === '') {
                 continue;
             }
 
-            if (isset($used[$path])) {
+            $hasToastImage = filled($item->toastImageUrl());
+            $dedupeKey = $hasToastImage ? $displayImage : ($imagePath ?: $displayImage);
+
+            if (! $hasToastImage && isset($used[$dedupeKey])) {
                 continue;
             }
 
-            $used[$path] = true;
+            $used[$dedupeKey] = true;
             $items[] = $legacy;
 
             if (count($items) >= $limit) {
@@ -152,6 +170,12 @@ class RestaurantData
                 'cat' => $img->category?->name ?? '',
                 'url' => StockImages::resolve($img->caption, $path),
             ];
+
+            if ($items[array_key_last($items)]['url'] === '') {
+                array_pop($items);
+
+                continue;
+            }
 
             if (count($items) >= $limit) {
                 break;
@@ -263,6 +287,7 @@ class RestaurantData
     {
         return Review::query()
             ->where('is_featured', true)
+            ->whereNotNull('customer_id')
             ->orderBy('sort_order')
             ->get()
             ->map(fn (Review $r) => [

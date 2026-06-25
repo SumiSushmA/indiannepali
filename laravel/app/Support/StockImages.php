@@ -16,6 +16,7 @@ class StockImages
         'chicken chili' => 'chicken-chili.jpeg',
         'chicken chilli' => 'chicken-chili.jpeg',
         'lamb sekuwa' => 'lamb-sekuwa.jpeg',
+        'taas' => 'lamb-sekuwa.jpeg',
         'chicken pakora' => 'chicken-pakora.jpeg',
         'combo momo' => 'combo-momo.jpeg',
         'combo momo (12 pcs)' => 'combo-momo.jpeg',
@@ -152,11 +153,13 @@ class StockImages
                 return $imagePath;
             }
 
-            if (str_starts_with($imagePath, 'images/')) {
+            if (str_starts_with($imagePath, 'images/') && is_file(public_path($imagePath))) {
                 return asset($imagePath);
             }
 
-            return Storage::url($imagePath);
+            if (! str_starts_with($imagePath, 'images/') && Storage::exists($imagePath)) {
+                return Storage::url($imagePath);
+            }
         }
 
         return self::forLabel($label);
@@ -192,6 +195,7 @@ class StockImages
             'Chana Masala' => 'images/chana-masala.jpeg',
             'Veg sides' => 'images/veg-sides.jpeg',
             'Lassi' => 'images/lassi.jpeg',
+            'Taas' => 'images/lamb-sekuwa.jpeg',
         ];
     }
 

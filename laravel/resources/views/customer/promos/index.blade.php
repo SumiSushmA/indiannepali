@@ -4,7 +4,11 @@
 <div class="cust-page-head cust-pad">
     <div class="eyebrow center" style="justify-content:center;margin-bottom:16px">Offers & specials</div>
     <h1 style="font-size:clamp(38px,5vw,62px);line-height:1.03">Deals going on now</h1>
-    <p style="color:var(--sand);font-size:17px;line-height:1.65;margin-top:18px">Combo meals, spend-and-save perks, and dine-in rewards — updated by our team.</p>
+    @if(empty($promos))
+        <p style="color:var(--sand);font-size:17px;line-height:1.65;margin-top:18px">New offers will appear here when our team adds them.</p>
+    @else
+        <p style="color:var(--sand);font-size:17px;line-height:1.65;margin-top:18px">Combo meals, spend-and-save perks, and dine-in rewards — updated by our team.</p>
+    @endif
 </div>
 
 <div style="max-width:1100px;margin:0 auto;padding:44px 32px 110px">
@@ -13,10 +17,10 @@
     @endif
 
     @if(empty($promos))
-        <div class="cust-card" style="padding:48px 32px;text-align:center">
-            <x-icon name="tag" :size="36" color="var(--muted)" />
-            <h3 style="font-size:26px;margin:16px 0 8px">No active offers right now</h3>
-            <p style="color:var(--muted);margin-bottom:22px">Check back soon — or browse the full menu anytime.</p>
+        <div class="cust-card" style="padding:56px 32px;text-align:center">
+            <x-icon name="tag" :size="40" color="var(--muted)" />
+            <h3 style="font-size:28px;margin:18px 0 10px">No offer for now</h3>
+            <p style="color:var(--muted);margin-bottom:24px;max-width:420px;margin-left:auto;margin-right:auto">We do not have any active deals at the moment. Check back soon, or browse the full menu anytime.</p>
             <a href="{{ route('menu') }}" class="btn btn-gold">Browse menu</a>
         </div>
     @else

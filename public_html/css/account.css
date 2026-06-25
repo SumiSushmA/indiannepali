@@ -220,6 +220,7 @@
   min-height: 44px;
   padding: 10px 14px;
   border-radius: 10px;
+  border: 1px solid transparent;
   color: var(--sand);
   text-decoration: none;
   font-size: 14px;
@@ -227,10 +228,16 @@
   transition: background .15s, color .15s;
 }
 
-.acct-tab:hover,
-.acct-tab.active {
+.acct-tab:hover {
   background: var(--ink-700);
   color: var(--cream);
+}
+
+.acct-tab.active {
+  background: var(--brand-glow);
+  border: 1px solid var(--brand-700);
+  color: var(--brand-400);
+  box-shadow: inset 3px 0 0 var(--brand-400);
 }
 
 .acct-logout {
@@ -545,6 +552,7 @@
     min-height: auto;
     padding: 11px 12px;
     font-size: 14.5px;
+    border: 1px solid transparent;
   }
 }
 

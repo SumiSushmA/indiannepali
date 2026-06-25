@@ -2,6 +2,8 @@
 
 @php
 $pageTitle = 'My Account';
+use App\Services\Toast\ToastConfiguration;
+$reserveHref = ToastConfiguration::reservationUrl() ?: route('reserve');
 $tabs = [
     'orders' => ['label' => 'Orders', 'icon' => 'bag'],
     'reservations' => ['label' => 'Reservations', 'icon' => 'cal'],
@@ -35,9 +37,11 @@ $tabs = [
             </div>
         </div>
 
-        <nav class="acct-tabs">
+        <nav class="acct-tabs" aria-label="Account sections">
             @foreach($tabs as $key => $meta)
-                <a href="{{ route('account.index', ['tab' => $key]) }}" class="acct-tab {{ $tab === $key ? 'active' : '' }}">
+                <a href="{{ route('account.index', ['tab' => $key]) }}"
+                   class="acct-tab {{ $tab === $key ? 'active' : '' }}"
+                   @if($tab === $key) aria-current="page" @endif>
                     <x-icon :name="$meta['icon']" :size="18" />
                     {{ $meta['label'] }}
                 </a>
@@ -90,7 +94,7 @@ $tabs = [
                     <div class="acct-empty">
                         <x-icon name="cal" :size="36" color="var(--muted)" />
                         <p>No reservations yet.</p>
-                        <a href="{{ route('reserve') }}" class="btn btn-ghost btn-sm">Reserve now</a>
+                        <a href="{{ $reserveHref }}" class="btn btn-ghost btn-sm">Reserve now</a>
                     </div>
                 @else
                     <div class="acct-list">

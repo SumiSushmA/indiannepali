@@ -74,71 +74,12 @@ class LiveSiteContent
 
     public static function reviews(): array
     {
-        return [
-            [
-                'name' => 'Sarah M.',
-                'stars' => 5,
-                'text' => 'Butter chicken and garlic naan were spot on — creamy, good heat, and still warm when we got home. Easily our new go-to on Aurora.',
-                'tag' => 'Google',
-            ],
-            [
-                'name' => 'James K.',
-                'stars' => 5,
-                'text' => 'The goat curry and lamb biryani taste like slow home cooking. Friendly staff, cozy dining room, and portions that actually fill you up.',
-                'tag' => 'Yelp',
-            ],
-            [
-                'name' => 'Anita R.',
-                'stars' => 5,
-                'text' => 'Brought the family for weekend lunch. Kids loved the paneer tikka, we loved the thali platters. Service was patient with our big table.',
-                'tag' => 'Google',
-            ],
-        ];
+        return [];
     }
 
     public static function promos(): array
     {
-        return [
-            [
-                'id' => 'free-delivery-40',
-                'badge' => 'Spend & save',
-                'title' => 'Free delivery on orders $40+',
-                'detail' => 'Order $40 or more for delivery and the delivery fee is on us — perfect for family dinners.',
-                'price' => '$40 min',
-                'accent' => 'gold',
-                'offer_type' => 'spend_save',
-                'cta_type' => 'menu',
-                'cta_label' => 'Start your order',
-                'terms' => 'Applies to delivery orders only. Before tax and tip.',
-                'min_order_amount' => 40,
-            ],
-            [
-                'id' => 'momo-combo',
-                'badge' => 'Combo deal',
-                'title' => 'Combo Momo Feast',
-                'detail' => 'Steamed, fried, sandheko, and chili momo in one order — four styles, one great price.',
-                'price' => '$14.99',
-                'accent' => 'spice',
-                'offer_type' => 'combo_meal',
-                'cta_type' => 'order_item',
-                'cta_label' => 'Order this combo',
-                'menu_item_slug' => 'combo-momo',
-                'terms' => 'Valid for pickup and delivery. Cannot be combined with other offers.',
-            ],
-            [
-                'id' => 'party-welcome-drink',
-                'badge' => 'Dine-in perk',
-                'title' => 'Party of 6 — welcome drink on us',
-                'detail' => 'Reserve a table for six or more and each guest receives a complimentary welcome drink.',
-                'price' => '6+ guests',
-                'accent' => 'leaf',
-                'offer_type' => 'reservation_perk',
-                'cta_type' => 'reserve',
-                'cta_label' => 'Reserve for 6+',
-                'terms' => 'Dine-in only. Mention this offer when seated. Non-alcoholic welcome drink per guest.',
-                'min_party_size' => 6,
-            ],
-        ];
+        return [];
     }
 
     public static function galleryCategories(): array

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use App\Mail\ReservationConfirmationMail;
 use App\Models\Reservation;
+use App\Services\Toast\ToastConfiguration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -12,8 +13,12 @@ use Illuminate\View\View;
 
 class ReservationController extends Controller
 {
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
+        if ($url = ToastConfiguration::reservationUrl()) {
+            return redirect()->away($url);
+        }
+
         $dates = [];
         for ($i = 1; $i <= 8; $i++) {
             $d = now()->addDays($i);

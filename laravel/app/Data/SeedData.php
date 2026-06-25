@@ -54,35 +54,12 @@ class SeedData
 
     public static function promos(): array
     {
-        return [
-            ['id' => 'p1', 'badge' => 'Weekday Lunch', 'title' => 'Himalayan Lunch Thali', 'detail' => 'A full thali with dal, bhat, two tarkari & meat curry — every weekday, 11:30–3.', 'price' => '$14', 'accent' => 'gold'],
-            ['id' => 'p2', 'badge' => 'Family Feast', 'title' => '20% Off Orders Over $80', 'detail' => 'Gather the table. Save on family-size curries, biryani & a dozen momo.', 'price' => '−20%', 'accent' => 'spice'],
-            ['id' => 'p3', 'badge' => 'New', 'title' => 'Jhol Momo Tuesdays', 'detail' => 'Our signature soup dumplings, two-for-one, every Tuesday evening.', 'price' => '2-for-1', 'accent' => 'gold'],
-        ];
+        return [];
     }
 
     public static function reviews(): array
     {
-        return [
-            [
-                'name' => 'Sarah M.',
-                'stars' => 5,
-                'text' => 'Butter chicken and garlic naan were spot on — creamy, good heat, and still warm when we got home. Easily our new go-to on Aurora.',
-                'tag' => 'Google',
-            ],
-            [
-                'name' => 'James K.',
-                'stars' => 5,
-                'text' => 'The goat curry and lamb biryani taste like slow home cooking. Friendly staff, cozy dining room, and portions that actually fill you up.',
-                'tag' => 'Yelp',
-            ],
-            [
-                'name' => 'Anita R.',
-                'stars' => 5,
-                'text' => 'Brought the family for weekend lunch. Kids loved the paneer tikka, we loved the thali platters. Service was patient with our big table.',
-                'tag' => 'Google',
-            ],
-        ];
+        return [];
     }
 
     public static function galleryCategories(): array
